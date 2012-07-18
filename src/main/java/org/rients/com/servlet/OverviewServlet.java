@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.rients.com.constants.Constants;
-import org.springframework.stereotype.Controller;
 
 import rients.trading.utils.FileUtils;
 import rients.trading.utils.PropertiesUtils;
@@ -25,7 +24,6 @@ import rients.trading.utils.PropertiesUtils;
  * Servlet implementation class Overview.
  */
 
-@Controller
 public class OverviewServlet extends HttpServlet {
 
     /** The Constant serialVersionUID. */

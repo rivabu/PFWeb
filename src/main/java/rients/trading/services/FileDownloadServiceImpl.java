@@ -3,8 +3,11 @@ package rients.trading.services;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StreamTokenizer;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Properties;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
@@ -15,7 +18,10 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
+import rients.trading.utils.PropertiesUtils;
 import rients.trading.utils.StackTraceUtils;
+import rients.trading.utils.URLUtilities;
+import sun.misc.BASE64Encoder;
 
 /**
  * @author Rients
@@ -24,7 +30,7 @@ import rients.trading.utils.StackTraceUtils;
 public class FileDownloadServiceImpl implements FileDownloadService {
     private static final Logger LOGGER = Logger.getLogger(FileDownloadServiceImpl.class);
 
-    public String downloadFile(final String urlString) throws IOException {
+    public String downloadFileOld(final String urlString) throws IOException {
         final StringBuffer out = new StringBuffer();
 
         try {
@@ -42,6 +48,61 @@ public class FileDownloadServiceImpl implements FileDownloadService {
         }
 
         return out.toString();
+    }
+    
+    
+    public String downloadFile(String urlString) throws IOException {
+        StringBuffer output = new StringBuffer();
+            BufferedReader bufferedreader = makeInternetConnection(urlString);
+            boolean doorgaan = true;
+            while (doorgaan) {
+                String regel = bufferedreader.readLine();
+                output.append(regel+" ");
+                if (regel == null){
+                    break;
+                }
+            }
+
+        return output.toString();
+    }
+    
+    public BufferedReader makeInternetConnection(String URL) throws IOException {
+        String decodedURL = URLUtilities.urlDecode(URL);
+        BufferedReader bufferedreader = null;
+        Properties props = PropertiesUtils.getPropertiesFromClasspath("application.properties");
+        boolean useProxy = Boolean.parseBoolean((String)props.getProperty("useproxy"));
+            Object obj = null;
+            if (useProxy) {
+                String host = (String)props.getProperty("host");
+                String port = (String)props.getProperty("port");
+                String userid = (String)props.getProperty("user");
+                String password = (String)props.getProperty("password");
+                System.getProperties().put("proxySet", "true");
+                System.getProperties().put("proxyHost", host);
+                System.getProperties().put("proxyPort", port);
+                String auth = userid + ":" + password;
+                String proxyURL = "Basic " + (new BASE64Encoder()).encode(auth.getBytes());
+                URL url = new URL(decodedURL);
+                URLConnection urlconnection = url.openConnection();
+                urlconnection.setRequestProperty( "User-Agent", "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0; H010818)" );
+                urlconnection.setRequestProperty("Proxy-Authorization", proxyURL);
+                StreamTokenizer streamtokenizer = new StreamTokenizer(urlconnection.getInputStream());
+                streamtokenizer.ordinaryChar(32);
+                streamtokenizer.wordChars(32, 32);
+                streamtokenizer.eolIsSignificant(true);
+                streamtokenizer.commentChar(35);
+                streamtokenizer.quoteChar(34);
+
+                bufferedreader = new BufferedReader(new InputStreamReader(urlconnection.getInputStream()));
+            } else {
+                URL urlObject = new URL(decodedURL);
+                URLConnection con = urlObject.openConnection();
+                con.setRequestProperty( "User-Agent", "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0; H010818)" );
+                 
+                bufferedreader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            }
+           
+        return bufferedreader;
     }
 
     public String downloadFile(final String urlString, final String categorie) throws IOException {
@@ -85,7 +146,7 @@ public class FileDownloadServiceImpl implements FileDownloadService {
      * @param url
      * @return
      */
-    public String downloadFileOld(String url) {
+    public String downloadFile2(String url) {
         String endResult = null;
         HttpClient client = new HttpClient();
         GetMethod method = null;

@@ -1,6 +1,5 @@
 package rients.trading.services.bloomberg;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Properties;
 
@@ -69,7 +68,7 @@ public class BloombergRatesDownloader {
         }
     }
 
-    private void downloadContent() throws IOException {
+    private void downloadContent() throws Exception {
         String content = fileDownloadService.downloadFile(Constants.BLOOMBERG_COMMODITIES_URL);
         String firstmatch = "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
         String lastmatch = "</table>";

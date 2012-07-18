@@ -14,7 +14,7 @@ public interface FileDownloadService {
     /**
      * @param url
      * @return
-     * @throws IOException
+     * @throws Exception 
      */
     public String downloadFile(String url) throws IOException;
     public String downloadFile(String url, String categorieName) throws IOException;
