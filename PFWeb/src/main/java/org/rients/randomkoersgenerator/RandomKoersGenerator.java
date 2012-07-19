@@ -24,8 +24,6 @@ public class RandomKoersGenerator {
     public RandomKoersGenerator() {
     }
 
-    public static String WRITEDIR = "D:\\PFData\\koersen\\Random\\";
-    public static String READDIR = "D:\\PFData\\koersen\\aaa\\";
     
     public static String oneFundname = "aex-index";
     public static int AANTAL = 20;
@@ -46,7 +44,7 @@ public class RandomKoersGenerator {
         
         HandleFundData fundData = new HandleFundData();
         fundData.setNumberOfDays(600);
-        List<Dagkoers> rates = fundData.getFundRates(fundname, READDIR);
+        List<Dagkoers> rates = fundData.getFundRates(fundname, Constants.READDIR);
 
         String array[] = new String[rates.size() - 1];
         float variance = Variance.variances(rates);
@@ -79,7 +77,7 @@ public class RandomKoersGenerator {
             if(save) {
                 String fundnameNew = fundname+"_"+j;
                 FileIOService service = new FileIOServiceImpl(null, null);
-                service.saveToFile(WRITEDIR, fundnameNew + ".csv", dataout);
+                service.saveToFile(Constants.WRITEDIR, fundnameNew + ".csv", dataout);
                 
                 FundPropertiesService propService = new FundPropertiesServiceImpl();
                 Map<String, String> fundProperties = propService.extractFundProperties(fundnameNew, dataout);
@@ -108,7 +106,7 @@ public class RandomKoersGenerator {
     {
         RandomKoersGenerator a = new RandomKoersGenerator();
         if(!oneStock) {
-            List<String> filenames = FileUtils.getFiles(READDIR, ".csv", true);
+            List<String> filenames = FileUtils.getFiles(Constants.READDIR, ".csv", true);
             for(int fondsTeller = 0; fondsTeller < filenames.size(); fondsTeller++)
             {
                 String fundname = (String) filenames.get(fondsTeller);

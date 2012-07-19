@@ -30,8 +30,6 @@ import rients.trading.utils.PropertiesUtils;
 
 public class IntradayDownloadExecutor {
 
-    String tempfile = "D:\\PFData\\temp\\intraday.xml";
-    String intraDayProperties = "D:\\PFData\\fund_properties\\intraday.properties";
     String fondsNaam = "aex-index";
     FileDownloadService downloader = new FileDownloadServiceImpl();
     
@@ -49,7 +47,7 @@ public class IntradayDownloadExecutor {
     public void process() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         DateTime now = new DateTime();
         int counter = 0;
-        Properties props = PropertiesUtils.getProperties(intraDayProperties);
+        Properties props = PropertiesUtils.getProperties(Constants.INTRADAY_PROPERTIES);
         String lastDownloaded = props.getProperty("lastdownloaded");
         int year = Integer.parseInt("20"+ lastDownloaded.substring(0,2));
         int month = Integer.parseInt(lastDownloaded.substring(3,4));
@@ -87,11 +85,11 @@ public class IntradayDownloadExecutor {
             }
             String table = content.substring(indexFirst, content.indexOf(lastmatch, indexFirst) + lastmatch.length());
             table = table.replaceAll("&nbsp;", "");
-            FileUtils.writeToFile(tempfile, table);
+            FileUtils.writeToFile(Constants.INTRADAY_TEMPFILE, table);
             DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
             domFactory.setNamespaceAware(true);
             DocumentBuilder builder = domFactory.newDocumentBuilder();
-            Document doc = builder.parse(tempfile);
+            Document doc = builder.parse(Constants.INTRADAY_TEMPFILE);
             XPath xpath = XPathFactory.newInstance().newXPath();
             // XPath Query for showing all nodes value
             XPathExpression expr = xpath.compile("//td/text()");
@@ -127,13 +125,13 @@ public class IntradayDownloadExecutor {
                 FileUtils.writeToFile(intradayFile, lines);
                 props.setProperty("lastdownloaded", nowString);
                 props.setProperty("closekoers", closeKoersNew);
-                PropertiesUtils.saveProperties(intraDayProperties, props);
+                PropertiesUtils.saveProperties(Constants.INTRADAY_PROPERTIES, props);
                 closeKoers = closeKoersNew;
             } else {
                 break;
             }
             counter++;
         }
-        FileUtils.removeFile(tempfile);
+        FileUtils.removeFile(Constants.INTRADAY_TEMPFILE);
     }
 }
