@@ -8,4 +8,4 @@
 /.gitignore
 /target
 
-classes
+/target/classes/*
