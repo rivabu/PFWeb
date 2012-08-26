@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.rients.com.constants.Constants;
 import org.rients.randomkoersgenerator.RandomKoersGenerator;
 
+import rients.trading.download.model.Categories;
 import rients.trading.services.BehrDownloadServiceImpl;
 import rients.trading.services.BehrOverzichtSplitterImpl;
 import rients.trading.services.FileDownloadServiceImpl;
@@ -47,7 +48,7 @@ public class BehrDownloadExecutor  {
     public void testDownloadCategory() throws Exception {
         //controller.downloadCategory(Categories.HOOFDFONDEN);
         //controller.downloadCategory(Categories.DIVERSE);
-        //controller.downloadCategory(Categories.VALUTA);
+        controller.downloadCategory(Categories.VALUTA);
         //controller.downloadCategory(Categories.LOKALEFONDSEN);
         //controller.downloadCategory(Categories.INDEXEN);
         //controller.downloadCategory(Categories.GRONDSTOFFEN);

@@ -113,6 +113,7 @@ public class BehrDownloadServiceImpl implements BehrDownloadService {
 
             String dir = theRootDir + sep + categorie.getNaam();
             fileIOService.saveToFile(dir, filename, slotKoersenNew);
+            System.out.println(dir + filename);
             fileIOService.removeFileFromTempDirectory(fondsURL.getURL());
             String fundName = filename.substring(0, filename.lastIndexOf('.'));
             if (theRootDir.equals(getFavouritesDir())) {
@@ -157,7 +158,27 @@ public class BehrDownloadServiceImpl implements BehrDownloadService {
                 returnData.add(countOld, slotkoers);
             }
         }
+        return returnData;
+    }
 
+    public List<Dagkoers> mergeOldWithNewTijdelijk(final List<Dagkoers> oldData, final List<Dagkoers> newData) {
+        List<Dagkoers> returnData = null;
+        if (oldData.isEmpty()) {
+            returnData = newData;
+        } else {
+            returnData = oldData;
+            //Dagkoers lastOldDagKoers = oldData.get(countOld - 1);
+            Dagkoers firstNewDagKoers = newData.get(0);
+            int firstNewDate = Integer.parseInt(firstNewDagKoers.getDatum());
+            Iterator<Dagkoers> iterator = oldData.iterator();
+            while (iterator.hasNext()) {
+                Dagkoers oldKoers = iterator.next();
+                if (Integer.parseInt(oldKoers.getDatum()) >= firstNewDate) {
+                    iterator.remove();
+                }
+            }
+            returnData.addAll(newData);
+        }
         return returnData;
     }
 

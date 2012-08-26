@@ -74,8 +74,13 @@ public class MathFunctions {
     }
     
     public static String round(String koers) {
+        int dot = koers.indexOf(".") + 1;
         double koersD = Double.parseDouble(koers);
-        String rounded = round(koersD, 2) + "";
+        int numberOfDecimals = 2;
+        if (dot > -1) {
+            numberOfDecimals = koers.length() - dot;
+        } 
+        String rounded = round(koersD, numberOfDecimals) + "";
 
         return rounded;
     }
