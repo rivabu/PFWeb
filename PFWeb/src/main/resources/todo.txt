@@ -1,3 +1,30 @@
+26-8-2012
+
+in portefeuille: 
+1.	short facebook
+2.	long platina
+
+- technisch gezien is de kans groot dat fb gaat stijgen, er is immers een dubbele bodem;
+- de trend is echter dalend
+- onder de 19 is de kans op een verdere daling het grootst
+
+- platina
+
+
+
+bugfixing
+
+1.	rsi doet het niet goed, als er niet genoeg records zijn, de lijn moet dan op 0 beginnen
+
+nieuwe functionaliteit
+
+1.	overzicht stijgers/dalers in een op te geven periode
+2.	overzicht dubbele bodems en toppen in de afgelopen x dagen aflopend gesorteerd op datum
+3.	overzicht laagste / hoogste rsi
+4.	overzicht grootste stijgers in rsi
+
+
+
 
 test
 

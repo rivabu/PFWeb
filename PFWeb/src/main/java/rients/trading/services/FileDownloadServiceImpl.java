@@ -57,7 +57,7 @@ public class FileDownloadServiceImpl implements FileDownloadService {
             boolean doorgaan = true;
             while (doorgaan) {
                 String regel = bufferedreader.readLine();
-                output.append(regel+" ");
+                output.append(regel+"\n");
                 if (regel == null){
                     break;
                 }

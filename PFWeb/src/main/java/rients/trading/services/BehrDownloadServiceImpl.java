@@ -86,7 +86,7 @@ public class BehrDownloadServiceImpl implements BehrDownloadService {
     			FondsURL fondsURL = new FondsURL();
     			fondsURL.setNaam(file);
     			fondsURL.setURL(file);
-    			LOGGER.debug(categorie.getNaam() + sep + fondsURL.getURL());
+    			System.out.println(categorie.getNaam() + sep + fondsURL.getURL());
     			handleOneFile(getFavouritesDir(), categorie, fondsURL);
     		}
     	}
