@@ -1,3 +1,14 @@
+
+27-8-2012
+1.	soybeans long gekocht, op hoogste punt. Sta nu op verlies. Denk dat koers verder oploopt.
+	Heb verzuimt de intraday koersen te bekijken. Wellicht handig deze te integreren in pfweb.
+	URL voor soybeans is: http://data.tradingcharts.com/intraday_charts/charts_fe/5e247b0e22562b46ca4afec629ea9132.png
+	check of deze het morgen ook nog doet.
+	Er is nu een dubbele top onstaan. Oppassen.
+2.	facebook gaat goed, maar nog wel boven 19.
+3.	platina is gedaald. URL = http://data.tradingcharts.com/intraday_charts/charts_fe/598b071fe98efdd3c04c15af079cd346.png
+
+
 26-8-2012
 
 in portefeuille: 
@@ -11,14 +22,15 @@ in portefeuille:
 - staking in platina mijnen lijken op einde te lopen
 - goud kan echter verder stijgen volgens bloomberg
 
-bugfixing
+BUGFIXING
 
 -	rsi doet het niet goed, als er niet genoeg records zijn, de lijn moet dan op 0 beginnen
 		-	zie facebook
 
 
-nieuwe functionaliteit (bovenste eerst)
+NIEUWE FUNCTIONALITEIT (bovenste eerst)
 
+-	opnemen intraday grafieken
 -	overzicht dubbele bodems en toppen in de afgelopen x dagen aflopend gesorteerd op datum
 
 -	toevoegen alle turbo fondsen, gaat niet door, het zijn er te veel

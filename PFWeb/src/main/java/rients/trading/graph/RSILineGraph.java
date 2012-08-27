@@ -18,27 +18,34 @@ import org.rients.com.model.ImageResponse;
 
 public class RSILineGraph {
 
-    public ImageResponse generateRSIGraph(Matrix matrix, String type) {
+    public ImageResponse generateRSIGraph(Matrix matrix, String type, int DAYS) {
         ImageResponse imageResponse = new ImageResponse();
         XYSeriesCollection dataset = new XYSeriesCollection();
         int aantalFunds = matrix.getAantalFunds();
         XYSeries middleLine = new XYSeries("");
         Integer fifty = new Integer(50);
+        for (int i = 0; i < DAYS; i++) {
+            middleLine.add(i, fifty );
+        }
+        dataset.addSeries(middleLine);
         for (int counter = 0; counter < aantalFunds; counter++) {
             String fundName = matrix.getFundData(counter).getFundName();
             XYSeries points = new XYSeries(fundName);
             Iterator<Integer> iter = matrix.getFundData(counter).getValues().iterator();
+            int size = matrix.getFundData(counter).getValues().size();
             int xas = 0;
+            if (size < DAYS) {
+                for (int teller = size; teller < DAYS; teller++) {
+                    points.add(xas, fifty);
+                    xas ++;
+                }
+            }
             while (iter.hasNext()) {
                 points.add(xas, iter.next());
                 xas ++;
-                if (counter == 0) {
-                    middleLine.add(xas, fifty );
-                }
             }
             dataset.addSeries(points);
         }
-        dataset.addSeries(middleLine);
         // Generate the graph
         JFreeChart chart = ChartFactory.createXYLineChart("", // Title
                 "", // x-axis Label

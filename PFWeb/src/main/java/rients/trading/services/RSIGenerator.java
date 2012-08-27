@@ -46,10 +46,14 @@ public class RSIGenerator {
             }
         }
 
-        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "large");
+        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "large",  DAYS - DAGENTERUG);
         return imageResponse;
     }
 
+    /*
+     * DAYS is 225
+     * DAGENTERUG = 25
+     */
     public ImageResponse getImage(String dir, String fundName) {
         RSILineGraph rsiImage = new RSILineGraph();
 
@@ -60,6 +64,7 @@ public class RSIGenerator {
         FundDataHolder dataHolder = new FundDataHolder("RSI", DAYS);
         fundData.setNumberOfDays(DAYS);
         List<Dagkoers> rates = fundData.getFundRates(fundName, pathFull);
+        int aantalRecords = rates.size();
         matrix.fillDates(rates);
         matrix.setFundData(dataHolder, 0);
         int days = rates.size();
@@ -72,10 +77,15 @@ public class RSIGenerator {
         calucateRelativeKoersen(rates);
         FundDataHolder dataHolderKoers = new FundDataHolder("Koers", DAYS);
         matrix.setFundData(dataHolderKoers, 1);
-        for (int j = DAGENTERUG; j < DAYS; j++) {
+        int records = DAYS;
+        if (DAYS > rates.size()) {
+            records = rates.size();
+        }
+
+        for (int j = DAGENTERUG; j < records; j++) {
                 matrix.getFundData(1).addValue(rates.get(j).datum, MathFunctions.roundToInt(rates.get(j).relativeKoers));
         }
-        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "small");
+        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "small", DAYS - DAGENTERUG);
         return imageResponse;
     }
     
@@ -92,8 +102,12 @@ public class RSIGenerator {
     private void calucateRelativeKoersen(List<Dagkoers> rates) {
         float minValue = 100000000f;
         float maxValue = 0f;
+        int records = DAYS;
+        if (DAYS > rates.size()) {
+            records = rates.size();
+        }
         
-        for (int j = DAGENTERUG; j < DAYS; j++) {
+        for (int j = DAGENTERUG; j < records; j++) {
             float koers = rates.get(j).closekoers;
             if (koers < minValue) {
                 minValue = koers;
@@ -103,7 +117,7 @@ public class RSIGenerator {
             }
         }
         float factor = (maxValue - minValue) / 100;
-        for (int j = DAGENTERUG; j < DAYS; j++) {
+        for (int j = DAGENTERUG; j < records; j++) {
             Dagkoers dagkoers = rates.get(j);
             dagkoers.relativeKoers = (dagkoers.closekoers - minValue) / factor;
         }
