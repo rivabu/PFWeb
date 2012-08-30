@@ -63,7 +63,6 @@ public class HandleFundData {
         Properties prop = null;
         if (!directory.contains("intraday")) {
             String fileName = Constants.FUND_PROPERTIESDIR + fundName + Constants.PROPERTIES;
-            FileIOServiceImpl fileIOServiceImpl = new FileIOServiceImpl(null, null);
             prop = PropertiesUtils.getProperties(fileName);
         }
 		// boolean old = false;

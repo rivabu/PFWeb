@@ -24,9 +24,7 @@ public class ModelFunctions {
     }
     
     public void handlePFRules(int turningPoint, float stepSize) {
-        String fileName = Constants.TRANSACTIONDIR + fundName + "_" + turningPoint + "_" + stepSize + Constants.CSV;
-     //   pfRules.getOptimalDecisions(PFData, fileName, true);
-        pfRules.setDoubleTop(PFData);
+        pfRules.setDoubleTopAndBottom(PFData);
     }
     
     public void setBestOrWorstDates(List<Dagkoers> rates, int number, boolean worst) {

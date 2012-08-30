@@ -12,7 +12,7 @@ import rients.trading.utils.FileUtils;
 public class PFRules {
 
     
-    public void setDoubleTop(ArrayList<Modelregel> pfData) {
+    public void setDoubleTopAndBottom(ArrayList<Modelregel> pfData) {
         ArrayList<Modelregel> tops = new ArrayList<Modelregel>();
         ArrayList<Modelregel> bottoms = new ArrayList<Modelregel>();
         int i = 1;
@@ -20,7 +20,6 @@ public class PFRules {
         for (int j = 0; j < pfData.size(); j++) {
             Modelregel modelregel1 = (Modelregel) pfData.get(j);
             int k = modelregel1.getKolomnr();
-            int _tmp = modelregel1.getRijnr();
             String s = modelregel1.getSign();
             if (s.equals("o") && k > i)
                 tops.add(modelregel);
@@ -31,11 +30,6 @@ public class PFRules {
                 modelregel = modelregel1;
             }
         }
-        
-        
-        
-        int currentKolom = 1;
-
         Modelregel previousTop = null;
         for (Modelregel mr : tops) {
             if (previousTop != null) {

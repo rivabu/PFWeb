@@ -1,10 +1,17 @@
+30-8
+
+1.	soybeans gaat goed. wellicht commodities bijkopen. 
+2.	fb gaat ook goed, maar is stilgevallen iets boven de 19. we wachten af.
+3.  platinum valt tegen. zit nu op 1520. onder de 15 gaat ie weg.
+
+
 
 27-8-2012
 1.	soybeans long gekocht, op hoogste punt. Sta nu op verlies. Denk dat koers verder oploopt.
 	Heb verzuimt de intraday koersen te bekijken. Wellicht handig deze te integreren in pfweb.
 	URL voor soybeans is: http://data.tradingcharts.com/intraday_charts/charts_fe/5e247b0e22562b46ca4afec629ea9132.png
 	check of deze het morgen ook nog doet.
-	Er is nu een dubbele top onstaan. Oppassen.
+	Er is nu een dubbele top ontstaan. Oppassen. Als soybeans onder 1700 komt verkopen.
 2.	facebook gaat goed, maar nog wel boven 19.
 3.	platina is gedaald. URL = http://data.tradingcharts.com/intraday_charts/charts_fe/598b071fe98efdd3c04c15af079cd346.png
 
