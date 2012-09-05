@@ -75,8 +75,6 @@ public class TopBottomsServlet extends HttpServlet {
                             for (FondsURL fondsURL : cat.getItems()) {
                                 files.add(fondsURL.getNaam());
                             }
-                            //FileUtils.getFiles(Constants.KOERSENDIR + topbottomscategorie, "csv", false);
-                            
                             List<Properties> fileProperties = fundPropertiesService.getFileProperties(files);
                             request.setAttribute("files", fileProperties);
                             request.setAttribute("dir", topbottomscategorie);
