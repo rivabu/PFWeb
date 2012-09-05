@@ -3,8 +3,12 @@
  */
 package rients.trading.services.executables;
 
+import java.util.ArrayList;
+
 import org.rients.com.constants.Constants;
 
+import rients.trading.download.model.Categorie;
+import rients.trading.download.model.FondsURL;
 import rients.trading.services.DoubleTopAndBottomsLocator;
 
 
@@ -23,7 +27,16 @@ public class TopBottomLocatorExecutor  {
     
     public void testDownloadFavourites() throws Exception {
     	
-    	controller.locate();
+        ArrayList<Categorie> matchedCategoriesList = controller.locate();
+    	
+        for (Categorie cat : matchedCategoriesList) {
+            System.out.println(cat.getNaam() + ": ");
+            for (FondsURL fund : cat.getItems()) {
+                System.out.println(" " + fund.getNaam());
+            }
+        }
+
+        
     }
     
 

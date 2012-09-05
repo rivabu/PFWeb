@@ -46,21 +46,27 @@
 	</servlet>
 	
 	<servlet>
-		<description>
-    	</description>
 		<display-name>IntradayOverviewServlet</display-name>
 		<servlet-name>IntradayOverviewServlet</servlet-name>
 		<servlet-class>org.rients.com.servlet.IntradayOverviewServlet</servlet-class>
 	</servlet>
 
 	<servlet>
-		<description>
-    	</description>
 		<display-name>Overview</display-name>
 		<servlet-name>Overview</servlet-name>
 		<servlet-class>org.rients.com.servlet.OverviewServlet</servlet-class>
 	</servlet>
 
+	<servlet>
+		<display-name>TopBottoms</display-name>
+		<servlet-name>TopBottoms</servlet-name>
+		<servlet-class>org.rients.com.servlet.TopBottomsServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>TopBottoms</servlet-name>
+		<url-pattern>/TopBottoms</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PFImage</servlet-name>
 		<url-pattern>/PFImage</url-pattern>

@@ -109,7 +109,7 @@ public class BehrDownloadServiceImpl implements BehrDownloadService {
                     fondsURL.getURL(), lines);
             String filename = changeExtension(fondsURL.getURL(), Constants.CSV);
             List<Dagkoers> slotKoersenOld = fileIOService.readFromSlotKoersenFile(theRootDir, categorie.getNaam(), filename);
-            slotKoersenNew = mergeOldWithNew(slotKoersenOld, slotKoersenNew);
+            slotKoersenNew = mergeOldWithNewTijdelijk(slotKoersenOld, slotKoersenNew);
 
             String dir = theRootDir + sep + categorie.getNaam();
             fileIOService.saveToFile(dir, filename, slotKoersenNew);

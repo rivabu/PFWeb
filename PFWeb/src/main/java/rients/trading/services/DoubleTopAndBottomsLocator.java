@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.joda.time.DateTime;
 import org.rients.com.constants.Constants;
 
 import rients.trading.download.model.Categorie;
 import rients.trading.download.model.Dagkoers;
 import rients.trading.download.model.DagkoersStatus;
-import rients.trading.download.model.DoubleTopBottom;
 import rients.trading.download.model.FondsURL;
 import rients.trading.download.model.Modelregel;
 import rients.trading.services.modelfunctions.ModelFunctions;
@@ -30,12 +30,14 @@ public class DoubleTopAndBottomsLocator {
         this.favouritesDir = favouritesDir;
     }
     
-    public void locate() {
+    public ArrayList<Categorie> locate() {
         String dir = getFavouritesDir();
         @SuppressWarnings("unchecked")
         List<String> subdirs = FileUtils.getSubdirs(dir);
+        ArrayList<Categorie> matchedCategoriesList = new ArrayList<Categorie>();
+
         for (String subdir : subdirs) {
-            if (subdir.equals("Random")) {
+            if (subdir.equals("Random") || subdir.equals("Beleggingsfunds")) {
                 continue;
             }
             String fullSubDir = getFavouritesDir() + subdir + sep;
@@ -58,16 +60,21 @@ public class DoubleTopAndBottomsLocator {
                 String[][] graphParameters = convertGraphParameters(graphParametersString);
                 
                 for (int i=0; i< 5; i++) {
-                  handleOne(fullSubDir, categorie, file, Integer.parseInt(graphParameters[i][0]), Float.parseFloat(graphParameters[i][1]));
+                    boolean topBottomFound = handleOne(fullSubDir, file, Integer.parseInt(graphParameters[i][0]), Float.parseFloat(graphParameters[i][1]));
+                    if (topBottomFound) {
+                        categorie.getItems().add(fondsURL);
+                        break;
+                    }
                 }
             }
+            matchedCategoriesList.add(categorie);
         }
-
-
+        return matchedCategoriesList;
     }
 
-    private void handleOne(String dir, Categorie categorie, String fundName, int turningPoint, float stepSize) {
+    private boolean handleOne(String dir, String fundName, int turningPoint, float stepSize) {
         
+        boolean topBottomFound = false;
         HandleFundData fundData = new HandleFundData();
         HandlePF handlePF = new HandlePF();
 
@@ -75,6 +82,7 @@ public class DoubleTopAndBottomsLocator {
         List<Dagkoers> rates = fundData.getFundRates(fundName, dir);
 
         ArrayList<Modelregel> PFData = handlePF.createPFData(rates, fundName, dir, turningPoint, stepSize);
+        
         ModelFunctions mf = new ModelFunctions(fundName);
         mf.setPFData(PFData);
         mf.handlePFRules(turningPoint, stepSize);
@@ -82,13 +90,13 @@ public class DoubleTopAndBottomsLocator {
         int lastColumnBottomMatch = -10;
         int lastRowTopMatch = -10;
         int lastRowBottomMatch = -10;
-        for (int j = 0; j < PFData.size(); j++) {
-            Modelregel modelRegel = (Modelregel) PFData.get(j);
+        int oneWeekAgo = getOneWeekAgo();
+        for (Modelregel modelRegel : PFData) {
             if (modelRegel.getStatus() == DagkoersStatus.DOUBLE_TOP) {
                 if (lastColumnTopMatch + 2 == modelRegel.getKolomnr() && lastRowTopMatch == modelRegel.getRijnr()) {
-                    DoubleTopBottom dtp = new DoubleTopBottom(fundName, turningPoint, stepSize, modelRegel);
-                    if (Integer.parseInt(modelRegel.getDatum()) > 20120825) {
-                        System.out.println(dtp);
+                    if (Integer.parseInt(modelRegel.getDatum()) > oneWeekAgo) {
+                        topBottomFound = true;
+                        break;
                     }
                 }
                 lastColumnTopMatch = modelRegel.getKolomnr();
@@ -96,15 +104,24 @@ public class DoubleTopAndBottomsLocator {
             }
             if (modelRegel.getStatus() == DagkoersStatus.DOUBLE_BOTTOM) {
                 if (lastColumnBottomMatch + 2 == modelRegel.getKolomnr() && lastRowBottomMatch == modelRegel.getRijnr()) {
-                    DoubleTopBottom dtp = new DoubleTopBottom(fundName, turningPoint, stepSize, modelRegel);
-                    if (Integer.parseInt(modelRegel.getDatum()) > 20120825) {
-                        System.out.println(dtp);
+                    
+                    if (Integer.parseInt(modelRegel.getDatum()) > oneWeekAgo) {
+                        topBottomFound = true;
+                        break;
                     }
                 }
                 lastColumnBottomMatch = modelRegel.getKolomnr();
                 lastRowBottomMatch = modelRegel.getRijnr();
             }
         }
+        return topBottomFound;
+    }
+
+    private int getOneWeekAgo() {
+        DateTime now = new DateTime();
+        now = now.minusWeeks(1); // 1 week terug
+        String nowString = now.toString("yyyyMMdd");
+        return Integer.parseInt(nowString);
     }
 
     private String[][] convertGraphParameters(String line) {
