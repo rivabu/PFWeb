@@ -29,6 +29,7 @@ in portefeuille:
 - staking in platina mijnen lijken op einde te lopen
 - goud kan echter verder stijgen volgens bloomberg
 
+dit is een test om een confict te krijgen.
 BUGFIXING
 
 -	rsi doet het niet goed, als er niet genoeg records zijn, de lijn moet dan op 0 beginnen
