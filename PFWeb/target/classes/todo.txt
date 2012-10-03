@@ -1,6 +1,11 @@
-test
+1 test
 
-rientstest
+2 rientstest
+
+3 rientstest2
+
+4 commited on master
+
 30-8
 
 1.	soybeans gaat goed. wellicht commodities bijkopen. 
