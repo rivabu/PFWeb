@@ -15,7 +15,7 @@ public class Constants {
         return props;
     }
 
-    public static int NUMBEROFDAYSTOPRINT = 200; // -1 = all
+    public static int NUMBEROFDAYSTOPRINT = 400; // -1 = all
 
     public static String CSV = ".csv";
 	public static String PNG = ".png";
