@@ -10,7 +10,9 @@
 		<wtp.default.server>Apache Tomcat v5.5</wtp.default.server>
 		<spring.version>3.0.5.RELEASE</spring.version>
 	</properties>
-
+ <scm>
+    <connection>scm:https://github.com/rivabu/PFWeb.git</connection>
+  </scm>
 	<dependencies>
 		<dependency>
 			<groupId>jfree</groupId>
