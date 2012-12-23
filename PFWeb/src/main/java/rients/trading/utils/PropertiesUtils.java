@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class PropertiesUtils {
     
     public static void saveProperties(String file, Map<String, String> fundProperties) {
         // load first the existing, then add the new values
-        Properties properties = getProperties(file);
+        Properties properties = getPropertiesFromClasspath(file);
         Set<String> set = fundProperties.keySet();
         Iterator<String> itr = set.iterator();
         while (itr.hasNext()) {
@@ -38,7 +39,9 @@ public class PropertiesUtils {
             properties.setProperty(key, value);
         }
         try {
-            properties.store(new FileOutputStream(file), "Java properties test");
+            String path = properties.get("path").toString();
+            properties.remove("path");
+            properties.store(new FileOutputStream(path), "Java properties test");
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -51,7 +54,9 @@ public class PropertiesUtils {
     
     public static void saveProperties(String file, Properties properties) {
         try {
-            properties.store(new FileOutputStream(file), "Java properties test");
+            String path = properties.get("path").toString();
+            properties.remove("path");
+            properties.store(new FileOutputStream(path), "Java properties test");
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -63,9 +68,20 @@ public class PropertiesUtils {
     
     /** Constructor. */
     public static Properties getPropertiesFromClasspath(String filename) {
+        String classPath = System.getProperty("java.class.path");
         Properties properties = new Properties();
         try {
-            properties.load(PropertiesUtils.class.getResourceAsStream("/" + filename));
+            URL url = PropertiesUtils.class.getResource("/" + filename);
+            String path = "";
+            if (url == null) {
+                String aex = "/aex-index.properties";
+                String temp  = PropertiesUtils.class.getResource(aex).getPath();
+                path = temp.substring(0, temp.indexOf(aex) + 1) + filename;
+            } else {
+                path = url.getPath();
+                properties.load(PropertiesUtils.class.getResourceAsStream("/" + filename));
+            }
+            properties.setProperty("path", path);
         } catch (IOException e) {
             System.err.println("Unable to load " + filename + ".");
         }

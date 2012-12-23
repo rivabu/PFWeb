@@ -15,7 +15,7 @@ public class Constants {
         return props;
     }
 
-    public static int NUMBEROFDAYSTOPRINT = 400; // -1 = all
+    public static int NUMBEROFDAYSTOPRINT = Integer.parseInt(props().getProperty("lookbackperiod")); // -1 = all
 
     public static String CSV = ".csv";
 	public static String PNG = ".png";
@@ -30,7 +30,7 @@ public class Constants {
 	public static String IMAGESDIR = props().getProperty("IMAGESDIR");
 	public static String TRANSACTIONDIR = props().getProperty("TRANSACTIONDIR");
     public static String REAL_TRANSACTIONDIR = props().getProperty("REAL_TRANSACTIONDIR");;
-	public static String FUND_PROPERTIESDIR = props().getProperty("FUND_PROPERTIESDIR");
+	//public static String FUND_PROPERTIESDIR = props().getProperty("FUND_PROPERTIESDIR");
     public static String INTRADAY_KOERSENDIR = props().getProperty("INTRADAY_KOERSENDIR");
     public static String TEMPDIR = props().getProperty("TEMPDIR");;
 

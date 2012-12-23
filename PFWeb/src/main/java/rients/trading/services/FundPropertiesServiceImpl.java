@@ -65,8 +65,8 @@ public class FundPropertiesServiceImpl implements FundPropertiesService {
     public List<Properties> getFileProperties(List<String> files) {
         List<Properties> props = new ArrayList<Properties>();
         for (String file : files) {
-            String fileName = Constants.FUND_PROPERTIESDIR + file + Constants.PROPERTIES;
-            Properties prop = PropertiesUtils.getProperties(fileName);
+            //String fileName = Constants.FUND_PROPERTIESDIR + file + Constants.PROPERTIES;
+            Properties prop = PropertiesUtils.getPropertiesFromClasspath(file + Constants.PROPERTIES);
             if (!prop.containsKey("graphParameters")) {
                 String[][] turningPoints = { { "1", "0.75" }, { "2", "1" }, { "1", "1" }, { "1", "1.5" }, { "1", "2" } };
                 prop.put("graphParameters", turningPoints);

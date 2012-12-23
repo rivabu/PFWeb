@@ -119,7 +119,7 @@ public class BehrDownloadServiceImpl implements BehrDownloadService {
             if (theRootDir.equals(getFavouritesDir())) {
                 Map<String, String> fundProperties = fundPropertiesService.extractFundProperties(fundName, slotKoersenNew);
                 filename = changeExtension(filename, Constants.PROPERTIES);
-                PropertiesUtils.saveProperties(Constants.FUND_PROPERTIESDIR + filename, fundProperties);
+                PropertiesUtils.saveProperties(filename, fundProperties);
                 
             }
         } catch (IOException ioe) {

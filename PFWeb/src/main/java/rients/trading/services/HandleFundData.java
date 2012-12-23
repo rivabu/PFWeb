@@ -62,8 +62,8 @@ public class HandleFundData {
     public List<Dagkoers> getAllFundRates(String fundName, String directory) {
         Properties prop = null;
         if (!directory.contains("intraday")) {
-            String fileName = Constants.FUND_PROPERTIESDIR + fundName + Constants.PROPERTIES;
-            prop = PropertiesUtils.getProperties(fileName);
+            //String fileName = Constants.FUND_PROPERTIESDIR + fundName + Constants.PROPERTIES;
+            prop = PropertiesUtils.getPropertiesFromClasspath(fundName + Constants.PROPERTIES);
         }
 		// boolean old = false;
 		List<Dagkoers> records = new ArrayList<Dagkoers>();

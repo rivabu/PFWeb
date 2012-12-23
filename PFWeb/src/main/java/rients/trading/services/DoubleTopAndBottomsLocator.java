@@ -52,8 +52,8 @@ public class DoubleTopAndBottomsLocator {
                 System.out.println(categorie.getNaam() + sep + fondsURL.getURL());
                 
                 Properties prop = null;
-                String fileName = Constants.FUND_PROPERTIESDIR + file + Constants.PROPERTIES;
-                prop = PropertiesUtils.getProperties(fileName);
+                //String fileName = Constants.FUND_PROPERTIESDIR + file + Constants.PROPERTIES;
+                prop = PropertiesUtils.getPropertiesFromClasspath(file + Constants.PROPERTIES);
 
                 String graphParametersString = prop.getProperty("graphParameters");
                 
