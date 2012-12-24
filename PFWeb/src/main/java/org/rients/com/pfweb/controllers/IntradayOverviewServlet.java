@@ -1,7 +1,7 @@
 /*
  * 
  */
-package org.rients.com.servlet;
+package org.rients.com.pfweb.controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,27 +20,25 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.rients.com.constants.Constants;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import rients.trading.utils.FileUtils;
 import rients.trading.utils.PropertiesUtils;
 
+@Controller
+@RequestMapping()
 /**
  * Servlet implementation class Overview.
  */
-public class IntradayOverviewServlet extends HttpServlet {
+public class IntradayOverviewServlet  {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     private static int numberOfDays = 100;
 
-    /**
-     * Instantiates a new overview servlet.
-     * 
-     * @see HttpServlet#HttpServlet()
-     */
-    public IntradayOverviewServlet() {
-        super();
-    }
+
 
     /**
      * Do get.
@@ -56,7 +54,8 @@ public class IntradayOverviewServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
      *      response)
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @RequestMapping(value = "/Intraday", method = RequestMethod.GET)
+    protected String doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             
             // maak een lijst van dagen: dayofweek, date, hoogste laagste, open, slot, vorige slot
@@ -104,10 +103,10 @@ public class IntradayOverviewServlet extends HttpServlet {
             }
             request.setAttribute("matrix", matrix);
             request.setAttribute("dir", "intraday");
-            getServletConfig().getServletContext().getRequestDispatcher("/intradayoverview.jsp").forward(request, response);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        return "intradayoverview";
     }
 
     /**

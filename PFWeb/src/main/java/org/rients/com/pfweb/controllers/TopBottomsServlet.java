@@ -1,7 +1,7 @@
 /*
  * 
  */
-package org.rients.com.servlet;
+package org.rients.com.pfweb.controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.rients.com.constants.Constants;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import rients.trading.download.model.Categorie;
 import rients.trading.download.model.FondsURL;
@@ -22,25 +25,17 @@ import rients.trading.services.DoubleTopAndBottomsLocator;
 import rients.trading.services.FundPropertiesService;
 import rients.trading.services.FundPropertiesServiceImpl;
 
+@Controller
+@RequestMapping()
 /**
  * Servlet implementation class Overview.
  */
-
-public class TopBottomsServlet extends HttpServlet {
+public class TopBottomsServlet {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
     FundPropertiesService fundPropertiesService = new FundPropertiesServiceImpl();
-
-    /**
-     * Instantiates a new overview servlet.
-     * 
-     * @see HttpServlet#HttpServlet()
-     */
-    public TopBottomsServlet() {
-        super();
-    }
 
     /**
      * Do get.
@@ -56,7 +51,8 @@ public class TopBottomsServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
      *      response)
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @RequestMapping(value = "/TopBottoms", method = RequestMethod.GET)
+    protected String doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
             if (session.getAttribute("categories") == null) {
@@ -85,9 +81,9 @@ public class TopBottomsServlet extends HttpServlet {
                 }
             }
             
-            getServletConfig().getServletContext().getRequestDispatcher("/topbottoms.jsp").forward(request, response);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        return "topbottoms";
     }
 }

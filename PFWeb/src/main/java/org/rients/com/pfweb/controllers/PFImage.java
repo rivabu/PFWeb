@@ -1,68 +1,28 @@
-package org.rients.com.servlet;
+package org.rients.com.pfweb.controllers;
 
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.rients.com.model.ImageResponse;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import rients.trading.download.model.FundInfo;
 import rients.trading.services.PFGenerator;
 
-
-// TODO: Auto-generated Javadoc
-/**
- * Servlet implementation class HitCount.
- */
-public class PFImage extends HttpServlet {
+@Controller
+@RequestMapping()
+public class PFImage {
 	
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
-
-    /**
-     * Default constructor. 
-     */
-    public PFImage() {
-        
-    }
-
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
-	protected void doGet(HttpServletRequest request, 
-            HttpServletResponse response) 
-            throws ServletException, IOException {
-
-		getPFImage(request, response);
-    }  	
-	
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    protected void doPost(HttpServletRequest request, 
-            HttpServletResponse response) 
-            throws ServletException, IOException {
-    	getPFImage(request, response);
-    }
-    
-    /**
-     * Gets the pF image.
-     *
-     * @param request the request
-     * @param response the response
-     * @return the pF image
-     * @throws IOException Signals that an I/O exception has occurred.
-     */
-    private void getPFImage(HttpServletRequest request, 
+    @RequestMapping("/PFImage")
+    public @ResponseBody byte[] getPFImage(HttpServletRequest request, 
             HttpServletResponse response) throws IOException {
     	
     	
@@ -80,15 +40,9 @@ public class PFImage extends HttpServlet {
         fundInfo.setDivName(fundName + "_" + row);
         
         putFundInfoInSession(session, fundInfo);
-        
         response.setContentType("image/png");
-        OutputStream os = response.getOutputStream();
-        try {
-        ImageIO.write(imageResponse.getBuffer(), "png", os);
-        } catch (IndexOutOfBoundsException iob) {
-        	System.out.println("error (IndexOutOfBoundsException) met " + fundName + " in dir " + dir);
-        }
-        os.close();
+
+        return imageResponse.getContent();
     }
 
     /**
@@ -105,8 +59,4 @@ public class PFImage extends HttpServlet {
         firstDates.add(fundInfo);
         session.setAttribute("firstDates", firstDates);
     }
-
-
-
-
 }
