@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"  
+  version="2.0">  
+
+	<tlib-version>2.0</tlib-version>
+	<short-name>pfweb</short-name>
+	<uri>http://www.vbic.com/tags/pfweb</uri>
+	<description>PFWeb JSP Tag Library</description>
+    <tag-file>
+       <name>PFChartTableRow</name>
+       <path>/WEB-INF/tags/PFChartTableRow.tag</path>
+    </tag-file>
+</taglib>
+    
+	
+	
