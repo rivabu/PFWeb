@@ -6,3 +6,13 @@ target
 /PFWeb/.settings/org.eclipse.wst.common.project.facet.core.xml
 /PFWeb/.settings/org.eclipse.jdt.core.prefs
 /PFWeb/.settings/org.eclipse.wst.common.component
+.project
+.settings
+bin
+target
+.classpath
+.classpath
+.project
+bin
+target
+/PFWebFitnesse/.settings/org.eclipse.jdt.core.prefs
