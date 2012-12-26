@@ -1,4 +1,4 @@
-package org.rients.com.indexpredictor;
+package org.rients.com.pfweb.services;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
@@ -11,18 +11,18 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.indexpredictor.FundDataHolder;
+import org.rients.com.indexpredictor.Matrix;
 import org.rients.com.model.ImageResponse;
+import org.rients.com.pfweb.services.modelfunctions.PFRules;
+import org.rients.com.pfweb.utils.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import rients.trading.download.model.Categories;
 import rients.trading.download.model.Dagkoers;
 import rients.trading.download.model.DagkoersStatus;
 import rients.trading.download.model.Modelregel;
 import rients.trading.download.model.Transaction;
-import rients.trading.services.HandleFundData;
-import rients.trading.services.HandlePF;
-import rients.trading.services.modelfunctions.PFRules;
-import rients.trading.utils.FileUtils;
 
 @Service
 public class HighLowImageGenerator {
@@ -30,8 +30,12 @@ public class HighLowImageGenerator {
     private boolean saveImage = true;
     private int DAYS = 200;
     private int lookbackPeriod = 5;
-    HandleFundData fundData = new HandleFundData();
-    HandlePF handlePF = new HandlePF();
+    
+    @Autowired
+    HandleFundData fundData;
+    
+    @Autowired
+    HandlePF handlePF;
 
     public ImageResponse getHighLowImage(String type, String dir) {
 
@@ -91,7 +95,7 @@ public class HighLowImageGenerator {
                 pfData = handlePF.createPFData(rates, files.get(i - 1), directory, 2, 1);
             }
             PFRules optimum = new PFRules();
-            ArrayList<Transaction> transactions = optimum.getOptimalDecisions(pfData, null, false);
+            List<Transaction> transactions = optimum.getOptimalDecisions(pfData, null, false);
 
             int fillFactor = DAYS - rates.size(); // 400 - 360
             int days = Math.min(DAYS, rates.size());
@@ -202,7 +206,7 @@ public class HighLowImageGenerator {
         }
     }
 
-    private int transactionIsPlus(ArrayList<Transaction> transactions, String date) {
+    private int transactionIsPlus(List<Transaction> transactions, String date) {
         for (Transaction trans : transactions) {
             if ((Integer.valueOf(trans.getStartDate()) <= Integer.valueOf(date))
                     && (Integer.valueOf(trans.getEndDate()) >= Integer.valueOf(date)) && trans.getType() == Constants.SHORT) {
@@ -242,17 +246,6 @@ public class HighLowImageGenerator {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String args[]) {
-        HighLowImageGenerator highLowImageGenerator = new HighLowImageGenerator();
-        // highLowImageGenerator.getHighLowImage("higherlower",
-        // Categories.HOOFDFONDEN);
-        highLowImageGenerator.getHighLowImage("updown", Categories.HOOFDFONDEN);
-        // highLowImageGenerator.getHighLowImage(Categories.INDEXEN);
-        // highLowImageGenerator.getHighLowImage(Categories.GRONDSTOFFEN);
-        // highLowImageGenerator.getHighLowImage(Categories.VALUTA);
-        // highLowImageGenerator.getHighLowImage(Categories.BELEGGINGSFUNDS);
     }
 
     /**
@@ -298,5 +291,19 @@ public class HighLowImageGenerator {
      */
     public void setLookbackPeriod(int lookbackPeriod) {
         this.lookbackPeriod = lookbackPeriod;
+    }
+
+    /**
+     * @param fundData the fundData to set
+     */
+    public void setFundData(HandleFundData fundData) {
+        this.fundData = fundData;
+    }
+
+    /**
+     * @param handlePF the handlePF to set
+     */
+    public void setHandlePF(HandlePF handlePF) {
+        this.handlePF = handlePF;
     }
 }

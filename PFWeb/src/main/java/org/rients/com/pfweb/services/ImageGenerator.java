@@ -1,4 +1,4 @@
-package org.rients.com.indexpredictor;
+package org.rients.com.pfweb.services;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -9,8 +9,11 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.rients.com.indexpredictor.Matrix;
 import org.rients.com.model.ImageResponse;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ImageGenerator {
 
     ImageResponse getImage(Matrix matrix, int DAYS) {

@@ -10,13 +10,14 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.rients.com.constants.Constants;
+import org.rients.com.pfweb.services.FundPropertiesService;
+import org.rients.com.pfweb.utils.FileUtils;
+import org.rients.com.pfweb.utils.PropertiesUtils;
 
 import rients.trading.download.exception.ValidationException;
 import rients.trading.download.model.Categorie;
 import rients.trading.download.model.Dagkoers;
 import rients.trading.download.model.FondsURL;
-import rients.trading.utils.FileUtils;
-import rients.trading.utils.PropertiesUtils;
 import rients.trading.utils.StackTraceUtils;
 
 

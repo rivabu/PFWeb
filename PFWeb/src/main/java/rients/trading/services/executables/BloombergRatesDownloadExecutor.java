@@ -5,8 +5,9 @@ package rients.trading.services.executables;
 
 import java.util.Properties;
 
+import org.rients.com.pfweb.utils.PropertiesUtils;
+
 import rients.trading.services.bloomberg.BloombergRatesDownloader;
-import rients.trading.utils.PropertiesUtils;
 
 
 /**

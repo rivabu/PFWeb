@@ -1,7 +1,7 @@
 /**
  * 
  */
-package rients.trading.services;
+package org.rients.com.pfweb.services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,15 +11,17 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.pfweb.utils.MathFunctions;
+import org.rients.com.pfweb.utils.PropertiesUtils;
+import org.springframework.stereotype.Service;
 
 import rients.trading.download.model.Dagkoers;
-import rients.trading.utils.MathFunctions;
-import rients.trading.utils.PropertiesUtils;
 
 /**
  * @author Rients
  *
  */
+@Service
 public class FundPropertiesServiceImpl implements FundPropertiesService {
 
 

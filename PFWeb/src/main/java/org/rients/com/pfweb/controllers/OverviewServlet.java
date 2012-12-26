@@ -14,13 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.rients.com.constants.Constants;
+import org.rients.com.pfweb.services.FundPropertiesService;
+import org.rients.com.pfweb.utils.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import rients.trading.services.FundPropertiesService;
-import rients.trading.services.FundPropertiesServiceImpl;
-import rients.trading.utils.FileUtils;
 
 @Controller
 @RequestMapping()
@@ -31,8 +31,9 @@ public class OverviewServlet  {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
-
-    FundPropertiesService fundPropertiesService = new FundPropertiesServiceImpl();
+    
+    @Autowired
+    FundPropertiesService fundPropertiesService;
 
 
     /**
@@ -68,6 +69,14 @@ public class OverviewServlet  {
             ex.printStackTrace();
         }
         return "overview";
+    }
+
+
+    /**
+     * @param fundPropertiesService the fundPropertiesService to set
+     */
+    public void setFundPropertiesService(FundPropertiesService fundPropertiesService) {
+        this.fundPropertiesService = fundPropertiesService;
     }
 
 }

@@ -19,14 +19,14 @@ import javax.xml.xpath.XPathFactory;
 
 import org.joda.time.DateTime;
 import org.rients.com.constants.Constants;
+import org.rients.com.pfweb.utils.FileUtils;
+import org.rients.com.pfweb.utils.PropertiesUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import rients.trading.services.FileDownloadService;
 import rients.trading.services.FileDownloadServiceImpl;
-import rients.trading.utils.FileUtils;
-import rients.trading.utils.PropertiesUtils;
 
 public class IntradayDownloadExecutor {
 

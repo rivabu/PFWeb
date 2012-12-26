@@ -17,8 +17,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
+import org.rients.com.pfweb.utils.PropertiesUtils;
 
-import rients.trading.utils.PropertiesUtils;
 import rients.trading.utils.StackTraceUtils;
 import rients.trading.utils.URLUtilities;
 import sun.misc.BASE64Encoder;

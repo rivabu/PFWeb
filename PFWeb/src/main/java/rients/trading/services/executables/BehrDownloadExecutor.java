@@ -6,6 +6,7 @@ package rients.trading.services.executables;
 import java.io.IOException;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.pfweb.services.FundPropertiesServiceImpl;
 import org.rients.randomkoersgenerator.RandomKoersGenerator;
 
 import rients.trading.download.model.Categories;
@@ -13,7 +14,6 @@ import rients.trading.services.BehrDownloadServiceImpl;
 import rients.trading.services.BehrOverzichtSplitterImpl;
 import rients.trading.services.FileDownloadServiceImpl;
 import rients.trading.services.FileIOServiceImpl;
-import rients.trading.services.FundPropertiesServiceImpl;
 
 
 /**

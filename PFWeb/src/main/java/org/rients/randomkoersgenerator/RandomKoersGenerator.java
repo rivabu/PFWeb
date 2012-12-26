@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.pfweb.services.FundPropertiesService;
+import org.rients.com.pfweb.services.FundPropertiesServiceImpl;
+import org.rients.com.pfweb.services.HandleFundData;
+import org.rients.com.pfweb.utils.FileUtils;
+import org.rients.com.pfweb.utils.MathFunctions;
+import org.rients.com.pfweb.utils.PropertiesUtils;
 
 import rients.trading.download.model.Dagkoers;
 import rients.trading.services.FileIOService;
 import rients.trading.services.FileIOServiceImpl;
-import rients.trading.services.FundPropertiesService;
-import rients.trading.services.FundPropertiesServiceImpl;
-import rients.trading.services.HandleFundData;
-import rients.trading.utils.FileUtils;
-import rients.trading.utils.MathFunctions;
-import rients.trading.utils.PropertiesUtils;
 import rients.trading.utils.Shuffle;
 import rients.trading.utils.Variance;
 

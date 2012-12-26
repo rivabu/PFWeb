@@ -4,15 +4,17 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package rients.trading.services;
+package org.rients.com.pfweb.services;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.rients.com.pfweb.utils.MathFunctions;
+import org.springframework.stereotype.Service;
+
 import rients.trading.download.model.Dagkoers;
 import rients.trading.download.model.Levels;
 import rients.trading.download.model.Modelregel;
-import rients.trading.utils.MathFunctions;
 
 /**
  * @author Rients van Buren
@@ -20,6 +22,8 @@ import rients.trading.utils.MathFunctions;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
+
+@Service
 public class HandlePF {
 	
 

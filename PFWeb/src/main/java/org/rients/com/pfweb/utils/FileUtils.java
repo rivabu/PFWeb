@@ -1,4 +1,4 @@
-package rients.trading.utils;
+package org.rients.com.pfweb.utils;
 
 
 import java.io.BufferedReader;
@@ -56,7 +56,7 @@ public final class FileUtils
 		}
 	}
 	
-	public static void writeToFile(String fileName, ArrayList lines, String header)
+	public static void writeToFile(String fileName, List<String> lines, String header)
 	{
 		if (fileName != null)
 			{
@@ -80,11 +80,12 @@ public final class FileUtils
 		}
 	}
 	
-	public static void writeToFile(String fileName, ArrayList lines)
+	public static <E> void writeToFile(String fileName, List<String> lines)
 	{
 		writeToFile(fileName, lines, null);
 	}
 
+	   
 	public static String readerToString(String filename)
 	{
 		StringBuffer sb = new StringBuffer();
@@ -175,9 +176,9 @@ public final class FileUtils
     }
     
         
-    public static ArrayList getSubdirs(String dir)
+    public static List<String> getSubdirs(String dir)
     {
-       	ArrayList arraylist = new ArrayList();
+        List<String> arraylist = new ArrayList<String>();
         try
         {
         	File file = new File(dir);
@@ -200,7 +201,6 @@ public final class FileUtils
 
     public static BufferedReader openInputFile(String s)
     {
-        Object obj = null;
         BufferedReader bufferedreader = null;
         try
         {
@@ -218,7 +218,6 @@ public final class FileUtils
 
     public static BufferedWriter openOutputFile(String s)
     {
-        Object obj = null;
         BufferedWriter bufferedwriter = null;
         try
         {
@@ -294,10 +293,6 @@ public final class FileUtils
             return -1;
          }
          
-         /* If the output file already exists and the -f option was not
-            specified, print an error message and end the program. */
-      
-         File file = new File(copyName);
          
          /* Create the output stream.  If an error occurs, 
             end the program. */

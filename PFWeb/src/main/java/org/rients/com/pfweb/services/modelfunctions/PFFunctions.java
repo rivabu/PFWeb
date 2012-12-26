@@ -1,14 +1,15 @@
-package rients.trading.services.modelfunctions;
+package org.rients.com.pfweb.services.modelfunctions;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.rients.com.pfweb.services.HandleFundData;
+import org.rients.com.pfweb.services.HandlePF;
+
 import rients.trading.download.model.Dagkoers;
 import rients.trading.download.model.Modelregel;
 import rients.trading.download.model.Transaction;
-import rients.trading.services.HandleFundData;
-import rients.trading.services.HandlePF;
 
 public class PFFunctions {
 

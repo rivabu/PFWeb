@@ -2,7 +2,8 @@ package org.rients.com.constants;
 
 import java.util.Properties;
 
-import rients.trading.utils.PropertiesUtils;
+import org.rients.com.pfweb.utils.PropertiesUtils;
+
 
 public class Constants {
     

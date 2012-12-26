@@ -1,4 +1,4 @@
-package rients.trading.services;
+package org.rients.com.pfweb.services;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -7,18 +7,22 @@ import org.rients.com.constants.Constants;
 import org.rients.com.indexpredictor.FundDataHolder;
 import org.rients.com.indexpredictor.Matrix;
 import org.rients.com.model.ImageResponse;
+import org.rients.com.pfweb.utils.FileUtils;
+import org.rients.com.pfweb.utils.MathFunctions;
+import org.rients.com.pfweb.utils.RSI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import rients.trading.download.model.Dagkoers;
 import rients.trading.graph.RSILineGraph;
-import rients.trading.utils.FileUtils;
-import rients.trading.utils.MathFunctions;
-import rients.trading.utils.RSI;
 
+@Service
 public class RSIGenerator {
     private int DAYS = 225;
     private int DAGENTERUG = 25;
     
-    HandleFundData fundData = new HandleFundData();
+    @Autowired
+    HandleFundData fundData;
 
     public ImageResponse getImage(String dir) {
         RSILineGraph rsiImage = new RSILineGraph();
@@ -121,5 +125,12 @@ public class RSIGenerator {
             Dagkoers dagkoers = rates.get(j);
             dagkoers.relativeKoers = (dagkoers.closekoers - minValue) / factor;
         }
+    }
+
+    /**
+     * @param fundData the fundData to set
+     */
+    public void setFundData(HandleFundData fundData) {
+        this.fundData = fundData;
     }
 }

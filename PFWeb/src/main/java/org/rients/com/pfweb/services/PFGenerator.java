@@ -1,4 +1,4 @@
-package rients.trading.services;
+package org.rients.com.pfweb.services;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,36 +14,29 @@ import javax.imageio.ImageIO;
 
 import org.rients.com.constants.Constants;
 import org.rients.com.model.ImageResponse;
+import org.rients.com.pfweb.services.modelfunctions.ModelFunctions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import rients.trading.download.model.Dagkoers;
 import rients.trading.download.model.DagkoersStatus;
 import rients.trading.download.model.Levels;
 import rients.trading.download.model.ModelInfo;
 import rients.trading.download.model.Modelregel;
-import rients.trading.services.modelfunctions.ModelFunctions;
 
+@Service
 public class PFGenerator {
 
     private static int NUMBEROFCOLUMNSTOPRINT = 20;
     private static boolean printFixedColumns = false;
-
-    
     private boolean saveImage;
-
     Levels levels = new Levels();
     
-
-
+    @Autowired
+    HandlePF handlePF;
     
-    public static void main(String[] args) {
-        PFGenerator PFGenerator = new PFGenerator();
-        PFGenerator.setSaveImage(true);
-        String fundName = "aex-index";
-        //PFGenerator.getImage("Hoofdfondsen", fundName, 2, 1f);
-        PFGenerator.getImage("Hoofdfondsen", fundName, 1, 1f);
-        //PFGenerator.getImage("Hoofdfondsen", fundName, 1, 1.5f);
-        //PFGenerator.getImage("Hoofdfondsen", fundName, 1, 2f);
-    }
+    @Autowired
+    HandleFundData fundData;
 
     public ImageResponse getImage(String dir, String fundName, int turningPoint, float stepSize) {
 
@@ -53,12 +46,10 @@ public class PFGenerator {
             levels.createExpLevelArray(stepSize, 20F);
         }
         
-        HandlePF handlePF = new HandlePF();
         String dirFull = Constants.KOERSENDIR + dir + Constants.SEP;
         if (dir.equals("intraday")) {
             dirFull = Constants.INTRADAY_KOERSENDIR;
         }
-        HandleFundData fundData = new HandleFundData();
         fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT);
         List<Dagkoers> rates = fundData.getFundRates(fundName, dirFull);
 
@@ -217,5 +208,19 @@ public class PFGenerator {
 
     public void setSaveImage(boolean saveImage) {
         this.saveImage = saveImage;
+    }
+
+    /**
+     * @param handlePF the handlePF to set
+     */
+    public void setHandlePF(HandlePF handlePF) {
+        this.handlePF = handlePF;
+    }
+
+    /**
+     * @param fundData the fundData to set
+     */
+    public void setFundData(HandleFundData fundData) {
+        this.fundData = fundData;
     }
 }

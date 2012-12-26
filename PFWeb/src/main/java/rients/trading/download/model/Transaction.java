@@ -6,7 +6,7 @@
  */
 package rients.trading.download.model;
 
-import rients.trading.utils.MathFunctions;
+import org.rients.com.pfweb.utils.MathFunctions;
 
 /**
  * @author Rients van Buren

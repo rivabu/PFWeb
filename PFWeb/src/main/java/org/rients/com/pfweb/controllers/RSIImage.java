@@ -7,11 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.rients.com.model.ImageResponse;
+import org.rients.com.pfweb.services.RSIGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import rients.trading.services.RSIGenerator;
 
 
 @Controller
@@ -19,23 +20,32 @@ import rients.trading.services.RSIGenerator;
  
 public class RSIImage  {
     
+    @Autowired
+    RSIGenerator rSIGenerator;
+
     @RequestMapping("/RSIImage")
     public @ResponseBody byte[] getRSIImage(HttpServletRequest request, 
             HttpServletResponse response) throws IOException {
     	
     	
-        RSIGenerator RSIGenerator = new RSIGenerator();
         String dir = request.getParameter("dir");
         String fundName = request.getParameter("fund");
         ImageResponse imageResponse = null;
         if (fundName == null) {
-            imageResponse = RSIGenerator.getImage(dir);
+            imageResponse = rSIGenerator.getImage(dir);
         } else {
-            imageResponse = RSIGenerator.getImage(dir, fundName);
+            imageResponse = rSIGenerator.getImage(dir, fundName);
             
         }
         response.setContentType("image/png");
         return imageResponse.getContent();
+    }
+
+    /**
+     * @param rSIGenerator the rSIGenerator to set
+     */
+    public void setRSIGenerator(RSIGenerator rSIGenerator) {
+        this.rSIGenerator = rSIGenerator;
     }
 
 }

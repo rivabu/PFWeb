@@ -7,8 +7,8 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.rients.com.indexpredictor.HighLowImageGenerator;
 import org.rients.com.model.ImageResponse;
+import org.rients.com.pfweb.services.HighLowImageGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

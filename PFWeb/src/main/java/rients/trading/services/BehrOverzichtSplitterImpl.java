@@ -11,12 +11,12 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.rients.com.pfweb.utils.MathFunctions;
 
 import rients.trading.download.exception.ValidationException;
 import rients.trading.download.model.Categorie;
 import rients.trading.download.model.Dagkoers;
 import rients.trading.download.model.FondsURL;
-import rients.trading.utils.MathFunctions;
 import rients.trading.utils.TimeUtils;
 
 /**

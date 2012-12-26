@@ -7,15 +7,17 @@ import java.util.StringTokenizer;
 
 import org.joda.time.DateTime;
 import org.rients.com.constants.Constants;
+import org.rients.com.pfweb.services.HandleFundData;
+import org.rients.com.pfweb.services.HandlePF;
+import org.rients.com.pfweb.services.modelfunctions.ModelFunctions;
+import org.rients.com.pfweb.utils.FileUtils;
+import org.rients.com.pfweb.utils.PropertiesUtils;
 
 import rients.trading.download.model.Categorie;
 import rients.trading.download.model.Dagkoers;
 import rients.trading.download.model.DagkoersStatus;
 import rients.trading.download.model.FondsURL;
 import rients.trading.download.model.Modelregel;
-import rients.trading.services.modelfunctions.ModelFunctions;
-import rients.trading.utils.FileUtils;
-import rients.trading.utils.PropertiesUtils;
 
 public class DoubleTopAndBottomsLocator {
     private static String sep = "\\";

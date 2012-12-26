@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.pfweb.services.FundPropertiesService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import rients.trading.download.model.Categorie;
 import rients.trading.download.model.FondsURL;
 import rients.trading.services.DoubleTopAndBottomsLocator;
-import rients.trading.services.FundPropertiesService;
-import rients.trading.services.FundPropertiesServiceImpl;
 
 @Controller
 @RequestMapping()
@@ -35,7 +35,8 @@ public class TopBottomsServlet {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
-    FundPropertiesService fundPropertiesService = new FundPropertiesServiceImpl();
+    @Autowired
+    FundPropertiesService fundPropertiesService;
 
     /**
      * Do get.
@@ -85,5 +86,12 @@ public class TopBottomsServlet {
             ex.printStackTrace();
         }
         return "topbottoms";
+    }
+
+    /**
+     * @param fundPropertiesService the fundPropertiesService to set
+     */
+    public void setFundPropertiesService(FundPropertiesService fundPropertiesService) {
+        this.fundPropertiesService = fundPropertiesService;
     }
 }

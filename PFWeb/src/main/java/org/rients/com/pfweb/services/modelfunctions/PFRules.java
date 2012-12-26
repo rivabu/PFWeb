@@ -1,13 +1,15 @@
-package rients.trading.services.modelfunctions;
+package org.rients.com.pfweb.services.modelfunctions;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.pfweb.utils.FileUtils;
 
 import rients.trading.download.model.DagkoersStatus;
 import rients.trading.download.model.Modelregel;
 import rients.trading.download.model.Transaction;
-import rients.trading.utils.FileUtils;
 
 public class PFRules {
 
@@ -57,10 +59,10 @@ public class PFRules {
      * @param pfData
      * @param fileName
      */
-    public ArrayList<Transaction> getOptimalDecisions(ArrayList<Modelregel> pfData, String fileName, boolean saveToFile) {
+    public List<Transaction> getOptimalDecisions(ArrayList<Modelregel> pfData, String fileName, boolean saveToFile) {
         Transaction trans = null;
         float totalScore = 0;
-        ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+        List<Transaction> transactions = new ArrayList<Transaction>();
         Modelregel lastModelregel = null;
         String switchDatum = null;
         float swithKoers = 0f;
@@ -124,7 +126,13 @@ public class PFRules {
         }
         
         if (saveToFile) {
-            FileUtils.writeToFile(fileName, transactions);
+           
+            Iterator<Transaction> i = transactions.iterator();
+            List<String> transactionsString  = new ArrayList<String>();
+            while (i.hasNext()) {
+                transactionsString.add(i.next().toString());
+            }
+            FileUtils.writeToFile(fileName, transactionsString);
          }
         System.out.println(fileName + ": " + totalScore);
         return transactions;

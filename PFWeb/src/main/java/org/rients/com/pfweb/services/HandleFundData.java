@@ -4,7 +4,7 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package rients.trading.services;
+package org.rients.com.pfweb.services;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,11 +14,12 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.pfweb.utils.FileUtils;
+import org.rients.com.pfweb.utils.PropertiesUtils;
+import org.springframework.stereotype.Service;
 
 import rients.trading.download.model.Dagkoers;
 import rients.trading.download.model.DagkoersStatus;
-import rients.trading.utils.FileUtils;
-import rients.trading.utils.PropertiesUtils;
 
 /**
  * @author Rients van Buren
@@ -26,6 +27,7 @@ import rients.trading.utils.PropertiesUtils;
  *         TODO To change the template for this generated type comment go to
  *         Window - Preferences - Java - Code Style - Code Templates
  */
+@Service
 public class HandleFundData {
 
     private int numberOfDays;

@@ -12,28 +12,31 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.rients.com.model.ImageResponse;
+import org.rients.com.pfweb.services.PFGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import rients.trading.download.model.FundInfo;
-import rients.trading.services.PFGenerator;
 
 @Controller
 @RequestMapping()
 public class PFImage {
 	
+    @Autowired
+    PFGenerator pFGenerator;
+
     @RequestMapping("/PFImage")
     public  void getPFImage(HttpServletRequest request, 
             HttpServletResponse response) throws IOException {
     	
     	
-    	PFGenerator PFGenerator = new PFGenerator();
     	String fundName = request.getParameter("fund");
     	int turningPoint = Integer.parseInt(request.getParameter("turningPoint"));
     	float stepSize = Float.parseFloat(request.getParameter("stepSize"));
     	String dir = request.getParameter("dir");
         String row = request.getParameter("row");
-    	ImageResponse imageResponse = PFGenerator.getImage(dir, fundName, turningPoint, stepSize);
+    	ImageResponse imageResponse = pFGenerator.getImage(dir, fundName, turningPoint, stepSize);
         HttpSession session = request.getSession();
         FundInfo fundInfo = new FundInfo();
         fundInfo.setFundName(fundName);
@@ -65,5 +68,12 @@ public class PFImage {
         }
         firstDates.add(fundInfo);
         session.setAttribute("firstDates", firstDates);
+    }
+
+    /**
+     * @param pFGenerator the pFGenerator to set
+     */
+    public void setPFGenerator(PFGenerator thispFGenerator) {
+        pFGenerator = thispFGenerator;
     }
 }
