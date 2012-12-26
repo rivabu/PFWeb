@@ -46,7 +46,7 @@ public class HandleFundData {
     public List<Dagkoers> getFundRates(String fundName, String directory) {
         List<Dagkoers> sublistRecords = new ArrayList<Dagkoers>();
         List<Dagkoers> records = getAllFundRates(fundName, directory);
-        
+        if (records != null) {
         int toIndex = records.size();
         int fromIndex = 0;
         if (toIndex > numberOfDays) {
@@ -54,6 +54,10 @@ public class HandleFundData {
         }
         for (int i = fromIndex; i < toIndex; i++) {
             sublistRecords.add(records.get(i));
+        }
+        }
+        else {
+            System.out.println("NOTING FOUND: getAllFundRates( " + fundName + ", " + directory + " )");
         }
         return sublistRecords;
     }

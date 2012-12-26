@@ -30,8 +30,10 @@
 	 					<tr>
 					</c:if>
 					<td width="300" valign="top">
+						<c:if test="${not empty dag.value}">
 		 					${dag.value}
 		 					<img alt="" src="PFImage?fund=${dag.value}&dir=${dir}&turningPoint=1&stepSize=0.025">
+		 				</c:if>
 						</td>
 					<c:if test="${dag.key eq 5}">
 	 					</tr>

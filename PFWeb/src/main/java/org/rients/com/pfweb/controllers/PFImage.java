@@ -2,9 +2,11 @@ package org.rients.com.pfweb.controllers;
 
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -12,7 +14,6 @@ import javax.servlet.http.HttpSession;
 import org.rients.com.model.ImageResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import rients.trading.download.model.FundInfo;
 import rients.trading.services.PFGenerator;
@@ -22,7 +23,7 @@ import rients.trading.services.PFGenerator;
 public class PFImage {
 	
     @RequestMapping("/PFImage")
-    public @ResponseBody byte[] getPFImage(HttpServletRequest request, 
+    public  void getPFImage(HttpServletRequest request, 
             HttpServletResponse response) throws IOException {
     	
     	
@@ -42,7 +43,13 @@ public class PFImage {
         putFundInfoInSession(session, fundInfo);
         response.setContentType("image/png");
 
-        return imageResponse.getContent();
+        OutputStream os = response.getOutputStream();
+        try {
+            ImageIO.write(imageResponse.getBuffer(), "png", os);
+        } catch (IndexOutOfBoundsException iob) {
+            System.out.println("error (IndexOutOfBoundsException) met " + fundName + " in dir " + dir);
+        }
+        os.close();
     }
 
     /**

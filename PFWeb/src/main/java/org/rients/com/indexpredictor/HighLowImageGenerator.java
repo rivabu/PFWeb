@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import org.rients.com.constants.Constants;
 import org.rients.com.model.ImageResponse;
+import org.springframework.stereotype.Service;
 
 import rients.trading.download.model.Categories;
 import rients.trading.download.model.Dagkoers;
@@ -23,6 +24,7 @@ import rients.trading.services.HandlePF;
 import rients.trading.services.modelfunctions.PFRules;
 import rients.trading.utils.FileUtils;
 
+@Service
 public class HighLowImageGenerator {
 
     private boolean saveImage = true;

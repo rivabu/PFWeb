@@ -1,1 +1,8 @@
 target
+/PFWeb/.classpath
+.settings
+/PFWeb/WebContent/META-INF
+/PFWeb/WebContent/META-INF/MANIFEST.MF
+/PFWeb/.settings/org.eclipse.wst.common.project.facet.core.xml
+/PFWeb/.settings/org.eclipse.jdt.core.prefs
+/PFWeb/.settings/org.eclipse.wst.common.component
