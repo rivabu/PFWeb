@@ -40,5 +40,21 @@ public class PFWebConfiguration {
         return new HandleFundData();
     }
 
-    
+//    @Bean
+//    public ScheduledExecutorFactoryBean scheduledExecutorFactoryBean() {
+//        ScheduledExecutorFactoryBean scheduledFactoryBean = new ScheduledExecutorFactoryBean();
+//        scheduledFactoryBean.setScheduledExecutorTasks(new ScheduledExecutorTask[] {onlineTimeSchedule()});
+//
+//        return scheduledFactoryBean;
+//    }
+//
+//    @Bean
+//    public ScheduledExecutorTask onlineTimeSchedule() {
+//        ScheduledExecutorTask scheduledTask = new ScheduledExecutorTask();
+//        scheduledTask.setDelay(1000);
+//        scheduledTask.setPeriod(60000);
+//        scheduledTask.setRunnable(new MyTimerTask());
+//
+//        return scheduledTask;
+//    }
 }
