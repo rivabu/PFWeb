@@ -29,6 +29,8 @@
 <%@ include file="navbar.jsp" %>
 
 
+
+
 <a name="top"></a>
 <c:forEach items="${dirs}" var="dir">
 	<a href="Overview?dir=${dir}">${dir}</a><br/>
@@ -46,6 +48,14 @@
 				</td>
 			</c:if>	
 		</c:forEach>
+	</tr>
+</table>
+
+<table >
+	<tr>
+		<td>
+		<img alt="" src="static/img/close.png">
+		</td>
 	</tr>
 </table>
 

@@ -18,7 +18,7 @@
 		<!-- wait 10 seconds before starting repeated execution -->
 		<property name="delay" value="1000" />
 		<!-- run every 50 seconds -->
-		<property name="period" value="5000" />
+		<property name="period" value="600000" />
 		<property name="timerTask" ref="myTimerTask" />
 	</bean>
 

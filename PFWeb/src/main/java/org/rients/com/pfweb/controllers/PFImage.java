@@ -36,7 +36,11 @@ public class PFImage {
     	float stepSize = Float.parseFloat(request.getParameter("stepSize"));
     	String dir = request.getParameter("dir");
         String row = request.getParameter("row");
-    	ImageResponse imageResponse = pFGenerator.getImage(dir, fundName, turningPoint, stepSize);
+        int maxcolumns = -1;
+        if (request.getParameter("maxcolumns") != null) {
+            maxcolumns = Integer.parseInt(request.getParameter("maxcolumns"));
+        }
+    	ImageResponse imageResponse = pFGenerator.getImage(dir, fundName, turningPoint, stepSize, maxcolumns);
         HttpSession session = request.getSession();
         FundInfo fundInfo = new FundInfo();
         fundInfo.setFundName(fundName);

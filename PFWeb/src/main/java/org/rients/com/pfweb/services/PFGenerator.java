@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -27,8 +28,6 @@ import rients.trading.download.model.Modelregel;
 @Service
 public class PFGenerator {
 
-    private static int NUMBEROFCOLUMNSTOPRINT = 20;
-    private static boolean printFixedColumns = false;
     private boolean saveImage;
     Levels levels = new Levels();
     
@@ -38,7 +37,7 @@ public class PFGenerator {
     @Autowired
     HandleFundData fundData;
 
-    public ImageResponse getImage(String dir, String fundName, int turningPoint, float stepSize) {
+    public ImageResponse getImage(String dir, String fundName, int turningPoint, float stepSize, int maxColumns) {
 
         if (!dir.contains("intraday")) {
             levels.createExpLevelArray(stepSize, 0.01F);
@@ -60,6 +59,8 @@ public class PFGenerator {
 
         String imageFile = Constants.IMAGESDIR + fundName + "_" + turningPoint + "_" + stepSize + Constants.PNG;
 
+        removeColumns(PFData, maxColumns);
+        
         ModelInfo modelInfo = calculateModelInfo(PFData);
 
         ImageResponse imageResponse = getImage(PFData, modelInfo, stepSize);
@@ -86,11 +87,7 @@ public class PFGenerator {
         Modelregel FirstPFRegel = (Modelregel) PFData.get(modelInfo.getFirstModelRule());
         imageResponse.setFirstDate(FirstPFRegel.getDatum());
         int thisNumberOfColumns = modelInfo.getMaxColumnNumber();
-        if (printFixedColumns) {
-            if (modelInfo.getMaxColumnNumber() < NUMBEROFCOLUMNSTOPRINT) {
-                thisNumberOfColumns = modelInfo.getMaxColumnNumber();
-            }
-        }
+
         int header = 8;
         int cellSize = 10;
 
@@ -106,12 +103,7 @@ public class PFGenerator {
         int yAxWidth = getStringWidth(g, levels.lookupRate(modelInfo.getHighestModelValue()));
         for (int i = modelInfo.getFirstModelRule(); i <= PFData.size() - 1; i++) {
             Modelregel PFRegel = (Modelregel) PFData.get(i);
-            int x_pos = 0;
-            if (printFixedColumns) {
-                x_pos = (yAxWidth + cellSize * (PFRegel.getKolomnr() - modelInfo.getStopAtColumnNumber()));
-            } else {
-                x_pos = (yAxWidth + cellSize * (PFRegel.getKolomnr()));
-            }
+            int x_pos = (yAxWidth + cellSize * (PFRegel.getKolomnr()));
             int y_pos = 30 + (cellSize * (modelInfo.getHighestModelValue() - PFRegel.getRijnr()));
             //if (PFRegel.isStijger()) {
                 g.setColor(Color.BLACK);
@@ -172,36 +164,43 @@ public class PFGenerator {
         ModelInfo modelInfo = new ModelInfo();
         int size = data.size() - 1;
         boolean first = true;
-        int stopAtColumnNumber = 0;
         for (int i = size; i >= 0; i--) {
             Modelregel regel = (Modelregel) data.get(i);
             if (first) {
                 first = false;
-                int lastColumnNumber = regel.getKolomnr();
                 modelInfo.setLastDate(regel.getDatum());
                 modelInfo.setMaxColumnNumber(regel.getKolomnr());
                 modelInfo.setHighestModelValue(regel.getRijnr());
                 modelInfo.setLowestModelValue(regel.getRijnr());
-                if (printFixedColumns) {
-                    stopAtColumnNumber = lastColumnNumber - NUMBEROFCOLUMNSTOPRINT;
-                    if (stopAtColumnNumber < 0)
-                        stopAtColumnNumber = 0;
-                    modelInfo.setStopAtColumnNumber(stopAtColumnNumber);
-                }
-            }
-            if (printFixedColumns && regel.getKolomnr() <= stopAtColumnNumber) {
-                modelInfo.setFirstModelRule(i + 1);
-                break;
             }
             if (regel.getRijnr() > modelInfo.getHighestModelValue())
                 modelInfo.setHighestModelValue(regel.getRijnr());
             if (regel.getRijnr() < modelInfo.getLowestModelValue())
                 modelInfo.setLowestModelValue(regel.getRijnr());
         }
-
         return modelInfo;
     }
 
+    private void removeColumns(ArrayList<Modelregel> data, int maxColumns) {
+        if (maxColumns > 0) {
+            int maxColumnInData = ((Modelregel) data.get(data.size() - 1)).getKolomnr();
+            if (maxColumnInData > maxColumns) {
+                int firstColumnNumber = maxColumnInData - maxColumns;
+                Iterator<Modelregel> iterator = data.iterator();
+                while (iterator.hasNext()) {
+                    Modelregel mr = iterator.next();
+                    
+                    if (mr.getKolomnr() < firstColumnNumber) {
+                        iterator.remove();
+                    } else {
+                        int columnNumber = mr.getKolomnr() - firstColumnNumber;
+                        mr.setKolomnr(columnNumber);
+                    }
+                }
+                
+            }
+        }
+    }
     public boolean isSaveImage() {
         return saveImage;
     }
