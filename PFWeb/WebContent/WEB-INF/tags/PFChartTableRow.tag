@@ -33,20 +33,20 @@
 					</p>
 				</p>
 			</td>
-			<td><img alt="" 
+			<td valign="top"><img alt="" 
 				src="PFImage?fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[0][0]}&stepSize=${file.graphParameters[0][1]}&row=1"><br />
 				<img alt="" src="RSIImage?fund=${file.FUNDNAME}&dir=${dir}">
 			</td>
-			<td><img alt="" 
+			<td valign="top"><img alt="" 
 				src="PFImage?fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[1][0]}&stepSize=${file.graphParameters[1][1]}&row=1">
 			</td>
-			<td><img alt="" 
+			<td valign="top"><img alt="" 
 				src="PFImage?fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[2][0]}&stepSize=${file.graphParameters[2][1]}&row=2">
 			</td>
-			<td><img alt="" 
+			<td valign="top"><img alt="" 
 				src="PFImage?fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[3][0]}&stepSize=${file.graphParameters[3][1]}&row=3">
 			</td>
-			<td><img alt="" 
+			<td valign="top"><img alt="" 
 				src="PFImage?fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[4][0]}&stepSize=${file.graphParameters[4][1]}&row=4">
 			</td>
 		</tr>
