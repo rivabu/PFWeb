@@ -32,12 +32,13 @@ public class HandlePF {
     public ArrayList<Modelregel> createPFData(List<Dagkoers> rates, String fundName, String directory, int turningPoint, float stepSize) {
 
 
-        Levels levels = new Levels();
+        Levels levels = Levels.getInstance();
         if (!directory.contains("intraday")) {
             levels.createExpLevelArray(stepSize, 0.01F);
-        } else {
-            levels.createExpLevelArray(stepSize, 20F);
-        }
+        } 
+        //else {
+        //    levels.createExpLevelArray(stepSize, 20F);
+        //}
         
         Modelregel modelregel = null;
         ArrayList model = new ArrayList();
@@ -59,9 +60,9 @@ public class HandlePF {
                     boolean flag3 = false;
                     if (flag6) {
                         flag6 = false;
-                        i1 = levels.LookupOccurenceNumber(huidigeDagKoers.closekoers);
+                        i1 = levels.LookupOccurenceNumber(stepSize, huidigeDagKoers.closekoers);
                     } else {
-                        j1 = levels.LookupOccurenceNumber(huidigeDagKoers.closekoers);
+                        j1 = levels.LookupOccurenceNumber(stepSize, huidigeDagKoers.closekoers);
                         if (j1 > i1)
                             signSimple = "+";
                         else if (j1 < i1)

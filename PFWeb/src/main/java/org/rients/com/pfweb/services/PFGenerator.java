@@ -29,7 +29,7 @@ import rients.trading.download.model.Modelregel;
 public class PFGenerator {
 
     private boolean saveImage;
-    Levels levels = new Levels();
+    
     
     @Autowired
     HandlePF handlePF;
@@ -38,12 +38,14 @@ public class PFGenerator {
     HandleFundData fundData;
 
     public ImageResponse getImage(String dir, String fundName, int turningPoint, float stepSize, int maxColumns) {
+        Levels levels = Levels.getInstance();
 
         if (!dir.contains("intraday")) {
             levels.createExpLevelArray(stepSize, 0.01F);
-        } else {
-            levels.createExpLevelArray(stepSize, 20F);
-        }
+        } 
+        //else {
+        //    levels.createExpLevelArray(stepSize, 20F);
+        //}
         
         String dirFull = Constants.KOERSENDIR + dir + Constants.SEP;
         if (dir.equals("intraday")) {
@@ -83,12 +85,13 @@ public class PFGenerator {
     }
 
     private ImageResponse getImage(ArrayList<Modelregel> PFData, ModelInfo modelInfo, float stepSize) {
+        Levels levels = Levels.getInstance();
         ImageResponse imageResponse = new ImageResponse();
         Modelregel FirstPFRegel = (Modelregel) PFData.get(modelInfo.getFirstModelRule());
         imageResponse.setFirstDate(FirstPFRegel.getDatum());
         int thisNumberOfColumns = modelInfo.getMaxColumnNumber();
 
-        int header = 8;
+        int header = 1;
         int cellSize = 10;
 
         int width = (6 + thisNumberOfColumns) * cellSize;
@@ -100,11 +103,11 @@ public class PFGenerator {
         g.setColor(Color.BLACK);
         g.setFont(new Font("Courier", 0, cellSize));
 
-        int yAxWidth = getStringWidth(g, levels.lookupRate(modelInfo.getHighestModelValue()));
+        int yAxWidth = getStringWidth(g, levels.lookupRate(stepSize, modelInfo.getHighestModelValue())) + 4;
         for (int i = modelInfo.getFirstModelRule(); i <= PFData.size() - 1; i++) {
             Modelregel PFRegel = (Modelregel) PFData.get(i);
             int x_pos = (yAxWidth + cellSize * (PFRegel.getKolomnr()));
-            int y_pos = 30 + (cellSize * (modelInfo.getHighestModelValue() - PFRegel.getRijnr()));
+            int y_pos = 10 + (cellSize * (modelInfo.getHighestModelValue() - PFRegel.getRijnr()));
             //if (PFRegel.isStijger()) {
                 g.setColor(Color.BLACK);
             //} //else {
@@ -134,11 +137,11 @@ public class PFGenerator {
             g.drawString(PFRegel.getSign(), x_pos, y_pos);
 
         }
-        int k1 = 30;
+        int k1 = 10;
         int l1 = 0;
         g.setColor(Color.blue);
         for (int levelValue = modelInfo.getHighestModelValue(); levelValue >= modelInfo.getLowestModelValue(); levelValue--) {
-            String nivoValue = levels.lookupRate(levelValue);
+            String nivoValue = levels.lookupRate(stepSize, levelValue);
             g.drawString(nivoValue, 0, k1);
 
             if (l1 == 5) {
