@@ -27,6 +27,11 @@ public class ModelFunctions {
         pfRules.setDoubleTopAndBottom(PFData);
     }
     
+    public void handleFindTopsAndBottoms(int turningPoint, float stepSize) {
+        pfRules.setTopsAndBottoms(PFData);
+    }
+    
+    
     public void setBestOrWorstDates(List<Dagkoers> rates, int number, boolean worst) {
         
         @SuppressWarnings("unchecked")

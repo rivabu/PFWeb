@@ -29,7 +29,10 @@
 						</c:forEach>
 					</p>
 					<p>
-					
+						  <c:if test="${dir ne 'aaa'}">
+						    <a href="AddRemove?fund=${file.FUNDNAME}&dir=${dir}&action=add&from=Overview">add to favorites</a><br />
+						  </c:if>
+					      <a href="AddRemove?fund=${file.FUNDNAME}&dir=${dir}&action=delete&from=Overview">delete</a>
 					</p>
 				</p>
 			</td>

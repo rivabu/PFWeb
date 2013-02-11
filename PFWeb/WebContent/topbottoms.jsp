@@ -15,7 +15,20 @@
 <body>
 	<%@ include file="navbar.jsp"%>
 	<br />
+	<form action="TopBottoms" method="get">
 	<table>
+		<tr>
+		type = <c:out value="${requestScope.type}" />
+			<select name="type">
+			  <option <c:if test="${type eq 'top_bottoms'}">selected</c:if> value="top_bottoms">Top Bottoms</option>
+			  <option <c:if test="${type eq 'tops'}">selected</c:if>value="tops">Tops</option>
+			  <option <c:if test="${type eq 'bottoms'}">selected</c:if>value="bottoms">Bottoms</option>
+			</select> 
+		</tr>
+		<tr>
+			<input type="submit" value="go"/>
+			<br />
+		</tr>
 		<tr>
 			<c:forEach items="${categories}" var="categorie">
 				<td width="150px" valign="top">
@@ -27,7 +40,7 @@
 			</c:forEach>
 		</tr>
 	</table>
-
+	</form>
 		<table>
 			<c:forEach items="${files}" var="file" varStatus="index">
 				<pfweb:PFChartTableRow file="${file}" dir="${dir}"/>

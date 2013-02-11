@@ -27,7 +27,7 @@ public class TopBottomLocatorExecutor  {
     
     public void testDownloadFavourites() throws Exception {
     	
-        ArrayList<Categorie> matchedCategoriesList = controller.locate();
+        ArrayList<Categorie> matchedCategoriesList = controller.locate("top_bottoms");
     	
         for (Categorie cat : matchedCategoriesList) {
             System.out.println(cat.getNaam() + ": ");

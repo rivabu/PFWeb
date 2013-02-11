@@ -32,7 +32,7 @@ public class DoubleTopAndBottomsLocator {
         this.favouritesDir = favouritesDir;
     }
     
-    public ArrayList<Categorie> locate() {
+    public ArrayList<Categorie> locate(final String type) {
         String dir = getFavouritesDir();
         @SuppressWarnings("unchecked")
         List<String> subdirs = FileUtils.getSubdirs(dir);
@@ -54,18 +54,25 @@ public class DoubleTopAndBottomsLocator {
                 System.out.println(categorie.getNaam() + sep + fondsURL.getURL());
                 
                 Properties prop = null;
-                //String fileName = Constants.FUND_PROPERTIESDIR + file + Constants.PROPERTIES;
                 prop = PropertiesUtils.getPropertiesFromClasspath(file + Constants.PROPERTIES);
 
                 String graphParametersString = prop.getProperty("graphParameters");
                 
                 String[][] graphParameters = convertGraphParameters(graphParametersString);
                 
-                for (int i=0; i< 5; i++) {
-                    boolean topBottomFound = handleOne(fullSubDir, file, Integer.parseInt(graphParameters[i][0]), Float.parseFloat(graphParameters[i][1]));
-                    if (topBottomFound) {
+                if (type.equals("top_bottoms")) {
+                    for (int i=0; i< 5; i++) {
+                        boolean doubleTopBottomFound = handleOneDoubleTopsAndBottoms(fullSubDir, file, Integer.parseInt(graphParameters[i][0]), Float.parseFloat(graphParameters[i][1]));
+                        if (doubleTopBottomFound) {
+                            categorie.getItems().add(fondsURL);
+                            break;
+                        }
+                    }
+                }
+                if (type.equals("tops") || type.equals("bottoms")) {
+                    boolean topOrBottomFound = handleOneTopsAndBottoms(fullSubDir, file, Integer.parseInt(graphParameters[0][0]), Float.parseFloat(graphParameters[0][1]), type);
+                    if (topOrBottomFound) {
                         categorie.getItems().add(fondsURL);
-                        break;
                     }
                 }
             }
@@ -74,7 +81,7 @@ public class DoubleTopAndBottomsLocator {
         return matchedCategoriesList;
     }
 
-    private boolean handleOne(String dir, String fundName, int turningPoint, float stepSize) {
+    private boolean handleOneDoubleTopsAndBottoms(String dir, String fundName, int turningPoint, float stepSize) {
         
         boolean topBottomFound = false;
         HandleFundData fundData = new HandleFundData();
@@ -117,6 +124,46 @@ public class DoubleTopAndBottomsLocator {
             }
         }
         return topBottomFound;
+    }
+
+    private boolean handleOneTopsAndBottoms(String dir, String fundName, int turningPoint, float stepSize, String type) {
+        
+        boolean topBottomFound = false;
+        HandleFundData fundData = new HandleFundData();
+        HandlePF handlePF = new HandlePF();
+
+        fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT);
+        List<Dagkoers> rates = fundData.getFundRates(fundName, dir);
+
+        ArrayList<Modelregel> PFData = handlePF.createPFData(rates, fundName, dir, turningPoint, stepSize);
+        
+        ModelFunctions mf = new ModelFunctions(fundName);
+        mf.setPFData(PFData);
+        mf.handleFindTopsAndBottoms(turningPoint, stepSize);
+        int size = PFData.size() - 1;
+        Modelregel modelRegel = PFData.get(PFData.size() - 1);
+        boolean match = false;
+        int lastColumn = modelRegel.getKolomnr();
+        if ((modelRegel.getStatus() == DagkoersStatus.TOP &&  type.equals("tops")) || 
+                (modelRegel.getStatus() == DagkoersStatus.BOTTOM && type.equals("bottoms"))) {
+            match = true;
+        }
+        if (!match) {
+            for (int i = size; i > 0; i--) {
+                modelRegel = PFData.get(i);
+                if ((modelRegel.getKolomnr() == (lastColumn - 1)) && 
+                        (modelRegel.getStatus() == DagkoersStatus.TOP &&  type.equals("tops")) || 
+                        (modelRegel.getStatus() == DagkoersStatus.BOTTOM && type.equals("bottoms"))) {
+                    match = true;
+                    break;
+                }
+                if (modelRegel.getKolomnr() < (lastColumn - 1)) {
+                    break;
+                }
+                
+            }
+        }
+        return match;
     }
 
     private int getOneWeekAgo() {

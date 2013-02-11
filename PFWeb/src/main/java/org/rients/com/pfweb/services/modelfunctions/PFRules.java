@@ -13,6 +13,31 @@ import rients.trading.download.model.Transaction;
 
 public class PFRules {
 
+    public void setTopsAndBottoms(ArrayList<Modelregel> pfData) {
+        int maxTop = -1;
+        int maxBottom = Integer.MAX_VALUE;;
+        
+        for (int j = 0; j < pfData.size(); j++) {
+            Modelregel modelregel1 = (Modelregel) pfData.get(j);
+            int r = modelregel1.getRijnr();
+            if (r < maxBottom) {
+                maxBottom = r;
+            }
+            if (r > maxTop) {
+                maxTop = r;
+            }
+        }
+        for (int j = 0; j < pfData.size(); j++) {
+            Modelregel modelregel1 = (Modelregel) pfData.get(j);
+            int r = modelregel1.getRijnr();
+            if (r == maxBottom) {
+                modelregel1.setStatus(DagkoersStatus.BOTTOM);
+            }
+            if (r == maxTop) {
+                modelregel1.setStatus(DagkoersStatus.TOP);
+            }
+        }
+    }
     
     public void setDoubleTopAndBottom(ArrayList<Modelregel> pfData) {
         ArrayList<Modelregel> tops = new ArrayList<Modelregel>();

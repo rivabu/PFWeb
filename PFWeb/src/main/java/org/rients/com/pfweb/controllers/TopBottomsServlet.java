@@ -55,17 +55,19 @@ public class TopBottomsServlet {
     @RequestMapping(value = "/TopBottoms", method = RequestMethod.GET)
     protected String doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            String type = request.getParameter("type");
             HttpSession session = request.getSession();
-            if (session.getAttribute("categories") == null) {
+            ArrayList<Categorie> matchedCategoriesList = null;
+            if (type != null) {
                 DoubleTopAndBottomsLocator doubleTopAndBottomsLocator = new DoubleTopAndBottomsLocator();
                 doubleTopAndBottomsLocator.setFavouritesDir(Constants.KOERSENDIR);
-                ArrayList<Categorie> matchedCategoriesList = doubleTopAndBottomsLocator.locate();
+                matchedCategoriesList = doubleTopAndBottomsLocator.locate(type);
                 session.setAttribute("categories", matchedCategoriesList);
             }
             if (request.getParameter("topbottomscategorie") != null) {
                 String topbottomscategorie = request.getParameter("topbottomscategorie");
                 if (session.getAttribute("categories") != null) {
-                    ArrayList<Categorie> matchedCategoriesList = (ArrayList<Categorie>) session.getAttribute("categories");
+                    matchedCategoriesList = (ArrayList<Categorie>) session.getAttribute("categories");
                     for (Categorie cat : matchedCategoriesList) {
                         if (cat.getNaam().equals(topbottomscategorie)) {
                             List<String> files = new ArrayList<String>();

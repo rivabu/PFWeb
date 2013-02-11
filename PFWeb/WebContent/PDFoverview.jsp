@@ -38,7 +38,13 @@
 							</c:if>
 						</c:forEach>
 					</p>
-					<p></p>
+					<p STYLE="font-size: 8pt;">
+						  <c:if test="${dir ne 'aaa'}">
+						    <a href="AddRemove?fund=${file.FUNDNAME}&dir=${dir}&action=add&from=PDFOverview">add to favorites</a><br />
+						  </c:if>
+					      <a href="AddRemove?fund=${file.FUNDNAME}&dir=${dir}&action=delete&from=PDFOverview">delete</a>
+					</p>
+
 					</p></td>
 				<td width="10px">&nbsp;</td>
 				<td valign="top"><img alt=""

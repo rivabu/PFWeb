@@ -30,6 +30,8 @@ public class Constants {
 	public static String KOERSENDIR = props().getProperty("KOERSENDIR");;
 	public static String IMAGESDIR = props().getProperty("IMAGESDIR");
 	public static String TRANSACTIONDIR = props().getProperty("TRANSACTIONDIR");
+    public static String FAVORITESDIR = props().getProperty("FAVORITESDIR");
+	
     public static String REAL_TRANSACTIONDIR = props().getProperty("REAL_TRANSACTIONDIR");;
 	//public static String FUND_PROPERTIESDIR = props().getProperty("FUND_PROPERTIESDIR");
     public static String INTRADAY_KOERSENDIR = props().getProperty("INTRADAY_KOERSENDIR");

@@ -62,11 +62,14 @@ public class PFGenerator {
         String imageFile = Constants.IMAGESDIR + fundName + "_" + turningPoint + "_" + stepSize + Constants.PNG;
 
         removeColumns(PFData, maxColumns);
-        
+        ImageResponse imageResponse = null;
         ModelInfo modelInfo = calculateModelInfo(PFData);
-
-        ImageResponse imageResponse = getImage(PFData, modelInfo, stepSize);
-
+        try {
+            imageResponse = getImage(PFData, modelInfo, stepSize);
+        } catch (Exception e) {
+            System.out.println("error creating pfimage for file: " + fundName);
+            e.printStackTrace();
+        }
         if (saveImage) {
             saveImage(imageFile, imageResponse.getBuffer());
         }
@@ -74,7 +77,7 @@ public class PFGenerator {
 
     }
 
-    private void saveImage(String imageFile, BufferedImage buffer) {
+    private void saveImage(String imageFile, BufferedImage buffer)  {
         try {
             BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(imageFile));
             ImageIO.write(buffer, "png", out);
@@ -84,7 +87,7 @@ public class PFGenerator {
         }
     }
 
-    private ImageResponse getImage(ArrayList<Modelregel> PFData, ModelInfo modelInfo, float stepSize) {
+    private ImageResponse getImage(ArrayList<Modelregel> PFData, ModelInfo modelInfo, float stepSize) throws Exception {
         Levels levels = Levels.getInstance();
         ImageResponse imageResponse = new ImageResponse();
         Modelregel FirstPFRegel = (Modelregel) PFData.get(modelInfo.getFirstModelRule());
@@ -185,7 +188,7 @@ public class PFGenerator {
     }
 
     private void removeColumns(ArrayList<Modelregel> data, int maxColumns) {
-        if (maxColumns > 0) {
+        if ((maxColumns > 0) && (data.size() > 1)) {
             int maxColumnInData = ((Modelregel) data.get(data.size() - 1)).getKolomnr();
             if (maxColumnInData > maxColumns) {
                 int firstColumnNumber = maxColumnInData - maxColumns;
