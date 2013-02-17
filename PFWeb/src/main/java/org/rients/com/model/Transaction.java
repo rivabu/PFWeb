@@ -6,6 +6,10 @@
  */
 package org.rients.com.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.rients.com.utils.MathFunctions;
 
 /**
@@ -23,6 +27,22 @@ public class Transaction {
     public int numberOfDays;
     public Type type; // LONG, SHORT
     public int pieces;
+    
+    
+    public Transaction() {
+        super();
+    }
+    
+    public Transaction(String fundName, int startDate, int endDate, float startRate, float endRate, int pieces, String type) {
+        super();
+        this.fundName = fundName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startRate = startRate;
+        this.endRate = endRate;
+        this.type = Type.valueOf(type);
+        this.pieces = pieces;
+    }
     
     public float getScorePerc() {
         int value = 1;
@@ -43,13 +63,19 @@ public class Transaction {
     
     public String toString() {
         String sep = ",";
-        String sign = "+";
-        String temp =
-            sign+sep+startDate + sep+ endDate + sep + startRate + sep + endRate + sep + type + sep + MathFunctions.round(getScorePerc());
 
-        return temp;
+        String string =
+            startDate + sep+ endDate + sep + startRate + sep + endRate + sep + pieces + sep + type + sep + MathFunctions.round(getScorePerc())  + sep + MathFunctions.round(getScoreAbs());
+
+        return string;
     }
 
+    @SuppressWarnings("unchecked")
+    public List<Transaction> sort(List<Transaction> transactions) {
+        Collections.sort((ArrayList<Transaction>) transactions, new TransactionComparator());
+        return transactions;
+    }
+    
 	public float getStartRate() {
     	return startRate;
     }

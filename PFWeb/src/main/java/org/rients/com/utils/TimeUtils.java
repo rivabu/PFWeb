@@ -29,11 +29,11 @@ public class TimeUtils {
 
         return myDate;
     }
-    public static String today()
+    public static int today()
     {
       Date date = Calendar.getInstance().getTime();
       SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-      return sdf.format(date);
+      return Integer.parseInt(sdf.format(date));
     }
     public static void main(String args[]) {
         System.out.println(today());

@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.rients.com.constants.Constants;
-import org.rients.com.model.ClosedTransaction;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.DagkoersStatus;
 import org.rients.com.model.Modelregel;
+import org.rients.com.model.Transaction;
 import org.rients.com.services.FileIOServiceImpl;
 
 
@@ -79,23 +79,23 @@ public class ModelFunctions {
     
     public void fillExecutedTransactions(List<Dagkoers> rates) {
         FileIOServiceImpl fileService = new FileIOServiceImpl(null, null);
-        List<ClosedTransaction> transactions =  fileService.readFromTransactiesFile(Constants.REAL_TRANSACTIONDIR, "transacties" + Constants.CSV, fundName);
-        ClosedTransaction trans = null;
+        List<Transaction> transactions =  fileService.readFromTransactiesFile(Constants.REAL_TRANSACTIONDIR, "transacties" + Constants.CSV, fundName);
+        Transaction trans = null;
         boolean found = false;
         int transCount = 0;
         if (transactions.size() > 0) {
             trans = getTrans(transactions, transCount);
             for (int j = 0; j < rates.size(); j++) {
                 Dagkoers koers = rates.get(j);
-                if (koers.getDatumInt() > trans.getStartDateInt() && koers.getDatumInt() <= trans.getEndDateInt()) {
-                    koers.setStatus(DagkoersStatus.valueOf(trans.getLongShort().name().toUpperCase()));
+                if (koers.getDatumInt() > trans.getStartDate() && koers.getDatumInt() <= trans.getEndDate()) {
+                    koers.setStatus(DagkoersStatus.valueOf(trans.getType().toString()));
                     found = true;
                 }
-                if (koers.getDatumInt() == trans.getStartDateInt() && koers.getDatumInt() == trans.getEndDateInt()) {
-                    koers.setStatus(DagkoersStatus.valueOf(trans.getLongShort().name().toUpperCase()));
+                if (koers.getDatumInt() == trans.getStartDate() && koers.getDatumInt() == trans.getEndDate()) {
+                    koers.setStatus(DagkoersStatus.valueOf(trans.getType().toString()));
                     found = true;
                 }
-                if (koers.getDatumInt() > trans.getEndDateInt() && found) {
+                if (koers.getDatumInt() > trans.getEndDate() && found) {
                     found = false;
                     transCount++;
                     trans = getTrans(transactions, transCount);
@@ -108,7 +108,7 @@ public class ModelFunctions {
         updatePFWithFunctionResults(rates);
     }
 
-    private ClosedTransaction getTrans(List<ClosedTransaction> transactions, int index) {
+    private Transaction getTrans(List<Transaction> transactions, int index) {
         if (transactions.size() <= index) {
             return null;
         }

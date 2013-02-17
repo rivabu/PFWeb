@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.commons.io.FileUtils;
-import org.rients.com.model.ClosedTransaction;
 import org.rients.com.model.Dagkoers;
+import org.rients.com.model.Transaction;
 import org.rients.com.utils.TimeUtils;
 
 
@@ -166,9 +166,9 @@ public class FileIOServiceImpl implements FileIOService {
     }
 
     @SuppressWarnings("unchecked")
-    public List<ClosedTransaction> readFromTransactiesFile(String directory, String filename, String fundName) {
+    public List<Transaction> readFromTransactiesFile(String directory, String filename, String fundName) {
         File file = new File(directory + sep + filename);
-        List<ClosedTransaction> transactions = new ArrayList<ClosedTransaction>();
+        List<Transaction> transactions = new ArrayList<Transaction>();
         try {
             if (file.exists()) {
                 List<String> lines = FileUtils.readLines(file, "UTF-8");
@@ -179,13 +179,16 @@ public class FileIOServiceImpl implements FileIOService {
                     String line = i.next();
                     stringtokenizer = new StringTokenizer(line.trim(), ",");
     
-                    if (stringtokenizer.countTokens() >= 4) {
+                    if (stringtokenizer.countTokens() >= 7) {
                         String readFundName = stringtokenizer.nextToken().trim();
-                        String startDate = stringtokenizer.nextToken().trim();
-                        String endDate = stringtokenizer.nextToken().trim();
+                        int startDate = Integer.parseInt(stringtokenizer.nextToken().trim());
+                        int endDate = Integer.parseInt(stringtokenizer.nextToken().trim());
+                        float startRate = Float.parseFloat(stringtokenizer.nextToken().trim());
+                        float endRate = Float.parseFloat(stringtokenizer.nextToken().trim());
+                        int pieces = Integer.parseInt(stringtokenizer.nextToken().trim());
                         String type = stringtokenizer.nextToken().trim();
-                        ClosedTransaction ct = new ClosedTransaction(readFundName, startDate, endDate, type);
-                        if (ct.getEndDate().equals("-1")) {
+                        Transaction ct = new Transaction(readFundName, startDate, endDate, startRate, endRate, pieces, type);
+                        if (ct.getEndDate() == -1) {
                             ct.setEndDate(TimeUtils.today());
                         }
                         if (ct.getFundName().equals(fundName)) {
@@ -198,7 +201,7 @@ public class FileIOServiceImpl implements FileIOService {
             ioe.printStackTrace();
             return null;
         }
-        return new ClosedTransaction().sort(transactions);
+        return new Transaction().sort(transactions);
     }
     /**
      * @param dirName
