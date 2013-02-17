@@ -14,16 +14,16 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.model.Dagkoers;
+import org.rients.com.model.DagkoersStatus;
 import org.rients.com.model.ImageResponse;
+import org.rients.com.model.Levels;
+import org.rients.com.model.ModelInfo;
+import org.rients.com.model.Modelregel;
 import org.rients.com.pfweb.services.modelfunctions.ModelFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import rients.trading.download.model.Dagkoers;
-import rients.trading.download.model.DagkoersStatus;
-import rients.trading.download.model.Levels;
-import rients.trading.download.model.ModelInfo;
-import rients.trading.download.model.Modelregel;
 
 @Service
 public class PFGenerator {

@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.model.ClosedTransaction;
+import org.rients.com.model.Dagkoers;
+import org.rients.com.model.DagkoersStatus;
+import org.rients.com.model.Modelregel;
+import org.rients.com.services.FileIOServiceImpl;
 
-import rients.trading.download.model.ClosedTransaction;
-import rients.trading.download.model.Dagkoers;
-import rients.trading.download.model.DagkoersStatus;
-import rients.trading.download.model.Modelregel;
-import rients.trading.services.FileIOServiceImpl;
 
 public class ModelFunctions {
     

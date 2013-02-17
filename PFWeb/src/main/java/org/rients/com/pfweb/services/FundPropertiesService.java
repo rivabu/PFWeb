@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import rients.trading.download.model.Dagkoers;
+import org.rients.com.model.Dagkoers;
+
 
 public interface FundPropertiesService {
 

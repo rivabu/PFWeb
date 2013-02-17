@@ -15,15 +15,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.model.Categorie;
+import org.rients.com.model.FondsURL;
 import org.rients.com.pfweb.services.FundPropertiesService;
+import org.rients.com.services.DoubleTopAndBottomsLocator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import rients.trading.download.model.Categorie;
-import rients.trading.download.model.FondsURL;
-import rients.trading.services.DoubleTopAndBottomsLocator;
 
 @Controller
 @RequestMapping()

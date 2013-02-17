@@ -9,12 +9,12 @@ package org.rients.com.pfweb.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.rients.com.model.Dagkoers;
+import org.rients.com.model.Levels;
+import org.rients.com.model.Modelregel;
 import org.rients.com.pfweb.utils.MathFunctions;
 import org.springframework.stereotype.Service;
 
-import rients.trading.download.model.Dagkoers;
-import rients.trading.download.model.Levels;
-import rients.trading.download.model.Modelregel;
 
 /**
  * @author Rients van Buren

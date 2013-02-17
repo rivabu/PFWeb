@@ -11,11 +11,11 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.model.Dagkoers;
 import org.rients.com.pfweb.utils.MathFunctions;
 import org.rients.com.pfweb.utils.PropertiesUtils;
 import org.springframework.stereotype.Service;
 
-import rients.trading.download.model.Dagkoers;
 
 /**
  * @author Rients

@@ -6,7 +6,8 @@ package org.rients.com.pfweb.utils;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-import rients.trading.download.model.Dagkoers;
+import org.rients.com.model.Dagkoers;
+
 
 
 /**

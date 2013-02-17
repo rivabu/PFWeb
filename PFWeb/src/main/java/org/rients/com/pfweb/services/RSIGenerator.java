@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.graph.RSILineGraph;
 import org.rients.com.indexpredictor.FundDataHolder;
 import org.rients.com.indexpredictor.Matrix;
+import org.rients.com.model.Dagkoers;
 import org.rients.com.model.ImageResponse;
 import org.rients.com.pfweb.utils.FileUtils;
 import org.rients.com.pfweb.utils.MathFunctions;
@@ -13,8 +15,6 @@ import org.rients.com.pfweb.utils.RSI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import rients.trading.download.model.Dagkoers;
-import rients.trading.graph.RSILineGraph;
 
 @Service
 public class RSIGenerator {

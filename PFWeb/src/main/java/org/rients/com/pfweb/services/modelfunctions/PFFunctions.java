@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.rients.com.model.Dagkoers;
+import org.rients.com.model.Modelregel;
+import org.rients.com.model.Transaction;
 import org.rients.com.pfweb.services.HandleFundData;
 import org.rients.com.pfweb.services.HandlePF;
 
-import rients.trading.download.model.Dagkoers;
-import rients.trading.download.model.Modelregel;
-import rients.trading.download.model.Transaction;
 
 public class PFFunctions {
 

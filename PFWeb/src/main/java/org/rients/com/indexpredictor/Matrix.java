@@ -2,7 +2,8 @@ package org.rients.com.indexpredictor;
 
 import java.util.List;
 
-import rients.trading.download.model.Dagkoers;
+import org.rients.com.model.Dagkoers;
+
 
 public class Matrix {
 

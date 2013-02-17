@@ -13,16 +13,16 @@ import javax.imageio.ImageIO;
 import org.rients.com.constants.Constants;
 import org.rients.com.indexpredictor.FundDataHolder;
 import org.rients.com.indexpredictor.Matrix;
+import org.rients.com.model.Dagkoers;
+import org.rients.com.model.DagkoersStatus;
 import org.rients.com.model.ImageResponse;
+import org.rients.com.model.Modelregel;
+import org.rients.com.model.Transaction;
 import org.rients.com.pfweb.services.modelfunctions.PFRules;
 import org.rients.com.pfweb.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import rients.trading.download.model.Dagkoers;
-import rients.trading.download.model.DagkoersStatus;
-import rients.trading.download.model.Modelregel;
-import rients.trading.download.model.Transaction;
 
 @Service
 public class HighLowImageGenerator {
