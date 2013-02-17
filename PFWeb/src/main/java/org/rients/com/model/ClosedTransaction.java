@@ -7,6 +7,12 @@ import java.util.List;
 
 public class ClosedTransaction {
     
+    
+    String startDate;
+    String endDate;
+    String fundName;
+    Type longShort;
+    
     public List<ClosedTransaction> sort(List<ClosedTransaction> transactions) {
         Collections.sort((ArrayList<ClosedTransaction>) transactions, new ClosedTransactionSort());
         return transactions;
@@ -23,10 +29,7 @@ public class ClosedTransaction {
 
     }
 
-    String startDate;
-    String endDate;
-    String fundName;
-    LongShort longShort;
+
     
     public ClosedTransaction() {
         super();
@@ -36,7 +39,7 @@ public class ClosedTransaction {
         this.startDate = startDate;
         this.endDate = endDate;
         this.fundName = fundName;
-        this.longShort = LongShort.valueOf(type);
+        this.longShort = Type.valueOf(type);
     }
     
     /**
@@ -86,13 +89,13 @@ public class ClosedTransaction {
     /**
      * @return the longShort
      */
-    public LongShort getLongShort() {
+    public Type getLongShort() {
         return longShort;
     }
     /**
      * @param longShort the longShort to set
      */
-    public void setLongShort(LongShort longShort) {
+    public void setLongShort(Type longShort) {
         this.longShort = longShort;
     }
 }

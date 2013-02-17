@@ -51,14 +51,14 @@ public class PFFunctions {
             if(!bought && isPlus(modelregel) /*&& modelregel.getRijnr() > vorigeTop_1.getRijnr() */&& boughtColumn != modelregel.getKolomnr())
             {
                 trans = new Transaction();
-                trans.setStartDate(modelregel.getDatum());
+                trans.setStartDate(Integer.parseInt(modelregel.getDatum()));
                 trans.setStartRate(modelregel.getKoers());
                 boughtColumn = modelregel.getKolomnr();
                 bought = true;
                 continue;
             }
             if(bought && (!isPlus(modelregel) || last)) {
-                trans.setEndDate(modelregel.getDatum());
+                trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
                 trans.setEndRate(modelregel.getKoers());
                 transactions.add(trans);
                 bought = false;
@@ -112,13 +112,13 @@ public class PFFunctions {
             if(!bought && isPlus(modelregel) && modelregel.getRijnr() > vorigeTop_1.getRijnr() && vorigeTop_1.getRijnr() >= vorigeTop_2.getRijnr())
             {
                 trans = new Transaction();
-                trans.setStartDate(modelregel.getDatum());
+                trans.setStartDate(Integer.parseInt(modelregel.getDatum()));
                 trans.setStartRate(modelregel.getKoers());
                 bought = true;
                 continue;
             }
             if(bought && (!isPlus(modelregel) || last)) {
-                trans.setEndDate(modelregel.getDatum());
+                trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
                 trans.setEndRate(modelregel.getKoers());
                 transactions.add(trans);
                 bought = false;
@@ -156,13 +156,13 @@ public class PFFunctions {
             if(!bought && !isPlus(modelregel) /*&& modelregel.getRijnr() < vorigeBodem_1.getRijnr()*/)
             {
                 trans = new Transaction();
-                trans.setStartDate(modelregel.getDatum());
+                trans.setStartDate(Integer.parseInt(modelregel.getDatum()));
                 trans.setStartRate(modelregel.getKoers());
                 bought = true;
                 continue;
             }
             if(bought && (isPlus(modelregel) || last)) {
-                trans.setEndDate(modelregel.getDatum());
+                trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
                 trans.setEndRate(modelregel.getKoers());
                 transactions.add(trans);
                 bought = false;

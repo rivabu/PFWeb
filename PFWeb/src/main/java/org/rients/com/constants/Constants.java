@@ -22,8 +22,6 @@ public class Constants {
 	public static String PNG = ".png";
 	public static String PROPERTIES = ".properties";
 	public static String SEP = "\\";
-	public static int LONG = 1;
-	public static int SHORT = -1;
 	public static int NOTHING = 0;
 
     public static String ALLKOERSENDIR = props().getProperty("ALLKOERSENDIR");;

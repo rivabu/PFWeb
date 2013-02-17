@@ -1,6 +1,6 @@
-package org.rients.com.transactionOverview;
+package org.rients.com.executables;
 
-public class TransactionConverter {
+public class TransactionExcelConverterExecutor {
 
     /**
      * @param args

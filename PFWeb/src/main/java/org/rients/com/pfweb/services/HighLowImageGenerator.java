@@ -18,6 +18,7 @@ import org.rients.com.model.DagkoersStatus;
 import org.rients.com.model.ImageResponse;
 import org.rients.com.model.Modelregel;
 import org.rients.com.model.Transaction;
+import org.rients.com.model.Type;
 import org.rients.com.pfweb.services.modelfunctions.PFRules;
 import org.rients.com.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -209,11 +210,11 @@ public class HighLowImageGenerator {
     private int transactionIsPlus(List<Transaction> transactions, String date) {
         for (Transaction trans : transactions) {
             if ((Integer.valueOf(trans.getStartDate()) <= Integer.valueOf(date))
-                    && (Integer.valueOf(trans.getEndDate()) >= Integer.valueOf(date)) && trans.getType() == Constants.SHORT) {
+                    && (Integer.valueOf(trans.getEndDate()) >= Integer.valueOf(date)) && trans.getType() == Type.SHORT) {
                 return -1;
             }
             if ((Integer.valueOf(trans.getStartDate()) <= Integer.valueOf(date))
-                    && (Integer.valueOf(trans.getEndDate()) >= Integer.valueOf(date)) && trans.getType() == Constants.LONG) {
+                    && (Integer.valueOf(trans.getEndDate()) >= Integer.valueOf(date)) && trans.getType() == Type.LONG) {
                 return 1;
             }
         }

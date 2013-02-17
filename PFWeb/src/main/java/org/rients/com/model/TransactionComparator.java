@@ -1,4 +1,4 @@
-package org.rients.com.transactionOverview;
+package org.rients.com.model;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -13,8 +13,8 @@ public class TransactionComparator implements Comparator, Serializable {
 	private static final long serialVersionUID = -8430634587512807970L;
 
 	public int compare(Object o1, Object o2) {
-        int date1 = ((Transaction) o1).getKoopKoers().getDatum();
-        int date2 = ((Transaction) o2).getKoopKoers().getDatum();
+        int date1 = ((Transaction) o1).getStartDate();
+        int date2 = ((Transaction) o2).getStartDate();
 
         if (date1 > date2) {
             return 1;

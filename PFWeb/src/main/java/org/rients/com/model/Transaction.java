@@ -15,41 +15,41 @@ import org.rients.com.utils.MathFunctions;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class Transaction {
-    public String startDate;
-    public String endDate;
+    public String fundName;
+    public int startDate;
+    public int endDate;
     public float startRate;
     public float endRate;
-    public String buyComment;
-    public String sellComment;
     public int numberOfDays;
-    public int type; // 1 = long,  -1=short
+    public Type type; // LONG, SHORT
+    public int pieces;
     
-    public float getScore() {
-    	float score = ((endRate - startRate) / endRate) * 100 * type;
+    public float getScorePerc() {
+        int value = 1;
+        if (type == Type.SHORT) {
+            value = -1;
+        }
+    	float score = ((endRate - startRate) / endRate) * 100 * value;
     	return score;
     }
+
+    public float getScoreAbs() {
+
+        float score = (endRate - startRate)  * pieces;
+        return score;
+    }
+
     
     
     public String toString() {
         String sep = ",";
         String sign = "+";
         String temp =
-            sign+sep+startDate + sep+ endDate + sep + startRate + sep + endRate + sep + type + sep + MathFunctions.round(getScore());
+            sign+sep+startDate + sep+ endDate + sep + startRate + sep + endRate + sep + type + sep + MathFunctions.round(getScorePerc());
 
         return temp;
     }
-	public String getStartDate() {
-    	return startDate;
-    }
-	public void setStartDate(String startDate) {
-    	this.startDate = startDate;
-    }
-	public String getEndDate() {
-    	return endDate;
-    }
-	public void setEndDate(String endDate) {
-    	this.endDate = endDate;
-    }
+
 	public float getStartRate() {
     	return startRate;
     }
@@ -62,29 +62,82 @@ public class Transaction {
 	public void setEndRate(float endRate) {
     	this.endRate = endRate;
     }
-	public String getBuyComment() {
-    	return buyComment;
-    }
-	public void setBuyComment(String buyComment) {
-    	this.buyComment = buyComment;
-    }
-	public String getSellComment() {
-    	return sellComment;
-    }
-	public void setSellComment(String sellComment) {
-    	this.sellComment = sellComment;
-    }
+
 	public int getNumberOfDays() {
     	return numberOfDays;
     }
 	public void setNumberOfDays(int numberOfDays) {
     	this.numberOfDays = numberOfDays;
     }
-	public int getType() {
+	public Type getType() {
     	return type;
     }
-	public void setType(int type) {
+	public void setType(Type type) {
     	this.type = type;
+    }
+
+
+    /**
+     * @return the startDate
+     */
+    public int getStartDate() {
+        return startDate;
+    }
+
+
+    /**
+     * @param startDate the startDate to set
+     */
+    public void setStartDate(int startDate) {
+        this.startDate = startDate;
+    }
+
+
+    /**
+     * @return the endDate
+     */
+    public int getEndDate() {
+        return endDate;
+    }
+
+
+    /**
+     * @param endDate the endDate to set
+     */
+    public void setEndDate(int endDate) {
+        this.endDate = endDate;
+    }
+
+
+    /**
+     * @return the fundName
+     */
+    public String getFundName() {
+        return fundName;
+    }
+
+
+    /**
+     * @param fundName the fundName to set
+     */
+    public void setFundName(String fundName) {
+        this.fundName = fundName;
+    }
+
+
+    /**
+     * @return the pieces
+     */
+    public int getPieces() {
+        return pieces;
+    }
+
+
+    /**
+     * @param pieces the pieces to set
+     */
+    public void setPieces(int pieces) {
+        this.pieces = pieces;
     }
  
 }

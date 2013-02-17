@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.rients.com.constants.Constants;
 import org.rients.com.model.DagkoersStatus;
 import org.rients.com.model.Modelregel;
 import org.rients.com.model.Transaction;
+import org.rients.com.model.Type;
 import org.rients.com.utils.FileUtils;
 
 
@@ -89,7 +89,7 @@ public class PFRules {
         float totalScore = 0;
         List<Transaction> transactions = new ArrayList<Transaction>();
         Modelregel lastModelregel = null;
-        String switchDatum = null;
+        int switchDatum = 0;
         float swithKoers = 0f;
         for(Modelregel modelregel: pfData) {
             // kolomnr starts with 1
@@ -99,55 +99,55 @@ public class PFRules {
             if (modelregel.getKolomnr() >=  2) {
                 if (modelregel.isStijger() ) {
                      // sluit verkooptrans
-                     if (trans != null && trans.getType() == Constants.SHORT) {
+                     if (trans != null && trans.getType() == Type.SHORT) {
                          trans.setEndDate(switchDatum);
                          trans.setEndRate(swithKoers);
                          transactions.add(trans);
-                         totalScore = totalScore + trans.getScore();
+                         totalScore = totalScore + trans.getScorePerc();
                      }
-                     if (trans == null || trans.getType() == Constants.SHORT) {
+                     if (trans == null || trans.getType() == Type.SHORT) {
                          trans = new Transaction();
                          trans.setStartDate(switchDatum);
                          trans.setStartRate(swithKoers);
-                         trans.setType(Constants.LONG);
+                         trans.setType(Type.LONG);
                      }
                 } 
                 else 
                 {
                     // sluit kooptrans
-                    if (trans != null && trans.getType() == Constants.LONG) {
+                    if (trans != null && trans.getType() == Type.LONG) {
                          trans.setEndDate(switchDatum);
                          trans.setEndRate(swithKoers);
                          transactions.add(trans);
-                         totalScore = totalScore + trans.getScore();
+                         totalScore = totalScore + trans.getScorePerc();
                      }
-                    if (trans == null || trans.getType() == Constants.LONG) {
+                    if (trans == null || trans.getType() == Type.LONG) {
                         // nu verkopen
                         trans = new Transaction();
                         trans.setStartDate(switchDatum);
                         trans.setStartRate(swithKoers);
-                        trans.setType(Constants.SHORT);
+                        trans.setType(Type.SHORT);
                     }
                 }
             }
             if (modelregel.isStijger()) {
-                switchDatum = modelregel.getHoogsteDatum();
+                switchDatum = Integer.parseInt(modelregel.getHoogsteDatum());
                 swithKoers= modelregel.getHoogsteKoers();
             } else {
-                switchDatum = modelregel.getLaagsteDatum();
+                switchDatum = Integer.parseInt(modelregel.getLaagsteDatum());
                 swithKoers = modelregel.getLaagsteKoers();
             }
         }
         if (trans != null) {
             if (lastModelregel.isStijger()) {
-                trans.setEndDate(lastModelregel.getHoogsteDatum());
+                trans.setEndDate(Integer.parseInt(lastModelregel.getHoogsteDatum()));
                 trans.setEndRate(lastModelregel.getHoogsteKoers());
             } else {
-                trans.setEndDate(lastModelregel.getLaagsteDatum());
+                trans.setEndDate(Integer.parseInt(lastModelregel.getLaagsteDatum()));
                 trans.setEndRate(lastModelregel.getLaagsteKoers());
             }
             transactions.add(trans);
-            totalScore = totalScore + trans.getScore();
+            totalScore = totalScore + trans.getScorePerc();
         }
         
         if (saveToFile) {
