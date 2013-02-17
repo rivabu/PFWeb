@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.rients.com.constants.Constants;
 import org.rients.com.pfweb.services.FundPropertiesService;
-import org.rients.com.pfweb.utils.FileUtils;
+import org.rients.com.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

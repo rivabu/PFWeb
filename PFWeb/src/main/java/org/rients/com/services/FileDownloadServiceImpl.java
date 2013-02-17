@@ -17,7 +17,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
-import org.rients.com.pfweb.utils.PropertiesUtils;
+import org.rients.com.utils.PropertiesUtils;
 import org.rients.com.utils.StackTraceUtils;
 import org.rients.com.utils.URLUtilities;
 

@@ -9,9 +9,9 @@ import org.rients.com.indexpredictor.FundDataHolder;
 import org.rients.com.indexpredictor.Matrix;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.ImageResponse;
-import org.rients.com.pfweb.utils.FileUtils;
-import org.rients.com.pfweb.utils.MathFunctions;
-import org.rients.com.pfweb.utils.RSI;
+import org.rients.com.utils.FileUtils;
+import org.rients.com.utils.MathFunctions;
+import org.rients.com.utils.RSI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

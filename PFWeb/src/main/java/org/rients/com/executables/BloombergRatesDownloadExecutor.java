@@ -5,8 +5,8 @@ package org.rients.com.executables;
 
 import java.util.Properties;
 
-import org.rients.com.pfweb.utils.PropertiesUtils;
 import org.rients.com.services.bloomberg.BloombergRatesDownloader;
+import org.rients.com.utils.PropertiesUtils;
 
 
 

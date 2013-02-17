@@ -1,4 +1,4 @@
-package org.rients.com.pfweb.utils;
+package org.rients.com.utils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

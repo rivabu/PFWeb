@@ -14,9 +14,9 @@ import org.rients.com.model.Categorie;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.FondsURL;
 import org.rients.com.pfweb.services.FundPropertiesService;
-import org.rients.com.pfweb.utils.FileUtils;
-import org.rients.com.pfweb.utils.PropertiesUtils;
 import org.rients.com.services.exceptions.ValidationException;
+import org.rients.com.utils.FileUtils;
+import org.rients.com.utils.PropertiesUtils;
 import org.rients.com.utils.StackTraceUtils;
 
 

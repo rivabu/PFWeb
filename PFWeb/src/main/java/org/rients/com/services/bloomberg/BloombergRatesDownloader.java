@@ -11,11 +11,11 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import org.rients.com.constants.Constants;
-import org.rients.com.pfweb.utils.FileUtils;
-import org.rients.com.pfweb.utils.PropertiesUtils;
 import org.rients.com.services.FileDownloadService;
 import org.rients.com.services.FileDownloadServiceImpl;
 import org.rients.com.utils.DateParser;
+import org.rients.com.utils.FileUtils;
+import org.rients.com.utils.PropertiesUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 

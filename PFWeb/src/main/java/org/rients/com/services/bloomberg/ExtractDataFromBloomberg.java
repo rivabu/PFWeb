@@ -2,9 +2,9 @@ package org.rients.com.services.bloomberg;
 
 import java.io.IOException;
 
-import org.rients.com.pfweb.utils.FileUtils;
 import org.rients.com.services.FileDownloadService;
 import org.rients.com.services.FileDownloadServiceImpl;
+import org.rients.com.utils.FileUtils;
 
 
 public class ExtractDataFromBloomberg {

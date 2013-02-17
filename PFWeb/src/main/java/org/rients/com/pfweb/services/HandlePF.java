@@ -12,7 +12,7 @@ import java.util.List;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.Levels;
 import org.rients.com.model.Modelregel;
-import org.rients.com.pfweb.utils.MathFunctions;
+import org.rients.com.utils.MathFunctions;
 import org.springframework.stereotype.Service;
 
 

@@ -14,8 +14,8 @@ import org.apache.log4j.Logger;
 import org.rients.com.model.Categorie;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.FondsURL;
-import org.rients.com.pfweb.utils.MathFunctions;
 import org.rients.com.services.exceptions.ValidationException;
+import org.rients.com.utils.MathFunctions;
 import org.rients.com.utils.TimeUtils;
 
 

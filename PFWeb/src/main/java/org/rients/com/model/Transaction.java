@@ -6,7 +6,7 @@
  */
 package org.rients.com.model;
 
-import org.rients.com.pfweb.utils.MathFunctions;
+import org.rients.com.utils.MathFunctions;
 
 /**
  * @author Rients van Buren

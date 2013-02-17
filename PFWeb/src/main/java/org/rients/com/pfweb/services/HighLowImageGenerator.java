@@ -19,7 +19,7 @@ import org.rients.com.model.ImageResponse;
 import org.rients.com.model.Modelregel;
 import org.rients.com.model.Transaction;
 import org.rients.com.pfweb.services.modelfunctions.PFRules;
-import org.rients.com.pfweb.utils.FileUtils;
+import org.rients.com.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

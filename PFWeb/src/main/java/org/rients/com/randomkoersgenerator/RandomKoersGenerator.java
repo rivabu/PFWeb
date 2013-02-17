@@ -11,11 +11,11 @@ import org.rients.com.model.Dagkoers;
 import org.rients.com.pfweb.services.FundPropertiesService;
 import org.rients.com.pfweb.services.FundPropertiesServiceImpl;
 import org.rients.com.pfweb.services.HandleFundData;
-import org.rients.com.pfweb.utils.FileUtils;
-import org.rients.com.pfweb.utils.MathFunctions;
-import org.rients.com.pfweb.utils.PropertiesUtils;
 import org.rients.com.services.FileIOService;
 import org.rients.com.services.FileIOServiceImpl;
+import org.rients.com.utils.FileUtils;
+import org.rients.com.utils.MathFunctions;
+import org.rients.com.utils.PropertiesUtils;
 import org.rients.com.utils.Shuffle;
 import org.rients.com.utils.Variance;
 

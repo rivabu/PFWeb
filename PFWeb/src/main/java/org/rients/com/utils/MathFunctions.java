@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.rients.com.pfweb.utils;
+package org.rients.com.utils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

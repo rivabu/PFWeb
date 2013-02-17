@@ -15,8 +15,8 @@ import org.rients.com.model.Modelregel;
 import org.rients.com.pfweb.services.HandleFundData;
 import org.rients.com.pfweb.services.HandlePF;
 import org.rients.com.pfweb.services.modelfunctions.ModelFunctions;
-import org.rients.com.pfweb.utils.FileUtils;
-import org.rients.com.pfweb.utils.PropertiesUtils;
+import org.rients.com.utils.FileUtils;
+import org.rients.com.utils.PropertiesUtils;
 
 
 public class DoubleTopAndBottomsLocator {
