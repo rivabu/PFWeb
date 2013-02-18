@@ -63,6 +63,8 @@ public class Constants {
     public static String LAST_TEN_DAYS = "lastTenDays";
     public static String ISCURRENCY = "isCurrency";
     
+    public static String TRANSACTIONS_EXCEL = props().getProperty("TRANSACTIONS_EXCEL");
+    public static String ALL_TRANSACTIONS = props().getProperty("ALL_TRANSACTIONS");
 
 	
 }

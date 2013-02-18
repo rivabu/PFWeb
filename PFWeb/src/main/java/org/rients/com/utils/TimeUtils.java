@@ -35,6 +35,12 @@ public class TimeUtils {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
       return Integer.parseInt(sdf.format(date));
     }
+    
+    public static int dateToInt(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        return Integer.parseInt(sdf.format(date));
+    }
+    
     public static void main(String args[]) {
         System.out.println(today());
     }

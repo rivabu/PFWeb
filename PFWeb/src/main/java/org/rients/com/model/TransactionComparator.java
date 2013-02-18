@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class TransactionComparator implements Comparator, Serializable {
+public class TransactionComparator implements Comparator<Object>, Serializable {
     /**
 	 * 
 	 */

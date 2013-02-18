@@ -70,7 +70,6 @@ public class Transaction {
         return string;
     }
 
-    @SuppressWarnings("unchecked")
     public List<Transaction> sort(List<Transaction> transactions) {
         Collections.sort((ArrayList<Transaction>) transactions, new TransactionComparator());
         return transactions;

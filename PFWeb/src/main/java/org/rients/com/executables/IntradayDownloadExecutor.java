@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
@@ -96,7 +97,7 @@ public class IntradayDownloadExecutor {
 
             Object result = expr.evaluate(doc, XPathConstants.NODESET);
             NodeList nodes = (NodeList) result;
-            TreeMap tm = new TreeMap();
+            TreeMap<String, String> tm = new TreeMap<String, String>();
             String time = "";
             String koers = "";
             for (int i = 0; i < nodes.getLength(); i++) {
@@ -109,14 +110,14 @@ public class IntradayDownloadExecutor {
                     tm.put(time, koers);
                 }
             }
-            Set set = tm.entrySet();
+            Set<Entry<String, String>> set = tm.entrySet();
             // Get an iterator
-            Iterator i = set.iterator();
+            Iterator<Entry<String, String>> i = set.iterator();
             // Display elements
             ArrayList<String> lines = new ArrayList<String>();
             String closeKoersNew = "";
             while (i.hasNext()) {
-                Map.Entry me = (Map.Entry) i.next();
+                Map.Entry<String, String> me = i.next();
                 closeKoersNew = (String) me.getValue();
                 lines.add(me.getKey() + "," + closeKoersNew);
 

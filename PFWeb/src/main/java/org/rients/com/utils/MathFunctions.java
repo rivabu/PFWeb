@@ -87,11 +87,8 @@ public class MathFunctions {
     }
 
     public static double round(double d, int decimalPlace) {
-        // see the Javadoc about why we use a String in the constructor
-        // http://java.sun.com/j2se/1.5.0/docs/api/java/math/BigDecimal.html#BigDecimal(double)
         BigDecimal bd = new BigDecimal(Double.toString(d));
         bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
-
         return bd.doubleValue();
     }
 
@@ -99,10 +96,16 @@ public class MathFunctions {
         return divide(new Double(koers1).doubleValue(), new Double(koers2).doubleValue());
 
     }
-        public static String divide(double koers1, double koers2) {
+    
+    public static float divide(double koers, int value) {
+        double temp = koers / new Double(value).doubleValue();
+        String rounded = round(temp, 2) + "";
+        return new Float(rounded).floatValue();
+    }
+    
+    public static String divide(double koers1, double koers2) {
         double temp = ((koers2 / koers1) * 100) - 100;
         String rounded = round(temp, 2) + "";
-
         return rounded;
     }
 
