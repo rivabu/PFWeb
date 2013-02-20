@@ -7,6 +7,7 @@ public class TransactionExcel {
     private String fundName;
     private int datum;
     private float koers;
+    private Type type; // long short
     /**
      * @return the number
      */
@@ -78,6 +79,12 @@ public class TransactionExcel {
      */
     public void setKoers(float koers) {
         this.koers = koers;
+    }
+    public void setType(Type type) {
+        this.type = type;
+    }
+    public Type getType() {
+        return type;
     }
     
 }

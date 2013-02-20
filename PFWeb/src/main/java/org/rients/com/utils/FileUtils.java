@@ -56,7 +56,7 @@ public final class FileUtils
 		}
 	}
 	
-	public static void writeToFile(String fileName, List<String> lines, String header)
+	public static void writeToFile(String fileName, List<?> lines, String header)
 	{
 		if (fileName != null)
 			{
@@ -70,7 +70,7 @@ public final class FileUtils
 					if(header != null)
 					    file.println(header);
 				    for(int i=0; i<lines.size(); i++)
-					    file.println(lines.get(i));
+					    file.println(lines.get(i).toString());
 					file.close();
 				}
 			} catch (IOException e)
@@ -80,7 +80,7 @@ public final class FileUtils
 		}
 	}
 	
-	public static <E> void writeToFile(String fileName, List<String> lines)
+	public static <E> void writeToFile(String fileName, List<?> lines)
 	{
 		writeToFile(fileName, lines, null);
 	}

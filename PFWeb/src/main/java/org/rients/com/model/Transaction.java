@@ -19,6 +19,8 @@ import org.rients.com.utils.MathFunctions;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class Transaction {
+    public int buyId;
+    public int sellId;
     public String fundName;
     public int startDate;
     public int endDate;
@@ -33,23 +35,24 @@ public class Transaction {
         super();
     }
     
-    public Transaction(String fundName, int startDate, int endDate, float startRate, float endRate, int pieces, String type) {
+    public Transaction(String fundName, int startDate, int buyId, float startRate, int pieces, Type type) {
         super();
         this.fundName = fundName;
         this.startDate = startDate;
-        this.endDate = endDate;
+        this.buyId = buyId;
         this.startRate = startRate;
-        this.endRate = endRate;
-        this.type = Type.valueOf(type);
+        this.type = type;
         this.pieces = pieces;
     }
     
+    public void addSellInfo(int endDate, int sellId, float endRate) {
+        this.endDate = endDate;
+        this.sellId = sellId;
+        this.endRate = endRate;
+    }
+    
     public float getScorePerc() {
-        int value = 1;
-        if (type == Type.SHORT) {
-            value = -1;
-        }
-    	float score = ((endRate - startRate) / endRate) * 100 * value;
+    	float score = ((endRate - startRate) / endRate) * 100;
     	return score;
     }
 
@@ -65,7 +68,7 @@ public class Transaction {
         String sep = ",";
 
         String string =
-            startDate + sep+ endDate + sep + startRate + sep + endRate + sep + pieces + sep + type + sep + MathFunctions.round(getScorePerc())  + sep + MathFunctions.round(getScoreAbs());
+            startDate + sep + endDate + sep + pieces + sep + fundName +  sep + buyId + sep + startRate + sep + endRate +  sep + type + sep + MathFunctions.round(getScorePerc()) + sep + MathFunctions.round(getScoreAbs());
 
         return string;
     }
@@ -163,6 +166,34 @@ public class Transaction {
      */
     public void setPieces(int pieces) {
         this.pieces = pieces;
+    }
+
+    /**
+     * @return the buyId
+     */
+    public int getBuyId() {
+        return buyId;
+    }
+
+    /**
+     * @param buyId the buyId to set
+     */
+    public void setBuyId(int buyId) {
+        this.buyId = buyId;
+    }
+
+    /**
+     * @return the sellId
+     */
+    public int getSellId() {
+        return sellId;
+    }
+
+    /**
+     * @param sellId the sellId to set
+     */
+    public void setSellId(int sellId) {
+        this.sellId = sellId;
     }
  
 }
