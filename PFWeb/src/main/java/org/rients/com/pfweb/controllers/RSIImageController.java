@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping()
  
-public class RSIImage  {
+public class RSIImageController  {
     
     @Autowired
     RSIGenerator rSIGenerator;

@@ -32,19 +32,21 @@ public class TransactionExcelConverterExecutor {
     }
     
     private void process() {
-        ArrayList<TransactionExcel> transExcel = readExcel();
+        
+        String filenameXLS = Constants.TRANSACTIONDIR + Constants.SEP + Constants.TRANSACTIONS_EXCEL;
+        ArrayList<TransactionExcel> transExcel = readExcel(filenameXLS);
         Collections.reverse(transExcel);
         System.out.println(transExcel.size());
         ArrayList<Transaction> transactions = convert(transExcel);
         System.out.println(transactions.size());
-        String filename = Constants.ALL_TRANSACTIONS;
+        String filename = Constants.TRANSACTIONDIR + Constants.SEP + Constants.ALL_TRANSACTIONS;
         FileUtils.writeToFile(filename, transactions);
     }
     
     private ArrayList<Transaction> convert(ArrayList<TransactionExcel> transExcel) {
         ArrayList<Transaction> transactions = new ArrayList<Transaction>();
         Iterator<TransactionExcel> iterExcel = transExcel.iterator();
-
+        // voeg alle buys toe als transacties
         while (iterExcel.hasNext()) {
             TransactionExcel transOld = iterExcel.next();
             if (transOld.getBuySell() == BuySell.BUY) {
@@ -58,8 +60,10 @@ public class TransactionExcelConverterExecutor {
         while (iterNew.hasNext()) {
             Transaction trans = iterNew.next();
             float totalPrice = 0;
+            boolean allSellingTransFound = false;
             if (transExcel.size() == 0) {
                 iterNew.remove();
+                continue;
             }
             iterExcel = transExcel.iterator();
             int numbersToSell = trans.getPieces();
@@ -80,11 +84,13 @@ public class TransactionExcelConverterExecutor {
                     if (numbersToSell == 0) {
                         iterExcel.remove();
                         totalPrice = totalPrice + (numberSold * endRate);
+                        allSellingTransFound = true;
                     }
                     // situatie 2
                     if (numbersToSell < 0) {
                         transSell.setPieces(numberSold - numberBought);
                         totalPrice = totalPrice + (numberBought * endRate);
+                        allSellingTransFound = true;
                     }
                     // situatie 3 + 4
                     if (numbersToSell > 0) {
@@ -108,12 +114,23 @@ public class TransactionExcelConverterExecutor {
                                 transSell.setPieces(numberSold - numbersToSell);
                                 totalPrice = totalPrice + numbersToSell * endRate;
                             }
+                            if (numbersToSell <= numberSold) {
+                                allSellingTransFound = true;
+                            }
                             numbersToSell = numbersToSell - numberSold;
                         }     
                     }
-                    endRate = MathFunctions.divide(totalPrice, trans.getPieces());
-                    trans.addSellInfo(endDate, lastSellId, endRate);
+                    if (allSellingTransFound) {
+                        endRate = MathFunctions.divide(totalPrice, trans.getPieces());
+                        trans.addSellInfo(endDate, lastSellId, endRate);
+                    } else {
+                        trans.setPieces(numberSold);
+                        trans.addSellInfo(endDate, lastSellId, endRate);
+                        
+                    }
                 } 
+            } if (trans.getSellId() == 0) {
+                iterNew.remove();
             }
         }
         return transactions;
@@ -138,11 +155,8 @@ public class TransactionExcelConverterExecutor {
      * verkoop 250 a 12
      */
     
-    private ArrayList<TransactionExcel> readExcel() {
+    private ArrayList<TransactionExcel> readExcel(String filename) {
         ArrayList<TransactionExcel> transExcel = new ArrayList<TransactionExcel>();
-        
-        String filename = Constants.TRANSACTIONS_EXCEL;
-        
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(filename);

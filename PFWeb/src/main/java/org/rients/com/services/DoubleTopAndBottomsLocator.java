@@ -34,7 +34,6 @@ public class DoubleTopAndBottomsLocator {
     
     public ArrayList<Categorie> locate(final String type) {
         String dir = getFavouritesDir();
-        @SuppressWarnings("unchecked")
         List<String> subdirs = FileUtils.getSubdirs(dir);
         ArrayList<Categorie> matchedCategoriesList = new ArrayList<Categorie>();
 
@@ -128,7 +127,6 @@ public class DoubleTopAndBottomsLocator {
 
     private boolean handleOneTopsAndBottoms(String dir, String fundName, int turningPoint, float stepSize, String type) {
         
-        boolean topBottomFound = false;
         HandleFundData fundData = new HandleFundData();
         HandlePF handlePF = new HandlePF();
 

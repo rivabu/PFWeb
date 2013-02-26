@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.rients.com.model.Dagkoers;
+import org.rients.com.model.Transaction;
 
 
 
@@ -77,6 +78,7 @@ public interface FileIOService {
     public ArrayList<Dagkoers> readFromSlotKoersenFile(String rootDir, String directory, String filename)
         throws IOException;
 
+    public List<Transaction> readFromTransactiesFile(String directory, String filename, String fundName);
     /**
      * @param dirName
      * @return

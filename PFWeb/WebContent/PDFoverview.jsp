@@ -5,13 +5,29 @@
 
 
 <html>
-
-
-
+  <link rel="stylesheet" type="text/css" href="static/css/global-0.52.css?foo"> 
+  <link rel="stylesheet" type="text/css" href="static/css/overlay.css">
+ <link rel="stylesheet" type="text/css" href="static/css/navbar.css"> 
+  
+  
 <head>
-
+<script src="static/js/jquery.tools.min.js">
+</script>
+<style>
+	/* use a semi-transparent image for the overlay */ 
+	#overlay { background-image:url(http://static.flowplayer.org/img/overlay/transparent.png); 
+		color:#efefef; 
+		height:450px; 
+	} 
+	/* container for external content. uses vertical scrollbar, if needed */ 
+	div.contentWrap { 
+		height:441px; 
+		overflow-y:auto; 
+	}
+</style>
 </head>
 <body>
+<%@ include file="navbar.jsp" %>
 
 	<table border="0" align="left">
 		<c:forEach items="${files}" var="file" varStatus="index">

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * Servlet implementation class Overview.
  */
-public class AddRemoveFavoritesServlet  {
+public class AddRemoveFavoritesController  {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

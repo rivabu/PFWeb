@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * Servlet implementation class Overview.
  */
-public class FileUploadServlet {
+public class FileUploadController {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

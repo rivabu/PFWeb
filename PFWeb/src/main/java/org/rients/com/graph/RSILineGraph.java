@@ -24,6 +24,7 @@ public class RSILineGraph {
         int aantalFunds = matrix.getAantalFunds();
         XYSeries middleLine = new XYSeries("");
         Integer fifty = new Integer(50);
+        // rechte lijn in het midden
         for (int i = 0; i < DAYS; i++) {
             middleLine.add(i, fifty );
         }

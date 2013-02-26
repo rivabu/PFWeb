@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.net.URL;
 import java.net.URLConnection;
@@ -71,7 +72,6 @@ public class FileDownloadServiceImpl implements FileDownloadService {
         BufferedReader bufferedreader = null;
         Properties props = PropertiesUtils.getPropertiesFromClasspath("application.properties");
         boolean useProxy = Boolean.parseBoolean((String)props.getProperty("useproxy"));
-            Object obj = null;
             if (useProxy) {
                 String host = (String)props.getProperty("host");
                 String port = (String)props.getProperty("port");
@@ -86,7 +86,9 @@ public class FileDownloadServiceImpl implements FileDownloadService {
                 URLConnection urlconnection = url.openConnection();
                 urlconnection.setRequestProperty( "User-Agent", "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0; H010818)" );
                 urlconnection.setRequestProperty("Proxy-Authorization", proxyURL);
-                StreamTokenizer streamtokenizer = new StreamTokenizer(urlconnection.getInputStream());
+                
+                Reader r = new BufferedReader(new InputStreamReader(urlconnection.getInputStream()));
+                StreamTokenizer streamtokenizer = new StreamTokenizer(r);
                 streamtokenizer.ordinaryChar(32);
                 streamtokenizer.wordChars(32, 32);
                 streamtokenizer.eolIsSignificant(true);

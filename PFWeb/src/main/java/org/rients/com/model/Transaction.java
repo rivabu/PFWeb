@@ -6,6 +6,7 @@
  */
 package org.rients.com.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,18 +58,36 @@ public class Transaction {
     }
 
     public float getScoreAbs() {
-
         float score = (endRate - startRate)  * pieces;
         return score;
     }
 
+    public String getScorePercStr() {
+        float score = ((endRate - startRate) / endRate) * 100;
+        return MathFunctions.round(score);
+    }
     
+    public BigDecimal getScorePercBD() {
+        float score = ((endRate - startRate) / endRate) * 100;
+        return new BigDecimal(MathFunctions.round(score));
+    }
+    
+
+    public String getScoreAbsStr() {
+        float score = (endRate - startRate)  * pieces;
+        return MathFunctions.round(score);
+    }
+    
+    public BigDecimal getScoreAbsBD() {
+        float score = (endRate - startRate)  * pieces;
+        return new BigDecimal(MathFunctions.round(score));
+    }
     
     public String toString() {
         String sep = ",";
 
         String string =
-            startDate + sep + endDate + sep + pieces + sep + fundName +  sep + buyId + sep + startRate + sep + endRate +  sep + type + sep + MathFunctions.round(getScorePerc()) + sep + MathFunctions.round(getScoreAbs());
+            startDate + sep + endDate + sep + pieces + sep + fundName +  sep + buyId + sep + startRate + sep + endRate +  sep + type + sep + getScorePercStr() + sep + getScoreAbsStr();
 
         return string;
     }
@@ -194,6 +213,10 @@ public class Transaction {
      */
     public void setSellId(int sellId) {
         this.sellId = sellId;
+    }
+    
+    public String getDummy() {
+        return "show graph";
     }
  
 }

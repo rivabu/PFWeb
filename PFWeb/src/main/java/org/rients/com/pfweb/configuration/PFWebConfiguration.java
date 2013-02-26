@@ -6,6 +6,8 @@ import org.rients.com.pfweb.services.HandleFundData;
 import org.rients.com.pfweb.services.HighLowImageGenerator;
 import org.rients.com.pfweb.services.PFGenerator;
 import org.rients.com.pfweb.services.RSIGenerator;
+import org.rients.com.services.FileIOService;
+import org.rients.com.services.FileIOServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -40,21 +42,9 @@ public class PFWebConfiguration {
         return new HandleFundData();
     }
 
-//    @Bean
-//    public ScheduledExecutorFactoryBean scheduledExecutorFactoryBean() {
-//        ScheduledExecutorFactoryBean scheduledFactoryBean = new ScheduledExecutorFactoryBean();
-//        scheduledFactoryBean.setScheduledExecutorTasks(new ScheduledExecutorTask[] {onlineTimeSchedule()});
-//
-//        return scheduledFactoryBean;
-//    }
-//
-//    @Bean
-//    public ScheduledExecutorTask onlineTimeSchedule() {
-//        ScheduledExecutorTask scheduledTask = new ScheduledExecutorTask();
-//        scheduledTask.setDelay(1000);
-//        scheduledTask.setPeriod(60000);
-//        scheduledTask.setRunnable(new MyTimerTask());
-//
-//        return scheduledTask;
-//    }
+    public @Bean
+    FileIOService fileIOService() {
+        return new FileIOServiceImpl();
+    }
+
 }

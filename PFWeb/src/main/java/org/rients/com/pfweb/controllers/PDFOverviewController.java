@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * Servlet implementation class Overview.
  */
-public class PDFOverviewServlet  {
+public class PDFOverviewController  {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

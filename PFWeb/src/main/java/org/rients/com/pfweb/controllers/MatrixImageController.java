@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * Servlet implementation class HitCount.
  */
-public class MatrixImage  {
+public class MatrixImageController  {
 	
 	private static final long serialVersionUID = 1L;
 	

@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 import org.apache.commons.io.FileUtils;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.Transaction;
+import org.rients.com.model.Type;
 import org.rients.com.utils.TimeUtils;
 
 
@@ -24,6 +25,11 @@ import org.rients.com.utils.TimeUtils;
 public class FileIOServiceImpl implements FileIOService {
     private static String sep;
 
+    
+    public FileIOServiceImpl() {
+        super();
+    }
+    
     public FileIOServiceImpl(String rootDir, String tempDir) {
         super();
         this.rootDir = rootDir;
@@ -180,18 +186,22 @@ public class FileIOServiceImpl implements FileIOService {
                     stringtokenizer = new StringTokenizer(line.trim(), ",");
     
                     if (stringtokenizer.countTokens() >= 7) {
-                        String readFundName = stringtokenizer.nextToken().trim();
                         int startDate = Integer.parseInt(stringtokenizer.nextToken().trim());
                         int endDate = Integer.parseInt(stringtokenizer.nextToken().trim());
+                        int pieces = Integer.parseInt(stringtokenizer.nextToken().trim());
+                        String readFundName = stringtokenizer.nextToken().trim();
+                        int id = Integer.parseInt(stringtokenizer.nextToken().trim());
                         float startRate = Float.parseFloat(stringtokenizer.nextToken().trim());
                         float endRate = Float.parseFloat(stringtokenizer.nextToken().trim());
-                        int pieces = Integer.parseInt(stringtokenizer.nextToken().trim());
                         String type = stringtokenizer.nextToken().trim();
-                        Transaction ct = new Transaction(readFundName, startDate, endDate, startRate, endRate, pieces, type);
+                        Transaction ct = new Transaction(readFundName, startDate, id, startRate, pieces, Type.valueOf(type));
+                        ct.setEndDate(endDate);
+                        ct.setEndRate(endRate);
+                        
                         if (ct.getEndDate() == -1) {
                             ct.setEndDate(TimeUtils.today());
                         }
-                        if (ct.getFundName().equals(fundName)) {
+                        if (fundName == null || ct.getFundName().equals(fundName)) {
                             transactions.add(ct);
                         }
                     }
