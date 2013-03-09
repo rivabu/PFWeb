@@ -70,7 +70,8 @@ public class BloombergRatesDownloader {
 
     private void downloadContent() throws Exception {
         String content = fileDownloadService.downloadFile(Constants.BLOOMBERG_COMMODITIES_URL);
-        String firstmatch = "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
+     //   System.out.println(content);
+        String firstmatch = "<table class=\'std_table_module dual_border_data_table\'>"; 
         String lastmatch = "</table>";
         String table = "<div>";
         int indexFirst = 0;

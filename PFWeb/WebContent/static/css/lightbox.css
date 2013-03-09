@@ -1,0 +1,23 @@
+    div#lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: #000;
+            opacity: 0.5;
+            
+    }
+    div#content {
+            display: none;
+            position: absolute;
+            border: 3px solid #0000ff;
+            background: #fff;
+            top: 25%;
+            left: 25%;
+            height: auto;
+            width: auto;
+            opacity: 1.5;
+            padding: 5px;
+    }

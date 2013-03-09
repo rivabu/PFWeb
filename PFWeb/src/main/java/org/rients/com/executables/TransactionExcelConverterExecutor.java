@@ -204,7 +204,7 @@ public class TransactionExcelConverterExecutor {
                     buySell = BuySell.SELL;
                 }
                 Type type = Type.LONG;
-                if (omschrijving.toLowerCase().indexOf("short") != -1) {
+                if ((omschrijving.toLowerCase().indexOf("short") != -1) || (omschrijving.toLowerCase().indexOf(" ts ") != -1)) {
                     type = Type.SHORT;
                 }
                 if (buySell != null) {

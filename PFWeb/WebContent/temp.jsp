@@ -3,69 +3,16 @@
 <html>
 <body>
 <h2>Hello World!</h2>
-</body>
-<c:set var="name" value="expression"/>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus fringilla sem eu tempus. Aliquam vel mi tincidunt diam hendrerit feugiat vitae et lorem. Etiam sed dolor a urna consequat faucibus. Fusce laoreet neque quis velit hendrerit pharetra. Nam in lacus lectus, nec sagittis est. Nunc placerat vehicula quam, ac condimentum sapien lobortis et. Proin aliquet iaculis dui vel tristique. Nulla sodales dignissim nisl eget faucibus. Duis magna elit, fermentum in consequat eu, interdum in purus. Vivamus rutrum tempus nisi in porta. Nulla faucibus porta aliquet. Aenean est lorem, dictum eu euismod eget, congue ultrices sem. Etiam vehicula adipiscing nunc, non blandit velit volutpat et. Vivamus fermentum enim nec dolor ullamcorper a iaculis felis pulvinar.
 
-<c:out value="${name}" /> ${name}
-</html>
+Cras eget lorem a risus pellentesque laoreet nec sit amet ipsum. Donec a quam eu tortor facilisis dictum lobortis ut nibh. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nullam sed neque in eros fringilla dapibus id a mi. Proin aliquam sagittis quam eu faucibus. Integer tempus rhoncus sapien ut semper. Fusce dapibus posuere purus eu pharetra. Donec eget ligula ullamcorper dolor ullamcorper posuere ut sed justo. Sed pulvinar sagittis lobortis. Vestibulum sodales luctus commodo. Fusce pellentesque vestibulum lorem.
 
-<%@ page contentType="text/html" pageEncoding="utf-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+Aenean vel tortor vitae eros auctor bibendum. Ut id placerat dolor. Maecenas non tortor id justo faucibus malesuada. In euismod mauris id odio lobortis id lobortis urna dignissim. Etiam ut tortor id nisl varius tristique cursus nec nisl. Proin dapibus semper nunc, ut rhoncus elit varius ac. Pellentesque vitae diam vel urna blandit pharetra at eu nisi. Sed id volutpat urna. Donec ultricies arcu ac nulla adipiscing in elementum velit dapibus. Fusce eu ante quam, ac pellentesque tortor. Maecenas metus massa, viverra varius tincidunt non, sagittis ac augue. In eget tortor nisi, vel pretium orci. Quisque iaculis vestibulum lectus eget auctor. Aliquam et ornare massa. Morbi elementum nunc eros. In sapien velit, placerat sed rutrum ac, mattis at eros.
 
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
-</head>
-<body>
-<table border="1">
-<table>
-  <c:forEach items="${entryList}" var="blogEntry">
-    <tr><td align="left" class="blogTitle">
-      <c:out value="${blogEntry.title}" escapeXml="false"/>
-    </td></tr>
-    <tr><td align="left" class="blogText">
-      <c:out value="${blogEntry.text}" escapeXml="false"/>
-    </td></tr>
-  </c:forEach>
-</table>
+Ut vulputate, ligula vel lacinia malesuada, sapien orci fringilla lectus, vitae imperdiet dolor ante in nibh. Aenean egestas posuere interdum. Mauris vestibulum rutrum tempus. Nullam eget mi nec tortor fermentum facilisis. Proin libero lectus, blandit a pretium at, porta ut erat. Sed ac nisl eu justo scelerisque vehicula sed id nisl. Maecenas quis nibh id enim interdum rhoncus varius et risus. In hac habitasse platea dictumst. Duis commodo, lorem at tempor tincidunt, erat justo convallis enim, non facilisis sem augue non orci. Etiam fermentum facilisis malesuada. Suspendisse luctus risus non mi euismod ut luctus leo tincidunt. Ut dictum massa sed dui vulputate et pulvinar est tristique. Aliquam quis dolor ullamcorper urna facilisis laoreet vel sagittis enim. Fusce imperdiet sollicitudin dolor, in convallis massa auctor in. Quisque velit felis, elementum eu egestas id, fermentum a sem. Morbi eu ipsum ac tellus euismod consectetur. Fusce euismod mi velit. Donec id magna lectus. Ut id risus risus.
 
-
-<tr>
-<td>
-Tomtom
-</td >
-<td>
-<img alt="" src="PFImage?fund=tomtom&turningPoint=2&stepSize=1" >
-</td >
-<td>
-<img alt="" src="PFImage?fund=tomtom&turningPoint=1&stepSize=1" >
-</td >
-<td>
-<img alt="" src="PFImage?fund=tomtom&turningPoint=1&stepSize=1.5" >
-</td >
-<td>
-<img alt="" src="PFImage?fund=tomtom&turningPoint=1&stepSize=2" >
-</td >
-</tr>
-<tr>
-<td>
-Ahold
-</td >
-<td>
-<img alt="" src="file://d:/PFdata/images/ahold_2_1.0.png" >
-</td >
-<td>
-<img alt="" src="file://d:/PFdata/images/ahold_1_1.0.png" >
-</td >
-<td>
-<img alt="" src="file://d:/PFdata/images/ahold_1_1.5.png" >
-</td >
-<td>
-<img alt="" src="file://d:/PFdata/images/ahold_1_2.0.png" >
-</td >
-</tr>
-</table>
+Aenean sagittis mauris sed nulla varius vitae congue erat aliquam. In lorem dui, feugiat at blandit et, molestie et ligula. Ut in justo in ipsum euismod ullamcorper id id neque. Nunc vel tellus in diam accumsan ornare. Ut aliquet diam quis dui accumsan lobortis. In quis quam nibh, et condimentum ante. Donec nec tellus velit, eu consequat turpis. Suspendisse semper, lectus quis condimentum iaculis, enim libero iaculis lorem, in auctor lacus augue ut elit. Phasellus sodales mauris metus. Nam tellus nisl, pulvinar quis mattis in, dignissim sit amet quam. Etiam vel libero justo, et faucibus quam. Sed placerat placerat magna, quis mattis tortor blandit at. Etiam volutpat orci nisl, ac placerat mauris. Pellentesque et erat a ipsum viverra consectetur sed eget erat. Nullam eu lorem sit amet orci hendrerit facilisis. Nullam cursus, diam sed tincidunt interdum, erat arcu lacinia libero, non adipiscing nisl ipsum non libero. 
 
 </body>
+
 </html>
