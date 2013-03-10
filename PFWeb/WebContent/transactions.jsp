@@ -56,7 +56,7 @@ $( function () {
 		<display:column property="type" title="Type" sortable="true" headerClass="sortable" />
 		<display:column property="scorePercBD" title="Score perc" sortable="true" headerClass="sortable" />
 		<display:column property="scoreAbsBD" title="Score abs" sortable="true" headerClass="sortable" />
-		<display:column property="dummy" escapeXml="false" decorator="org.rients.com.pfweb.controllers.HREFFormatter"/>
+		<display:column property="buyId"  title="Link" escapeXml="false" decorator="org.rients.com.pfweb.controllers.HREFFormatter"/>
 	</display:table>
 		<br />
 	<table>

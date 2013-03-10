@@ -21,7 +21,7 @@ public class HREFFormatter implements DisplaytagColumnDecorator
             */
            public Object decorate(Object columnValue, PageContext pageContext, MediaTypeEnum media) throws DecoratorException
            {
-               return "<a href=\"http://127.0.0.1:8060/PFWeb/overlay.jsp\" class=\"lightbox\">Klik mij</a>";
+               return "<a href=\"http://127.0.0.1:8060/PFWeb/overlay.jsp?id=" + columnValue.toString() + "\" class=\"lightbox\">Klik mij</a>";
            }
 
 }
