@@ -5,27 +5,13 @@
 
 <html>
   <link rel="stylesheet" type="text/css" href="static/css/global-0.52.css?foo"> 
-  <link rel="stylesheet" type="text/css" href="static/css/overlay.css">
  <link rel="stylesheet" type="text/css" href="static/css/navbar.css"> 
   
   
 <head>
-<script src="static/js/jquery.tools.min.js">
-</script>
-<style>
-	/* use a semi-transparent image for the overlay */ 
-	#overlay { background-image:url(http://static.flowplayer.org/img/overlay/transparent.png); 
-		color:#efefef; 
-		height:450px; 
-	} 
-	/* container for external content. uses vertical scrollbar, if needed */ 
-	div.contentWrap { 
-		height:441px; 
-		overflow-y:auto; 
-	}
-</style>
+
 </head>
-<body onload="loaded();">
+<body>
 <%@ include file="navbar.jsp" %>
 
 
@@ -72,33 +58,8 @@
 </table>
 <a href="#top">top</a>
 
-<!-- overlayed element -->
-<div class="apple_overlay" id="overlay">
-	<a class="close">
-	</a>
-	<!-- the external content is loaded inside this tag -->
-	<div class="contentWrap">
-	</div>
-</div>
 
 
-<script>
 
 
-	
-$(function() {
-// if the function argument is given to overlay,
-// it is assumed to be the onBeforeLoad event listener
-$("a[rel]").overlay({
-mask: 'white',
-effect: 'apple',
-onBeforeLoad: function() {
-// grab wrapper element inside content
-var wrap = this.getOverlay().find(".contentWrap");
-// load the page specified in the trigger
-wrap.load(this.getTrigger().attr("href"));
-}
-});
-});
-</script>
 </html>

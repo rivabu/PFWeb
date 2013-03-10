@@ -12,9 +12,7 @@
 					</c:if>	
 					${file.FUNDNAME} ${file.LASTRATE} (${file.PROC_VERSCHIL}%) <br />
 					${file.LASTDATE} <br /> <br />
-					<a href="overlay.jsp?fund=${file.FUNDNAME}&dir=${dir}&turningPoint=2&stepSize=0.75&row=1" rel="#overlay" style="text-decoration: none;">
-				  	modelscore
-					</a><br />
+					<br />
 					<p STYLE="font-size: 8pt;">
 						<c:forEach var="i" begin="0" end="9">
 							<c:if test="${file.lastTenDays[i][2] eq 'highest'}" >
