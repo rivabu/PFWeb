@@ -1,4 +1,4 @@
-package org.rients.com.pfweb.controllers;
+package org.rients.com.pfweb.displaytag;
 
 import javax.servlet.jsp.PageContext;
 
@@ -7,7 +7,7 @@ import org.displaytag.decorator.DisplaytagColumnDecorator;
 import org.displaytag.exception.DecoratorException;
 import org.displaytag.properties.MediaTypeEnum;
 
-public class HREFFormatter implements DisplaytagColumnDecorator
+public class HREFColumnDecorator implements DisplaytagColumnDecorator
        {
        
            /**
