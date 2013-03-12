@@ -11,9 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.rients.com.constants.Constants;
 import org.rients.com.model.FundInfo;
 import org.rients.com.model.ImageResponse;
+import org.rients.com.model.Transaction;
 import org.rients.com.pfweb.services.PFGenerator;
+import org.rients.com.services.FileIOService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,22 +28,38 @@ public class PFImageController {
 	
     @Autowired
     PFGenerator pFGenerator;
+    
+    @Autowired
+    FileIOService fileIOService;
 
     @RequestMapping("/PFImage")
     public  void getPFImage(HttpServletRequest request, 
             HttpServletResponse response) throws IOException {
     	
-    	
-    	String fundName = request.getParameter("fund");
+        String fundName = null;
+        String dir = null;
+        Transaction trans = null;
+    	String type = request.getParameter("type");
+    	if (type.equals("default")) {
+            fundName = request.getParameter("fund");
+            dir = request.getParameter("dir");
+    	}
+    	if (type.equals("trans")) {
+            HttpSession httpSession = request.getSession();  
+            if (httpSession.getAttribute("trans") != null) {
+                trans =  (Transaction) httpSession.getAttribute("trans");
+                fundName = trans.getRealFundName();
+                dir = fileIOService.findFolderName(fundName + Constants.CSV);
+            }
+    	}
     	int turningPoint = Integer.parseInt(request.getParameter("turningPoint"));
     	float stepSize = Float.parseFloat(request.getParameter("stepSize"));
-    	String dir = request.getParameter("dir");
         String row = request.getParameter("row");
         int maxcolumns = -1;
         if (request.getParameter("maxcolumns") != null) {
             maxcolumns = Integer.parseInt(request.getParameter("maxcolumns"));
         }
-    	ImageResponse imageResponse = pFGenerator.getImage(dir, fundName, turningPoint, stepSize, maxcolumns);
+    	ImageResponse imageResponse = pFGenerator.getImage(type, trans, dir, fundName, turningPoint, stepSize, maxcolumns);
         HttpSession session = request.getSession();
         FundInfo fundInfo = new FundInfo();
         fundInfo.setFundName(fundName);
@@ -79,5 +98,12 @@ public class PFImageController {
      */
     public void setPFGenerator(PFGenerator thispFGenerator) {
         pFGenerator = thispFGenerator;
+    }
+    
+    /**
+     * @param fileIOService the fileIOService to set
+     */
+    public void setFileIOService(FileIOService fileIOService) {
+        this.fileIOService = fileIOService;
     }
 }

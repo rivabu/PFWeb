@@ -64,10 +64,10 @@
 					</p></td>
 				<td width="10px">&nbsp;</td>
 				<td valign="top"><img alt=""
-					src="http://localhost:8060/PFWeb/PFImage?fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[0][0]}&stepSize=${file.graphParameters[0][1]}&row=1&maxcolumns=24"><br />
+					src="http://localhost:8060/PFWeb/PFImage?type=default&fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[0][0]}&stepSize=${file.graphParameters[0][1]}&row=1&maxcolumns=24"><br />
 				</td>
 				<td valign="top"><img alt=""
-					src="http://localhost:8060/PFWeb/PFImage?fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[1][0]}&stepSize=${file.graphParameters[1][1]}&row=1&maxcolumns=24"><br />
+					src="http://localhost:8060/PFWeb/PFImage?type=default&fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[1][0]}&stepSize=${file.graphParameters[1][1]}&row=1&maxcolumns=24"><br />
 				</td>
 			</tr>
 			<tr>

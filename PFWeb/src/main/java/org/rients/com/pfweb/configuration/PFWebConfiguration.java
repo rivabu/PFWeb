@@ -1,5 +1,6 @@
 package org.rients.com.pfweb.configuration;
 
+import org.rients.com.constants.Constants;
 import org.rients.com.pfweb.services.FundPropertiesService;
 import org.rients.com.pfweb.services.FundPropertiesServiceImpl;
 import org.rients.com.pfweb.services.HandleFundData;
@@ -44,7 +45,7 @@ public class PFWebConfiguration {
 
     public @Bean
     FileIOService fileIOService() {
-        return new FileIOServiceImpl();
+        return new FileIOServiceImpl(Constants.KOERSENDIR , Constants.TEMPDIR);
     }
 
 }

@@ -5,7 +5,7 @@
 
 <html>
   <link rel="stylesheet" type="text/css" href="static/css/global-0.52.css?foo"> 
- <link rel="stylesheet" type="text/css" href="static/css/navbar.css"> 
+  <link rel="stylesheet" type="text/css" href="static/css/navbar.css"> 
   
   
 <head>

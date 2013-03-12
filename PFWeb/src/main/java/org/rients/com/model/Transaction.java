@@ -23,6 +23,7 @@ public class Transaction {
     public int buyId;
     public int sellId;
     public String fundName;
+    public String realFundName;
     public int startDate;
     public int endDate;
     public float startRate;
@@ -217,6 +218,20 @@ public class Transaction {
     
     public String getDummy() {
         return "show graph";
+    }
+
+    /**
+     * @return the realFundName
+     */
+    public String getRealFundName() {
+        return realFundName;
+    }
+
+    /**
+     * @param realFundName the realFundName to set
+     */
+    public void setRealFundName(String realFundName) {
+        this.realFundName = realFundName;
     }
  
 }

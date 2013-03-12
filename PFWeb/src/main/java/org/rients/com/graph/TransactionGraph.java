@@ -22,11 +22,11 @@ import org.jfree.data.xy.XYDataset;
 import org.rients.com.constants.Constants;
 import org.rients.com.model.ImageResponse;
 import org.rients.com.model.Transaction;
-import org.rients.com.services.FileIOService;
 import org.rients.com.services.FileIOServiceImpl;
 
 public class TransactionGraph {
 
+    
     public ImageResponse generate() {
         final XYDataset dataset = createDataset();
         ImageResponse imageResponse = createImage(dataset);
@@ -34,11 +34,12 @@ public class TransactionGraph {
     }
 
     
-    public static TimeSeries createTimeSeries() {
+    public TimeSeries createTimeSeries() {
 
         final TimeSeries t1 = new TimeSeries("");
         try {
-            FileIOService fileIOService = new FileIOServiceImpl();
+            FileIOServiceImpl fileIOService = new FileIOServiceImpl(null, null);
+
             List<Transaction> list = fileIOService.readFromTransactiesFile(Constants.TRANSACTIONDIR, Constants.ALL_TRANSACTIONS, null);
             Iterator<Transaction> iter = list.iterator();
             float totalScore = 0;
@@ -67,11 +68,11 @@ public class TransactionGraph {
                 int day = Integer.parseInt(endDate.substring(6));
                 t1.add(new Day(day, month, year), new Float(totalScore));
             }
-            System.out.println(totalScore);
+            System.out.println("totalScore: " + totalScore);
             
         }
         catch (Exception e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
         return t1;
     }
@@ -147,5 +148,7 @@ public class TransactionGraph {
         }
         return imageResponse;
     }
+
+
 
 }

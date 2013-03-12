@@ -20,6 +20,7 @@ import org.rients.com.model.ImageResponse;
 import org.rients.com.model.Levels;
 import org.rients.com.model.ModelInfo;
 import org.rients.com.model.Modelregel;
+import org.rients.com.model.Transaction;
 import org.rients.com.pfweb.services.modelfunctions.ModelFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,27 +38,36 @@ public class PFGenerator {
     @Autowired
     HandleFundData fundData;
 
-    public ImageResponse getImage(String dir, String fundName, int turningPoint, float stepSize, int maxColumns) {
+    public ImageResponse getImage(String type, Transaction trans, String dir, String fundName, int turningPoint, float stepSize, int maxColumns) {
         Levels levels = Levels.getInstance();
 
         if (!dir.contains("intraday")) {
             levels.createExpLevelArray(stepSize, 0.01F);
         } 
-        //else {
-        //    levels.createExpLevelArray(stepSize, 20F);
-        //}
-        
+       
         String dirFull = Constants.KOERSENDIR + dir + Constants.SEP;
         if (dir.equals("intraday")) {
             dirFull = Constants.INTRADAY_KOERSENDIR;
         }
-        fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT);
-        List<Dagkoers> rates = fundData.getFundRates(fundName, dirFull);
+        List<Dagkoers> rates = null;
+        if (type.equals("default")) {
+            fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT);
+            rates = fundData.getFundRates(fundName, dirFull);
+        }
+        if (type.equals("trans")) {
+            fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT / 4);
+            rates = fundData.getFundRates(fundName, dirFull, trans.getStartDate(), trans.getEndDate());
+        }
 
         ArrayList<Modelregel> PFData = handlePF.createPFData(rates, fundName, dirFull, turningPoint, stepSize);
         ModelFunctions mf = new ModelFunctions(fundName);
         mf.setPFData(PFData);
-        mf.handlePFRules(turningPoint, stepSize);
+        if (type.equals("default")) {
+            mf.handlePFRules(turningPoint, stepSize);
+        }
+        if (type.equals("trans")) {
+            mf.handlePFRules(turningPoint, stepSize, trans);
+        }
 
         String imageFile = Constants.IMAGESDIR + fundName + "_" + turningPoint + "_" + stepSize + Constants.PNG;
 

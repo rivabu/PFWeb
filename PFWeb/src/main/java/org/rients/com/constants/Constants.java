@@ -31,7 +31,6 @@ public class Constants {
     public static String FAVORITESDIR = props().getProperty("FAVORITESDIR");
 	
     public static String REAL_TRANSACTIONDIR = props().getProperty("REAL_TRANSACTIONDIR");;
-	//public static String FUND_PROPERTIESDIR = props().getProperty("FUND_PROPERTIESDIR");
     public static String INTRADAY_KOERSENDIR = props().getProperty("INTRADAY_KOERSENDIR");
     public static String TEMPDIR = props().getProperty("TEMPDIR");;
 
@@ -65,6 +64,8 @@ public class Constants {
     
     public static String TRANSACTIONS_EXCEL = props().getProperty("TRANSACTIONS_EXCEL");
     public static String ALL_TRANSACTIONS = props().getProperty("ALL_TRANSACTIONS");
+    
+    public static String TURBO_MAPPINGS = "turbo-mapping.properties";
 
 	
 }

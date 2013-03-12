@@ -9,6 +9,7 @@ package org.rients.com.pfweb.services;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -49,14 +50,14 @@ public class HandleFundData {
         List<Dagkoers> sublistRecords = new ArrayList<Dagkoers>();
         List<Dagkoers> records = getAllFundRates(fundName, directory);
         if (records != null) {
-        int toIndex = records.size();
-        int fromIndex = 0;
-        if (toIndex > numberOfDays) {
-            fromIndex = toIndex - numberOfDays;
-        }
-        for (int i = fromIndex; i < toIndex; i++) {
-            sublistRecords.add(records.get(i));
-        }
+            int aantalRecords = records.size();
+            int fromIndex = 0;
+            if (aantalRecords > numberOfDays) {
+                fromIndex = aantalRecords - numberOfDays;
+            }
+            for (int i = fromIndex; i < aantalRecords; i++) {
+                sublistRecords.add(records.get(i));
+            }
         }
         else {
             System.out.println("NOTING FOUND: getAllFundRates( " + fundName + ", " + directory + " )");
@@ -64,6 +65,59 @@ public class HandleFundData {
         return sublistRecords;
     }
 
+
+    public List<Dagkoers> getFundRates(String fundName, String directory, int beginDate, int endDate) {
+        List<Dagkoers> sublistRecords = new ArrayList<Dagkoers>();
+        
+        List<Dagkoers> records = getAllFundRates(fundName, directory);
+        if (records != null) {
+            int aantalRecords = records.size();
+
+            int beginDateIndex = findIndex(beginDate, records);
+            if (beginDateIndex == -1) {
+                System.out.println("date: " + beginDate + " not found in " + fundName);
+            }
+            if (beginDateIndex - numberOfDays > 0) {
+                beginDateIndex = beginDateIndex - numberOfDays;
+            }
+            else {
+                beginDateIndex = 0;
+            }
+            int endDateIndex = findIndex(beginDate, records);
+            if (endDateIndex == -1) {
+                System.out.println("date: " + endDate + " not found in " + fundName);
+            }
+            if (endDateIndex + numberOfDays < aantalRecords) {
+                endDateIndex = endDateIndex + numberOfDays;
+            }
+            else {
+                endDateIndex = aantalRecords;
+            }
+            for (int i = beginDateIndex; i < endDateIndex; i++) {
+                sublistRecords.add(records.get(i));
+            }
+        }
+        else {
+            System.out.println("NOTING FOUND: getAllFundRates( " + fundName + ", " + directory + " )");
+        }
+        return sublistRecords;
+    }
+    
+    public int findIndex(int date, List<Dagkoers> records) {
+        int counter = -1;
+        Iterator<Dagkoers> iter = records.iterator();
+        while (iter.hasNext()) {
+            counter ++;
+            Dagkoers dagkoers = iter.next();
+            if (dagkoers.getDatumInt() == date) {
+                break;
+            }
+        }
+        
+        
+        return counter;
+        
+    }
 
     public List<Dagkoers> getAllFundRates(String fundName, String directory) {
         Properties prop = null;

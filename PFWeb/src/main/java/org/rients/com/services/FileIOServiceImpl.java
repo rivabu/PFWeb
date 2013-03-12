@@ -24,11 +24,6 @@ import org.rients.com.utils.TimeUtils;
  */
 public class FileIOServiceImpl implements FileIOService {
     private static String sep;
-
-    
-    public FileIOServiceImpl() {
-        super();
-    }
     
     public FileIOServiceImpl(String rootDir, String tempDir) {
         super();

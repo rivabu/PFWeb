@@ -27,6 +27,10 @@ public class ModelFunctions {
         pfRules.setDoubleTopAndBottom(PFData);
     }
     
+    public void handlePFRules(int turningPoint, float stepSize, Transaction transaction) {
+        pfRules.setTransaction(PFData, transaction);
+    }
+
     public void handleFindTopsAndBottoms(int turningPoint, float stepSize) {
         pfRules.setTopsAndBottoms(PFData);
     }

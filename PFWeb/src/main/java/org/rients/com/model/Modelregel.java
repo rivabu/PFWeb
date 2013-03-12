@@ -38,6 +38,13 @@ public class Modelregel
     public String getDatum() {
         return datum;
     }
+    
+    /**
+     * @return Returns the datum.
+     */
+    public int getDatumInt() {
+        return Integer.parseInt(datum);
+    }
     /**
      * @param datum The datum to set.
      */

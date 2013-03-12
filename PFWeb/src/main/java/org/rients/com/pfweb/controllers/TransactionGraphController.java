@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping()
  
-public class TransactionImageController  {
+public class TransactionGraphController  {
     
     @Autowired
     RSIGenerator rSIGenerator;
