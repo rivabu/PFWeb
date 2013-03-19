@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.rients.com.indexpredictor.Matrix;
+import org.rients.com.matrix.dataholder.Matrix;
 import org.rients.com.model.ImageResponse;
 import org.springframework.stereotype.Service;
 

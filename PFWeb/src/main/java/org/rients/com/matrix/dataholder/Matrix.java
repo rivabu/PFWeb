@@ -1,4 +1,4 @@
-package org.rients.com.indexpredictor;
+package org.rients.com.matrix.dataholder;
 
 import java.util.List;
 

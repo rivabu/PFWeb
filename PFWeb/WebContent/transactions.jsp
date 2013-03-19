@@ -7,9 +7,8 @@
 <head>
 <link rel="stylesheet" href="static/css/displaytag.css" type="text/css">
 <link rel="stylesheet" href="static/css/navbar.css" type="text/css">
-<link rel="stylesheet" href="static/css/screen.css" type="text/css">
-<link rel="stylesheet" href="static/css/site.css" type="text/css">
 <link rel="stylesheet" href="static/css/lightbox.css" type="text/css">
+ <link rel="stylesheet" type="text/css" href="static/css/global-0.52.css?foo"> 
 <script src="static/js/jquery.js">
 </script>
 <script language="javascript">

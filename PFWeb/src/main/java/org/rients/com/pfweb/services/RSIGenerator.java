@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.rients.com.constants.Constants;
 import org.rients.com.graph.RSILineGraph;
-import org.rients.com.indexpredictor.FundDataHolder;
-import org.rients.com.indexpredictor.Matrix;
+import org.rients.com.matrix.dataholder.FundDataHolder;
+import org.rients.com.matrix.dataholder.Matrix;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.ImageResponse;
 import org.rients.com.utils.FileUtils;

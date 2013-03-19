@@ -13,7 +13,7 @@ import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleEdge;
-import org.rients.com.indexpredictor.Matrix;
+import org.rients.com.matrix.dataholder.Matrix;
 import org.rients.com.model.ImageResponse;
 
 public class RSILineGraph {

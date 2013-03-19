@@ -14,7 +14,7 @@ body, p, div, a, td {
 
 a {
 	color:#295c72;		
-	outline:none;
+	outline:black;
 }
 
 a.external {

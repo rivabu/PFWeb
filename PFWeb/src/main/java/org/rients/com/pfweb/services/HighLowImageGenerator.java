@@ -11,8 +11,8 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 import org.rients.com.constants.Constants;
-import org.rients.com.indexpredictor.FundDataHolder;
-import org.rients.com.indexpredictor.Matrix;
+import org.rients.com.matrix.dataholder.FundDataHolder;
+import org.rients.com.matrix.dataholder.Matrix;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.DagkoersStatus;
 import org.rients.com.model.ImageResponse;
