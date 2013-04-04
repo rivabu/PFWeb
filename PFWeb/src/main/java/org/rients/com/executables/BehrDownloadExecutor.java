@@ -22,7 +22,7 @@ import org.rients.com.services.FileIOServiceImpl;
 public class BehrDownloadExecutor  {
     private transient BehrDownloadServiceImpl controller;
 
-    BehrDownloadExecutor() {
+    public BehrDownloadExecutor() {
         super();
         controller = new BehrDownloadServiceImpl();
         controller.setBehrOverviewURL(Constants.BEHR_OVERVIEW_URL);

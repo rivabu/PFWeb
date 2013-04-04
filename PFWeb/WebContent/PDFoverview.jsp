@@ -5,29 +5,11 @@
 
 
 <html>
-  <link rel="stylesheet" type="text/css" href="static/css/global-0.52.css?foo"> 
-  <link rel="stylesheet" type="text/css" href="static/css/overlay.css">
- <link rel="stylesheet" type="text/css" href="static/css/navbar.css"> 
-  
-  
 <head>
-<script src="static/js/jquery.tools.min.js">
-</script>
-<style>
-	/* use a semi-transparent image for the overlay */ 
-	#overlay { background-image:url(http://static.flowplayer.org/img/overlay/transparent.png); 
-		color:#efefef; 
-		height:450px; 
-	} 
-	/* container for external content. uses vertical scrollbar, if needed */ 
-	div.contentWrap { 
-		height:441px; 
-		overflow-y:auto; 
-	}
-</style>
+
 </head>
 <body>
-<%@ include file="navbar.jsp" %>
+
 
 	<table border="0" align="left">
 		<c:forEach items="${files}" var="file" varStatus="index">
@@ -54,20 +36,14 @@
 							</c:if>
 						</c:forEach>
 					</p>
-					<p STYLE="font-size: 8pt;">
-						  <c:if test="${dir ne 'aaa'}">
-						    <a href="AddRemove?fund=${file.FUNDNAME}&dir=${dir}&action=add&from=PDFOverview">add to favorites</a><br />
-						  </c:if>
-					      <a href="AddRemove?fund=${file.FUNDNAME}&dir=${dir}&action=delete&from=PDFOverview">delete</a>
-					</p>
 
 					</p></td>
 				<td width="10px">&nbsp;</td>
 				<td valign="top"><img alt=""
-					src="http://localhost:8060/PFWeb/PFImage?type=default&fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[0][0]}&stepSize=${file.graphParameters[0][1]}&row=1&maxcolumns=24"><br />
+					src="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/PFImage?type=default&fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[0][0]}&stepSize=${file.graphParameters[0][1]}&row=1&maxcolumns=22"><br />
 				</td>
 				<td valign="top"><img alt=""
-					src="http://localhost:8060/PFWeb/PFImage?type=default&fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[1][0]}&stepSize=${file.graphParameters[1][1]}&row=1&maxcolumns=24"><br />
+					src="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/PFImage?type=default&fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[1][0]}&stepSize=${file.graphParameters[1][1]}&row=1&maxcolumns=22"><br />
 				</td>
 			</tr>
 			<tr>

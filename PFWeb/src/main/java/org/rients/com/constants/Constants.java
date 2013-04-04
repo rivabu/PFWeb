@@ -66,6 +66,10 @@ public class Constants {
     public static String ALL_TRANSACTIONS = props().getProperty("ALL_TRANSACTIONS");
     
     public static String TURBO_MAPPINGS = "turbo-mapping.properties";
+    
+    public static String PDF_GENERATION_URL_1 = props().getProperty("PDF_GENERATION_URL_1");
+    public static String PDF_GENERATION_URL_2 = props().getProperty("PDF_GENERATION_URL_2");
+    public static String PDF_GENERATION_OUTPUTFILE = props().getProperty("PDF_GENERATION_OUTPUTFILE");
 
 	
 }

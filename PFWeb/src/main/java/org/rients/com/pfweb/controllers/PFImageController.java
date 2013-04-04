@@ -3,6 +3,7 @@ package org.rients.com.pfweb.controllers;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +75,8 @@ public class PFImageController {
             ImageIO.write(imageResponse.getBuffer(), "png", os);
         } catch (IndexOutOfBoundsException iob) {
             System.out.println("error (IndexOutOfBoundsException) met " + fundName + " in dir " + dir);
+        } catch (SocketException s) {
+            System.out.println("error (SocketException)");
         }
         os.close();
     }

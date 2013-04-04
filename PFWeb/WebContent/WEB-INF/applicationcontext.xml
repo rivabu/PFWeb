@@ -8,25 +8,57 @@
  		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-
-	<bean id="myTimerTask" class="org.rients.com.pfweb.quartz.MyTimerTask" />
-
-
-	<!-- quartz -->
-
-	<bean id="scheduledTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
-		<!-- wait 10 seconds before starting repeated execution -->
-		<property name="delay" value="1000" />
-		<!-- run every 50 seconds -->
-		<property name="period" value="600000" />
-		<property name="timerTask" ref="myTimerTask" />
-	</bean>
-
-	<bean class="org.springframework.scheduling.timer.TimerFactoryBean">
-		<property name="scheduledTimerTasks">
-			<list>
-				<ref local="scheduledTask" />
-			</list>
+ <!-- 
+	<bean name="exampleJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="org.rients.com.pfweb.quartz.ExampleJob" />
+		<property name="jobDataAsMap">
+			<map>
+				<entry key="timeout" value="5" />
+			</map>
 		</property>
 	</bean>
+	
+	<bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+	    <property name="jobDetail" ref="exampleJob" />
+	    <property name="startDelay" value="10000" />
+	    <property name="repeatInterval" value="50000" /> 
+	</bean>
+
+	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="exampleJob" />
+		<property name="cronExpression" value="0 0 8 30 * ?" />
+	</bean>
+	-->
+	
+	<bean id="propertyPlaceholderConfigurer"   
+class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+  <property name="locations">  
+    <list>  
+      <value>classpath:application.properties</value>  
+    </list>  
+  </property>  
+</bean>
+
+	
+	<!--Trigger for cronJobs-->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="cronJOB1"/>
+            </list>
+        </property>
+    </bean>
+ 
+    <!--CronJobs Defined-->
+    <bean id="cronJOB1" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="schTask6" />
+        <property name="cronExpression" value="${cron}" />
+    <!--Daily Morning 2-->
+    </bean>
+ 
+    <!--Cron Task Defined-->
+    <bean id="schTask6" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="org.rients.com.pfweb.quartz.ExampleJob" />
+    </bean>
+
 </beans>

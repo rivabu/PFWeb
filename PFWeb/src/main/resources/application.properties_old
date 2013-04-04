@@ -35,3 +35,7 @@ BLOOMBERG_COMMODITIES_URL = http://www.bloomberg.com/markets/commodities/futures
 
 TRANSACTIONS_EXCEL = alle_mutaties.xls
 ALL_TRANSACTIONS = all_transactions.csv
+
+PDF_GENERATION_URL_1 = http://127.0.0.1:8060/PFWeb/PDFOverview
+PDF_GENERATION_URL_2 = http://127.0.0.1:8080/PFWeb/PDFOverview
+PDF_GENERATION_OUTPUTFILE = d:\\PFData\\temp\\sample.pdf
