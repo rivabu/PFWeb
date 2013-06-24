@@ -32,7 +32,7 @@ public class DoubleTopAndBottomsLocator {
         this.favouritesDir = favouritesDir;
     }
     
-    public ArrayList<Categorie> locate(final String type) {
+    public ArrayList<Categorie> locate(final String type, String graphType) {
         String dir = getFavouritesDir();
         List<String> subdirs = FileUtils.getSubdirs(dir);
         ArrayList<Categorie> matchedCategoriesList = new ArrayList<Categorie>();
@@ -61,7 +61,7 @@ public class DoubleTopAndBottomsLocator {
                 
                 if (type.equals("top_bottoms")) {
                     for (int i=0; i< 5; i++) {
-                        boolean doubleTopBottomFound = handleOneDoubleTopsAndBottoms(fullSubDir, file, Integer.parseInt(graphParameters[i][0]), Float.parseFloat(graphParameters[i][1]));
+                        boolean doubleTopBottomFound = handleOneDoubleTopsAndBottoms(fullSubDir, file, graphType, Integer.parseInt(graphParameters[i][0]), Float.parseFloat(graphParameters[i][1]));
                         if (doubleTopBottomFound) {
                             categorie.getItems().add(fondsURL);
                             break;
@@ -69,7 +69,7 @@ public class DoubleTopAndBottomsLocator {
                     }
                 }
                 if (type.equals("tops") || type.equals("bottoms")) {
-                    boolean topOrBottomFound = handleOneTopsAndBottoms(fullSubDir, file, Integer.parseInt(graphParameters[0][0]), Float.parseFloat(graphParameters[0][1]), type);
+                    boolean topOrBottomFound = handleOneTopsAndBottoms(fullSubDir, file, graphType, Integer.parseInt(graphParameters[0][0]), Float.parseFloat(graphParameters[0][1]), type);
                     if (topOrBottomFound) {
                         categorie.getItems().add(fondsURL);
                     }
@@ -80,7 +80,7 @@ public class DoubleTopAndBottomsLocator {
         return matchedCategoriesList;
     }
 
-    private boolean handleOneDoubleTopsAndBottoms(String dir, String fundName, int turningPoint, float stepSize) {
+    private boolean handleOneDoubleTopsAndBottoms(String dir, String fundName, String graphType, int turningPoint, float stepSize) {
         
         boolean topBottomFound = false;
         HandleFundData fundData = new HandleFundData();
@@ -89,7 +89,7 @@ public class DoubleTopAndBottomsLocator {
         fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT);
         List<Dagkoers> rates = fundData.getFundRates(fundName, dir);
 
-        ArrayList<Modelregel> PFData = handlePF.createPFData(rates, fundName, dir, turningPoint, stepSize);
+        ArrayList<Modelregel> PFData = handlePF.createPFData(rates, fundName, graphType, dir, turningPoint, stepSize);
         
         ModelFunctions mf = new ModelFunctions(fundName);
         mf.setPFData(PFData);
@@ -125,7 +125,7 @@ public class DoubleTopAndBottomsLocator {
         return topBottomFound;
     }
 
-    private boolean handleOneTopsAndBottoms(String dir, String fundName, int turningPoint, float stepSize, String type) {
+    private boolean handleOneTopsAndBottoms(String dir, String fundName, String graphType, int turningPoint, float stepSize, String type) {
         
         HandleFundData fundData = new HandleFundData();
         HandlePF handlePF = new HandlePF();
@@ -133,7 +133,7 @@ public class DoubleTopAndBottomsLocator {
         fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT);
         List<Dagkoers> rates = fundData.getFundRates(fundName, dir);
 
-        ArrayList<Modelregel> PFData = handlePF.createPFData(rates, fundName, dir, turningPoint, stepSize);
+        ArrayList<Modelregel> PFData = handlePF.createPFData(rates, fundName, graphType, dir, turningPoint, stepSize);
         
         ModelFunctions mf = new ModelFunctions(fundName);
         mf.setPFData(PFData);

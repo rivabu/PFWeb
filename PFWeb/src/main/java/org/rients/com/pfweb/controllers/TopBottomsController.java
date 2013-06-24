@@ -61,7 +61,11 @@ public class TopBottomsController {
             if (type != null) {
                 DoubleTopAndBottomsLocator doubleTopAndBottomsLocator = new DoubleTopAndBottomsLocator();
                 doubleTopAndBottomsLocator.setFavouritesDir(Constants.KOERSENDIR);
-                matchedCategoriesList = doubleTopAndBottomsLocator.locate(type);
+                String graphType = request.getParameter("graphtype");
+                if (graphType == null) {
+                    graphType = "EXP";
+                }
+                matchedCategoriesList = doubleTopAndBottomsLocator.locate(type, graphType);
                 session.setAttribute("categories", matchedCategoriesList);
             }
             if (request.getParameter("topbottomscategorie") != null) {

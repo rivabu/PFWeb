@@ -48,13 +48,14 @@ public class TransactionGraph {
             while(iter.hasNext()) {
                 Transaction trans = iter.next();
                 Integer date = new Integer(trans.getEndDate());
-                
-                if (data.containsKey(date)) {
-                    Float value = data.get(date);
-                    value = value + new Float(trans.getScoreAbs());
-                    data.put(date, value);
-                } else {
-                    data.put(date, new Float(trans.getScoreAbs()));
+                if (trans.getEndRate() > 0) {
+                    if (data.containsKey(date)) {
+                        Float value = data.get(date);
+                        value = value + new Float(trans.getScoreAbs());
+                        data.put(date, value);
+                    } else {
+                        data.put(date, new Float(trans.getScoreAbs()));
+                    }
                 }
             }
             Iterator<Integer> iter2 = data.keySet().iterator();

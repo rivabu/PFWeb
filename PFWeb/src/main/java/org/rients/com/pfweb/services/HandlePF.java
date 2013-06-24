@@ -29,16 +29,17 @@ public class HandlePF {
 
 
     
-    public ArrayList<Modelregel> createPFData(List<Dagkoers> rates, String fundName, String directory, int turningPoint, float stepSize) {
+    public ArrayList<Modelregel> createPFData(List<Dagkoers> rates, String fundName, String graphType, String directory, int turningPoint, float stepSize) {
 
 
         Levels levels = Levels.getInstance();
         if (!directory.contains("intraday")) {
-            levels.createExpLevelArray(stepSize, 0.01F);
+            if (graphType.equals("EXP")) {
+                levels.createExpLevelArray(stepSize, 0.01F);
+            } else {
+                levels.createNormalLevelArray(stepSize, 0);
+            }
         } 
-        //else {
-        //    levels.createExpLevelArray(stepSize, 20F);
-        //}
         
         Modelregel modelregel = null;
         ArrayList model = new ArrayList();

@@ -45,6 +45,7 @@ public class TransactionExcelConverterExecutor {
     
     private ArrayList<Transaction> convert(ArrayList<TransactionExcel> transExcel) {
         ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+        ArrayList<Transaction> transactionsExtra = new ArrayList<Transaction>();
         Iterator<TransactionExcel> iterExcel = transExcel.iterator();
         // voeg alle buys toe als transacties
         while (iterExcel.hasNext()) {
@@ -62,8 +63,9 @@ public class TransactionExcelConverterExecutor {
             float totalPrice = 0;
             boolean allSellingTransFound = false;
             if (transExcel.size() == 0) {
-                iterNew.remove();
-                continue;
+                System.out.println("no selling transaction found for: " + trans.getFundName());
+                //iterNew.remove();
+                //continue;
             }
             iterExcel = transExcel.iterator();
             int numbersToSell = trans.getPieces();
@@ -124,15 +126,21 @@ public class TransactionExcelConverterExecutor {
                         endRate = MathFunctions.divide(totalPrice, trans.getPieces());
                         trans.addSellInfo(endDate, lastSellId, endRate);
                     } else {
+                        Transaction clone = new Transaction(trans.getFundName(), trans.getStartDate(), trans.getBuyId(), trans.getStartRate(), trans.getPieces() - numberSold, trans.getType());
+                        clone.addSellInfo(-1, -1, 0);
+                        
+                        transactionsExtra.add(clone);
                         trans.setPieces(numberSold);
                         trans.addSellInfo(endDate, lastSellId, endRate);
                         
                     }
                 } 
             } if (trans.getSellId() == 0) {
-                iterNew.remove();
+                trans.addSellInfo(-1, -1, 0);
+                //iterNew.remove();
             }
         }
+        transactions.addAll(transactionsExtra);
         return transactions;
     }
     

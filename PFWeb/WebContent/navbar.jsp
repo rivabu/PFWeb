@@ -5,6 +5,9 @@
 	<li><a href="Intraday">Intraday</a></li>
 	<li><a href="TopBottoms">TopBottoms</a></li>
 	<li><a href="Transactions">Transactions</a></li>
-	<li><a href="#">Settings</a></li>
+	<li><a href="PDFOverview">PDFOverview</a></li>
+	<li><a href="grafieken.jsp">Grafieken</a></li>
+	
 </ul>
-</div>
+</div
+<br>

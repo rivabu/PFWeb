@@ -48,11 +48,12 @@ public class BehrDownloadExecutor  {
     public void testDownloadCategory() throws Exception {
         //controller.downloadCategory(Categories.HOOFDFONDEN);
         //controller.downloadCategory(Categories.DIVERSE);
-        controller.downloadCategory(Categories.VALUTA);
+        //controller.downloadCategory(Categories.VALUTA);
         //controller.downloadCategory(Categories.LOKALEFONDSEN);
         //controller.downloadCategory(Categories.INDEXEN);
         //controller.downloadCategory(Categories.GRONDSTOFFEN);
         //controller.downloadCategory(Categories.BELEGGINGSFUNDS);
+        controller.downloadCategory(Categories.USA);
 
     }
     
@@ -77,7 +78,7 @@ public class BehrDownloadExecutor  {
         executor.testDownloadFavourites();
 
         //executor.downloadAll();
-        executor.testGenerateRandom();
+        //executor.testGenerateRandom();
         //executor.testDownloadCategory();
         
         

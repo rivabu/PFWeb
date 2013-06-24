@@ -38,11 +38,15 @@ public class PFGenerator {
     @Autowired
     HandleFundData fundData;
 
-    public ImageResponse getImage(String type, Transaction trans, String dir, String fundName, int turningPoint, float stepSize, int maxColumns) {
+    public ImageResponse getImage(String type, Transaction trans, String dir, String fundName, String graphType, int turningPoint, float stepSize, int maxColumns) {
         Levels levels = Levels.getInstance();
 
         if (!dir.contains("intraday")) {
-            levels.createExpLevelArray(stepSize, 0.01F);
+            if (graphType.equals("EXP")) {
+                levels.createExpLevelArray(stepSize, 0.01F);
+            } else {
+                levels.createNormalLevelArray(stepSize, 0);
+            }
         } 
        
         String dirFull = Constants.KOERSENDIR + dir + Constants.SEP;
@@ -59,7 +63,7 @@ public class PFGenerator {
             rates = fundData.getFundRates(fundName, dirFull, trans.getStartDate(), trans.getEndDate());
         }
 
-        ArrayList<Modelregel> PFData = handlePF.createPFData(rates, fundName, dirFull, turningPoint, stepSize);
+        ArrayList<Modelregel> PFData = handlePF.createPFData(rates, fundName, graphType, dirFull, turningPoint, stepSize);
         ModelFunctions mf = new ModelFunctions(fundName);
         mf.setPFData(PFData);
         if (type.equals("default")) {

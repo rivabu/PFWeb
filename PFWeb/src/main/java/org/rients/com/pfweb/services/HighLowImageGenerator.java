@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 public class HighLowImageGenerator {
 
     private boolean saveImage = true;
-    private int DAYS = 200;
+    private int DAYS = 50;
     private int lookbackPeriod = 5;
     
     @Autowired
@@ -38,24 +38,25 @@ public class HighLowImageGenerator {
     @Autowired
     HandlePF handlePF;
 
-    public ImageResponse getHighLowImage(String type, String dir) {
+    public ImageResponse getHighLowImage(String type, String dir, String graphType) {
 
         List<String> files = FileUtils.getFiles(Constants.KOERSENDIR + dir, "csv", false);
 
         // een matrix is een array van funddataholders.
-        Matrix matrix = new Matrix(files.size() + 1, getDAYS());
+        Matrix matrix = new Matrix(files.size(), getDAYS());
+        String directory = Constants.KOERSENDIR + Constants.INDEXDIR + Constants.SEP;
+        fundData.setNumberOfDays(DAYS);
+        List<Dagkoers> aexRates = fundData.getFundRates(Constants.AEX_INDEX, directory);
+        matrix.fillDates(aexRates);
 
-        for (int i = 0; i < files.size() + 1; i++) {
+
+        for (int i = 0; i < files.size(); i++) {
             FundDataHolder dataHolder;
             if (i == 0) {
-                dataHolder = new FundDataHolder(Constants.AEX_INDEX, getDAYS());
-                String directory = Constants.KOERSENDIR + Constants.INDEXDIR + Constants.SEP;
-                fundData.setNumberOfDays(DAYS);
-                List<Dagkoers> aexRates = fundData.getFundRates(Constants.AEX_INDEX, directory);
-                matrix.fillDates(aexRates);
+                dataHolder = new FundDataHolder(files.get(i), getDAYS());
 
             } else {
-                dataHolder = new FundDataHolder(files.get(i - 1), getDAYS());
+                dataHolder = new FundDataHolder(files.get(i), getDAYS());
             }
             matrix.setFundData(dataHolder, i);
         }
@@ -63,7 +64,7 @@ public class HighLowImageGenerator {
             fillMatrixHigherLowerThanLookback(matrix, dir, files);
         }
         if (type.equals("updown")) {
-            fillMatrixIsUpOrDown(matrix, dir, files);
+            fillMatrixIsUpOrDown(matrix, dir, files, graphType);
         }
         ImageGenerator ig = new ImageGenerator();
         ImageResponse imageResponse = ig.getImage(matrix, DAYS);
@@ -74,29 +75,22 @@ public class HighLowImageGenerator {
         return imageResponse;
     }
 
-    private void fillMatrixIsUpOrDown(Matrix matrix, String dir, List<String> files) {
+    private void fillMatrixIsUpOrDown(Matrix matrix, String dir, List<String> files, String graphType) {
         String directory = null;
         List<Dagkoers> rates = null;
 
         fundData.setNumberOfDays(DAYS + 100);
         ArrayList<Modelregel> pfData = null;
-        for (int i = 0; i < files.size() + 1; i++) {
-            if (i == 0) {
-                directory = Constants.KOERSENDIR + Constants.INDEXDIR + Constants.SEP;
-                rates = fundData.getFundRates(Constants.AEX_INDEX, directory);
-                pfData = handlePF
-                        .createPFData(rates, Constants.AEX_INDEX, Constants.KOERSENDIR + Constants.INDEXDIR + Constants.SEP, 1, 1);
-            } else {
-                directory = Constants.KOERSENDIR + dir + Constants.SEP;
-                rates = fundData.getFundRates(files.get(i - 1), directory);
-                // pfData = handlePF.createPFData(files.get(i - 1), directory,
-                // 1, 2);
-                // turning point = 2
-                // stepsize = 1
-                pfData = handlePF.createPFData(rates, files.get(i - 1), directory, 2, 1);
-            }
+        for (int i = 0; i < files.size(); i++) {
+            directory = Constants.KOERSENDIR + dir + Constants.SEP;
+            rates = fundData.getFundRates(files.get(i), directory);
+            // pfData = handlePF.createPFData(files.get(i), directory,
+            // 1, 2);
+            // turning point = 2
+            // stepsize = 1
+            pfData = handlePF.createPFData(rates, files.get(i), graphType, directory, 2, 1);
             PFRules optimum = new PFRules();
-            List<Transaction> transactions = optimum.getOptimalDecisions(pfData, null, false);
+            List<Transaction> transactions = optimum.getOptimalDecisions(pfData, files.get(i), false);
 
             int fillFactor = DAYS - rates.size(); // 400 - 360
             int days = Math.min(DAYS, rates.size());
@@ -119,20 +113,20 @@ public class HighLowImageGenerator {
         String directory = null;
         List<Dagkoers> rates = null;
         fundData.setNumberOfDays(DAYS + lookbackPeriod);
-        for (int file = 0; file < files.size() + 1; file++) {
-            if (file == 0) {
-                highLowAex(matrix, file);
-                continue;
-            } else {
+        for (int file = 0; file < files.size(); file++) {
+            //if (file == 0) {
+            //    highLowAex(matrix, file);
+            //    continue;
+            //} else {
                 directory = Constants.KOERSENDIR + dir + Constants.SEP;
-                rates = fundData.getFundRates(files.get(file - 1), directory);
-            }
+                rates = fundData.getFundRates(files.get(file), directory);
+            //}
             // float[] koersen = getFloatArray(rates);
-            if (file == 0) {
-                System.out.println(Constants.AEX_INDEX + " first date: " + rates.get(0).datum + " aantal records: " + rates.size());
-            } else {
-                System.out.println(files.get(file - 1) + " first date: " + rates.get(0).datum + " aantal records: " + rates.size());
-            }
+            //if (file == 0) {
+            //    System.out.println(Constants.AEX_INDEX + " first date: " + rates.get(0).datum + " aantal records: " + rates.size());
+            //} else {
+            //    System.out.println(files.get(file - 1) + " first date: " + rates.get(0).datum + " aantal records: " + rates.size());
+            //}
             int startValue = 0;
             if (rates.size() < DAYS + lookbackPeriod && rates.size() > lookbackPeriod) {
                 int difference = DAYS + lookbackPeriod - rates.size();

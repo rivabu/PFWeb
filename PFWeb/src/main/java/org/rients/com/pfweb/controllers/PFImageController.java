@@ -40,7 +40,11 @@ public class PFImageController {
         String fundName = null;
         String dir = null;
         Transaction trans = null;
-    	String type = request.getParameter("type");
+        String graphType = request.getParameter("graphtype");
+        if (graphType == null) {
+            graphType = "EXP";
+        }
+        String type = request.getParameter("type");
     	if (type.equals("default")) {
             fundName = request.getParameter("fund");
             dir = request.getParameter("dir");
@@ -60,11 +64,13 @@ public class PFImageController {
         if (request.getParameter("maxcolumns") != null) {
             maxcolumns = Integer.parseInt(request.getParameter("maxcolumns"));
         }
-    	ImageResponse imageResponse = pFGenerator.getImage(type, trans, dir, fundName, turningPoint, stepSize, maxcolumns);
+    	ImageResponse imageResponse = pFGenerator.getImage(type, trans, dir, fundName, graphType, turningPoint, stepSize, maxcolumns);
         HttpSession session = request.getSession();
         FundInfo fundInfo = new FundInfo();
         fundInfo.setFundName(fundName);
-        fundInfo.setFirstDate(imageResponse.getFirstDate());
+        if (imageResponse.getFirstDate() != null) {
+            fundInfo.setFirstDate(imageResponse.getFirstDate());
+        }
         fundInfo.setDivName(fundName + "_" + row);
         
         putFundInfoInSession(session, fundInfo);

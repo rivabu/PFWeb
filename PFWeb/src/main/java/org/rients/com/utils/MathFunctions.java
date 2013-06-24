@@ -31,6 +31,9 @@ public class MathFunctions {
     
     
     public static String round(float rate) {
+        if (rate == 0) {
+            return "0";
+        }
         double rateD = (new Double(rate).doubleValue() * 100) + 0.5;
         double rateL = Math.round(rateD);
         return (rateL / 100) + "";

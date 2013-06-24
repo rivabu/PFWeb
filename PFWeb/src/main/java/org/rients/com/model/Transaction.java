@@ -55,6 +55,9 @@ public class Transaction {
     
     public float getScorePerc() {
     	float score = ((endRate - startRate) / endRate) * 100;
+    	if (type == Type.SHORT) {
+    	    score = score * -1;
+    	}
     	return score;
     }
 
@@ -64,24 +67,40 @@ public class Transaction {
     }
 
     public String getScorePercStr() {
-        float score = ((endRate - startRate) / endRate) * 100;
+        float score = 0;
+        if (endRate != 0) {
+            score = ((endRate - startRate) / endRate) * 100;
+        } else {
+            score = 0;
+        }
         return MathFunctions.round(score);
     }
     
     public BigDecimal getScorePercBD() {
-        float score = ((endRate - startRate) / endRate) * 100;
-        return new BigDecimal(MathFunctions.round(score));
+        if (endRate != 0) {
+            float score = ((endRate - startRate) / endRate) * 100;
+            return new BigDecimal(MathFunctions.round(score));
+        }
+        return new BigDecimal(0);
     }
     
 
     public String getScoreAbsStr() {
-        float score = (endRate - startRate)  * pieces;
+        float score = 0;
+        if (endRate != 0) {
+            score = (endRate - startRate)  * pieces;
+        } else {
+            score = 0;
+        }
         return MathFunctions.round(score);
     }
     
     public BigDecimal getScoreAbsBD() {
-        float score = (endRate - startRate)  * pieces;
-        return new BigDecimal(MathFunctions.round(score));
+        if (endRate != 0) {
+            float score = (endRate - startRate)  * pieces;
+            return new BigDecimal(MathFunctions.round(score));
+        }
+        return new BigDecimal(0);
     }
     
     public String toString() {

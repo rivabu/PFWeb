@@ -42,7 +42,7 @@ public class BinckKoersLookupExcecutor {
         selenium.open("/klanten/Login.aspx?language=");
         selenium.waitForPageToLoad("500");
         selenium.type("id=ctl00_Content_Gebruikersnaam", "252351789");
-        selenium.type("id=ctl00_Content_Wachtwoord", "RientsSuzan");
+        selenium.type("id=ctl00_Content_Wachtwoord", "RientsAxel");
         selenium.click("css=#ctl00_Content_LoginButton > span");
         boolean multiple = true;
         String biedPrijs = "";

@@ -22,9 +22,9 @@ public class PFFunctions {
 
     }
     
-    public ArrayList getHigherTopActions(String fundName, String directory, int turningPoint, float stepSize) {
+    public ArrayList getHigherTopActions(String fundName, String directory, String graphType, int turningPoint, float stepSize) {
         ArrayList transactions = new ArrayList();
-        ArrayList PFData = pfHandler.createPFData(rates, fundName, directory, turningPoint, stepSize);
+        ArrayList PFData = pfHandler.createPFData(rates, fundName, graphType, directory, turningPoint, stepSize);
         Hashtable tops = new Hashtable();
         Hashtable bottoms = new Hashtable();
         getTopsAndBottoms(PFData, tops, bottoms);
@@ -78,9 +78,9 @@ public class PFFunctions {
         return transactions; 
     }
 
-    public ArrayList getHigherTopsActions(String fundName, String directory, int turningPoint, float stepSize) {
+    public ArrayList getHigherTopsActions(String fundName, String directory, String graphType, int turningPoint, float stepSize) {
         ArrayList transactions = new ArrayList();
-        ArrayList PFData = pfHandler.createPFData(rates, fundName, directory, turningPoint, stepSize);
+        ArrayList PFData = pfHandler.createPFData(rates, fundName, graphType, directory, turningPoint, stepSize);
         Hashtable tops = new Hashtable();
         Hashtable bottoms = new Hashtable();
         getTopsAndBottoms(PFData, tops, bottoms);
@@ -128,9 +128,9 @@ public class PFFunctions {
         return transactions;
     }
 
-    public ArrayList getLowerBottomsActions(String fundName, String directory, int turningPoint, float stepSize) {
+    public ArrayList getLowerBottomsActions(String fundName, String directory, String graphType, int turningPoint, float stepSize) {
         ArrayList transactions = new ArrayList();
-        ArrayList PFData = pfHandler.createPFData(rates, fundName, directory, turningPoint, stepSize);
+        ArrayList PFData = pfHandler.createPFData(rates, fundName, graphType, directory, turningPoint, stepSize);
         Hashtable tops = new Hashtable();
         Hashtable bottoms = new Hashtable();
         getTopsAndBottoms(PFData, tops, bottoms);

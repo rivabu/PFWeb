@@ -31,7 +31,11 @@ public class MatrixImageController  {
     	
     	String dir = request.getParameter("dir");
     	String type = request.getParameter("type");
-    	ImageResponse imageResponse = highLowImageGenerator.getHighLowImage(type, dir);
+    	 String graphType = request.getParameter("graphtype");
+         if (graphType == null) {
+             graphType = "EXP";
+         }
+    	ImageResponse imageResponse = highLowImageGenerator.getHighLowImage(type, dir, graphType);
         response.setContentType("image/png");
         
         OutputStream os = response.getOutputStream();
