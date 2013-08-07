@@ -68,19 +68,12 @@ public class PropertiesUtils {
     
     /** Constructor. */
     public static Properties getPropertiesFromClasspath(String filename) {
-        String classPath = System.getProperty("java.class.path");
         Properties properties = new Properties();
         try {
             URL url = PropertiesUtils.class.getResource("/" + filename);
             String path = "";
-            if (url == null) {
-                String aex = "/aex-index.properties";
-                String temp  = PropertiesUtils.class.getResource(aex).getPath();
-                path = temp.substring(0, temp.indexOf(aex) + 1) + filename;
-            } else {
                 path = url.getPath();
                 properties.load(PropertiesUtils.class.getResourceAsStream("/" + filename));
-            }
             properties.setProperty("path", path);
         } catch (IOException e) {
             System.err.println("Unable to load " + filename + ".");

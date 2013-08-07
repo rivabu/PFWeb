@@ -66,6 +66,7 @@ public class PFGenerator {
         ArrayList<Modelregel> PFData = handlePF.createPFData(rates, fundName, graphType, dirFull, turningPoint, stepSize);
         ModelFunctions mf = new ModelFunctions(fundName);
         mf.setPFData(PFData);
+        mf.setRates(rates);
         if (type.equals("default")) {
             mf.handlePFRules(turningPoint, stepSize);
         }
@@ -130,11 +131,23 @@ public class PFGenerator {
             //} //else {
                 //g.setColor(Color.RED);
             //}
-            if (PFRegel.getStatus() == DagkoersStatus.BIGMOVER_UP) {
+            if (PFRegel.getStatus() == DagkoersStatus.POS_RSI) {
+                g.setColor(Color.LIGHT_GRAY);
+            }
+            if (PFRegel.getStatus() == DagkoersStatus.NEG_RSI) {
+                g.setColor(Color.LIGHT_GRAY);
+            }    
+            if (PFRegel.getStatus() == DagkoersStatus.POS_RSI_LARGE) {
                 g.setColor(Color.GREEN);
             }
-            if (PFRegel.getStatus() == DagkoersStatus.BIGMOVER_DOWN) {
+            if (PFRegel.getStatus() == DagkoersStatus.NEG_RSI_LARGE) {
                 g.setColor(Color.RED);
+            }    
+            if (PFRegel.getStatus() == DagkoersStatus.BIGMOVER_UP) {
+                g.setColor(Color.magenta);
+            }
+            if (PFRegel.getStatus() == DagkoersStatus.BIGMOVER_DOWN) {
+                g.setColor(Color.cyan);
             }
             if (PFRegel.getStatus() == DagkoersStatus.LONG) {
                 g.setColor(Color.GREEN);

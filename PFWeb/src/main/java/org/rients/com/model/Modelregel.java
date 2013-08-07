@@ -11,6 +11,7 @@ public class Modelregel
     private float laagsteKoers;
     private String sign;
     private int aantalDagen;
+    private float RSI = 0;
     private DagkoersStatus status = DagkoersStatus.DEFAULT;
 
     public Modelregel()
@@ -147,5 +148,13 @@ public class Modelregel
 
     public void setLaagsteKoers(float laagsteKoers) {
         this.laagsteKoers = laagsteKoers;
+    }
+
+    public void setRSI(float rSI) {
+        RSI = rSI;
+    }
+
+    public float getRSI() {
+        return RSI;
     }
 }

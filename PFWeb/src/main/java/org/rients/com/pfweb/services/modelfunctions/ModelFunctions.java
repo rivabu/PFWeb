@@ -15,6 +15,7 @@ public class ModelFunctions {
     
     private String fundName;
     private ArrayList<Modelregel> PFData;
+    private List<Dagkoers> rates;
     PFRules pfRules = new PFRules();
 
     public ModelFunctions(String fundName) {
@@ -22,7 +23,8 @@ public class ModelFunctions {
     }
     
     public void handlePFRules(int turningPoint, float stepSize) {
-        pfRules.setDoubleTopAndBottom(PFData);
+        pfRules.setRSI(rates, PFData);
+        //setDoubleTopAndBottom(PFData)
     }
     
     public void handlePFRules(int turningPoint, float stepSize, Transaction transaction) {
@@ -131,4 +133,12 @@ public class ModelFunctions {
      */
     public void setPFData(ArrayList<Modelregel> pFData) {
         PFData = pFData;
+    }
+
+    public void setRates(List<Dagkoers> rates) {
+        this.rates = rates;
+    }
+
+    public List<Dagkoers> getRates() {
+        return rates;
     }}

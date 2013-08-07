@@ -1,14 +1,17 @@
 package org.rients.com.pfweb.services.modelfunctions;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.rients.com.model.Dagkoers;
 import org.rients.com.model.DagkoersStatus;
 import org.rients.com.model.Modelregel;
 import org.rients.com.model.Transaction;
 import org.rients.com.model.Type;
 import org.rients.com.utils.FileUtils;
+import org.rients.com.utils.RSI;
 
 
 public class PFRules {
@@ -81,7 +84,57 @@ public class PFRules {
         }
     }
     
-    public void setTransaction(ArrayList<Modelregel> pfData, Transaction trans) {
+    public void setRSI(List<Dagkoers> rates, ArrayList<Modelregel> pfData) {
+        int DAGENTERUG = 25;
+        RSI rsiCalculator = new RSI(DAGENTERUG);
+        int days = rates.size();
+        for (int j = 0; j < days; j++) {
+            BigDecimal rsi = rsiCalculator.compute(new BigDecimal(rates.get(j).closekoers));
+            if (j >= DAGENTERUG) {
+                setModelRegelRSI(pfData, rates.get(j).datum, rsi.intValue());
+            }
+        }
+        for (int j = 0; j < pfData.size(); j++) {
+            Modelregel modelregel1 = (Modelregel) pfData.get(j);
+            if (modelregel1.getStatus() != DagkoersStatus.BIGMOVER_UP && modelregel1.getStatus() != DagkoersStatus.BIGMOVER_DOWN) {
+                if (modelregel1.getRSI() >= 60) {
+                    modelregel1.setStatus(DagkoersStatus.POS_RSI_LARGE);
+                } else if ((modelregel1.getRSI() < 60) && (modelregel1.getRSI() >= 50))  {
+                    modelregel1.setStatus(DagkoersStatus.POS_RSI);
+                } else if ((modelregel1.getRSI() < 50) && (modelregel1.getRSI() >= 40))  {
+                    modelregel1.setStatus(DagkoersStatus.NEG_RSI);
+                } else if (modelregel1.getRSI() > 0){
+                    modelregel1.setStatus(DagkoersStatus.NEG_RSI_LARGE);
+                    
+                }
+            }
+            
+        }
+    }
+    
+    private void setModelRegelRSI(ArrayList<Modelregel> pfData, String date, int RSI) {
+        float koers = 0;
+        for (int i = 0; i < pfData.size(); i++) {
+            Modelregel modelregel1 = (Modelregel) pfData.get(i);
+            if (modelregel1.getDatumInt() == Integer.parseInt(date)) {
+                modelregel1.setRSI(RSI);
+                if ((koers > 0) && ((modelregel1.getKoers() / koers ) < 0.95)) {
+                    //modelregel1.setStatus(DagkoersStatus.BIGMOVER_DOWN);
+                }
+                if ((koers > 0) && ((koers /  modelregel1.getKoers()) < 0.95)) {
+                    //modelregel1.setStatus(DagkoersStatus.BIGMOVER_UP);
+                }
+            } else {
+                koers = modelregel1.getKoers();
+            }
+            if (modelregel1.getDatumInt() > Integer.parseInt(date)) {
+                break;
+            }
+            
+        }
+    }
+
+        public void setTransaction(ArrayList<Modelregel> pfData, Transaction trans) {
         for (int j = 0; j < pfData.size(); j++) {
             Modelregel modelregel = (Modelregel) pfData.get(j);
             if (modelregel.getDatumInt() >= trans.getStartDate() && modelregel.getDatumInt() <= trans.getEndDate()) {
