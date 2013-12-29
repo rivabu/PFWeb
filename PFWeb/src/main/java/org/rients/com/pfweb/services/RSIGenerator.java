@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RSIGenerator {
-    private int DAYS = 225;
+    //private int DAYS = 225;
     private int DAGENTERUG = 25;
     
     @Autowired
@@ -30,12 +30,12 @@ public class RSIGenerator {
         List<String> files = FileUtils.getFiles(Constants.KOERSENDIR + dir, "csv", false);
         String dirFull = Constants.KOERSENDIR + dir + Constants.SEP;
         // een matrix is een array van funddataholders.
-        Matrix matrix = new Matrix(files.size(), DAYS);
+        Matrix matrix = new Matrix(files.size(), Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
 
         for (int i = 0; i < files.size(); i++) {
             RSI rsiCalculator = new RSI(DAGENTERUG);
-            FundDataHolder dataHolder = new FundDataHolder(files.get(i), DAYS);
-            fundData.setNumberOfDays(DAYS);
+            FundDataHolder dataHolder = new FundDataHolder(files.get(i), Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
+            fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
             List<Dagkoers> rates = fundData.getFundRates(files.get(i), dirFull);
             if (i == 0) {
                 matrix.fillDates(rates);
@@ -50,7 +50,7 @@ public class RSIGenerator {
             }
         }
 
-        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "large",  DAYS - DAGENTERUG);
+        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "large",  Constants.NUMBEROFDAYSTOPRINT);
         return imageResponse;
     }
 
@@ -63,12 +63,11 @@ public class RSIGenerator {
 
         String pathFull = Constants.KOERSENDIR + dir + Constants.SEP;
         // een matrix is een array van funddataholders.
-        Matrix matrix = new Matrix(2, DAYS);
+        Matrix matrix = new Matrix(2, Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
         RSI rsiCalculator = new RSI(DAGENTERUG);
-        FundDataHolder dataHolder = new FundDataHolder("RSI", DAYS);
-        fundData.setNumberOfDays(DAYS);
+        FundDataHolder dataHolder = new FundDataHolder("RSI", Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
+        fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
         List<Dagkoers> rates = fundData.getFundRates(fundName, pathFull);
-        int aantalRecords = rates.size();
         matrix.fillDates(rates);
         matrix.setFundData(dataHolder, 0);
         int days = rates.size();
@@ -79,17 +78,17 @@ public class RSIGenerator {
             }
         }
         calucateRelativeKoersen(rates);
-        FundDataHolder dataHolderKoers = new FundDataHolder("Koers", DAYS);
+        FundDataHolder dataHolderKoers = new FundDataHolder("Koers", Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
         matrix.setFundData(dataHolderKoers, 1);
-        int records = DAYS;
-        if (DAYS > rates.size()) {
+        int records = Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG;
+        if (records > rates.size()) {
             records = rates.size();
         }
 
         for (int j = DAGENTERUG; j < records; j++) {
                 matrix.getFundData(1).addValue(rates.get(j).datum, MathFunctions.roundToInt(rates.get(j).relativeKoers));
         }
-        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "small", DAYS - DAGENTERUG);
+        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "normal", Constants.NUMBEROFDAYSTOPRINT);
         return imageResponse;
     }
     
@@ -106,8 +105,8 @@ public class RSIGenerator {
     private void calucateRelativeKoersen(List<Dagkoers> rates) {
         float minValue = 100000000f;
         float maxValue = 0f;
-        int records = DAYS;
-        if (DAYS > rates.size()) {
+        int records = Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG;
+        if (Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG > rates.size()) {
             records = rates.size();
         }
         

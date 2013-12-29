@@ -67,7 +67,7 @@ public class RSILineGraph {
             if (type.equals("small")) {
                 ChartUtilities.writeChartAsPNG(buffer, chart, 900, 200);
             } else {
-                ChartUtilities.writeChartAsPNG(buffer, chart, 1250, 750);
+                ChartUtilities.writeChartAsPNG(buffer, chart, 1250, 300);
             }
             imageResponse.setContent(buffer.toByteArray());
         } catch (IOException e) {
