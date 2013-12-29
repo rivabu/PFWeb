@@ -9,5 +9,5 @@
 	<li><a href="grafieken.jsp">Grafieken</a></li>
 	
 </ul>
-</div
+</div>
 <br>
