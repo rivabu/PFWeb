@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.LinkedList;
 
-public class RSI {
+public class RSI implements Graph {
 
     private final LinkedList<BigDecimal> values = new LinkedList<BigDecimal>();
     private final int length;
@@ -23,29 +23,24 @@ public class RSI {
     }
 
 
-    /**
-     * Compute the moving average. Synchronised so that no changes in the
-     * underlying data is made during calculation.
-     * 
-     * @param value
-     *            The value
-     * @return The average
-     */
+    /* (non-Javadoc)
+	 * @see org.rients.com.utils.Graph#compute(java.math.BigDecimal)
+	 */
     public BigDecimal compute(final BigDecimal value) {
         double totalGain = 0;
         double totalLosses = 0;
         double FACTOR = 1.1d;
         double vermenigvuldingsFactor = 1d;
         double vermenigvuldingsFactorCount = 0d;
-        BigDecimal RSI = BigDecimal.ZERO;
+        BigDecimal RSIvalue = BigDecimal.ZERO;
         boolean first = true;
         BigDecimal previousValue = BigDecimal.ZERO;
         if ((values.size() == length) && (length > 0)) {
-            RSI = RSI.subtract(values.getFirst());
             values.removeFirst();
         }
         values.add(value);
         if ((values.size() == length) && (length > 0)) {
+        	// begin algoritme
             for (int i = 0; i < length; i++) {
                 BigDecimal currentValue = values.get(i);
                 if (!first) {
@@ -71,9 +66,10 @@ public class RSI {
                 RS = avrGain / avrLoss;
             }
             double RSIDouble = 100 - (100 / (RS + 1));
-            RSI = new BigDecimal(RSIDouble);
+            RSIvalue = new BigDecimal(RSIDouble);
+            // end algorithme
 
         }
-        return RSI.round(MathContext.DECIMAL32);
+        return RSIvalue.round(MathContext.DECIMAL32);
     }
 }

@@ -53,15 +53,15 @@ public class RSILineGraph {
                 "", // y-axis Label
                 dataset, // Dataset
                 PlotOrientation.VERTICAL, // Plot Orientation
-                true, // Show Legend
+                false, // Show Legend
                 true, // Use tooltips
                 false // Configure chart to generate URLs?
                 );
         
-        chart.getPlot().setBackgroundPaint(Color.white);
+        chart.getPlot().setBackgroundPaint(Color.BLACK);
         LegendTitle legend = chart.getLegend();
-        legend.setPosition(RectangleEdge.RIGHT);
-        chart.setBackgroundPaint(Color.white);
+       // legend.setPosition(RectangleEdge.RIGHT);
+        chart.setBackgroundPaint(Color.BLACK);
         try {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             if (type.equals("small")) {

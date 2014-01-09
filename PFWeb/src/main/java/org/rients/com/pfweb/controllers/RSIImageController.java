@@ -30,11 +30,14 @@ public class RSIImageController  {
     	
         String dir = request.getParameter("dir");
         String fundName = request.getParameter("fund");
+        // type = RSI / VOTALITY
+        
+        String type = request.getParameter("type");
         ImageResponse imageResponse = null;
         if (fundName == null) {
-            imageResponse = rSIGenerator.getImage(dir);
+            imageResponse = rSIGenerator.getImage(dir, type);
         } else {
-            imageResponse = rSIGenerator.getImage(dir, fundName);
+            imageResponse = rSIGenerator.getImage(dir, type, fundName);
             
         }
         response.setContentType("image/png");

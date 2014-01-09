@@ -64,7 +64,11 @@ public class PFImageController {
         if (request.getParameter("maxcolumns") != null) {
             maxcolumns = Integer.parseInt(request.getParameter("maxcolumns"));
         }
-    	ImageResponse imageResponse = pFGenerator.getImage(type, trans, dir, fundName, graphType, turningPoint, stepSize, maxcolumns);
+        int days = -1;
+        if (request.getParameter("days") != null) {
+        	days = Integer.parseInt(request.getParameter("days"));
+        }
+    	ImageResponse imageResponse = pFGenerator.getImage(type, trans, dir, fundName, graphType, turningPoint, stepSize, maxcolumns, days);
         HttpSession session = request.getSession();
         FundInfo fundInfo = new FundInfo();
         fundInfo.setFundName(fundName);

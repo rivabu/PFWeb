@@ -94,6 +94,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.0</version>
+		</dependency>
+		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.8</version>
@@ -155,13 +160,8 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-<!--  
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-		-->
+		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>jcl-over-slf4j</artifactId> 
+			<version>1.6.1</version> </dependency> -->
 		<!-- Spring 3 dependencies -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -197,14 +197,8 @@
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
 			<version>1.8.5</version>
-			<!--  
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-			-->
+			<!-- <exclusions> <exclusion> <groupId>org.slf4j</groupId> <artifactId>slf4j-api</artifactId> 
+				</exclusion> </exclusions> -->
 		</dependency>
 
 		<dependency>
@@ -269,10 +263,10 @@
 					<warSourceDirectory>WebContent</warSourceDirectory>
 					<warSourceExcludes>
 						**/*.htm,**/*.html,**/*.html,**/*.gif,**/*.js,**/*.css,**/*.gif,**/*.jpg,**/*.png,**/*.exe,**/*.wsdl,**/*.xsd
-          			</warSourceExcludes>
+					</warSourceExcludes>
 					<warSourceIncludes>
 						*,WEB-INF/*,WEB-INF/classes/**,WEB-INF/jsp/**,WEB-INF/includes/**,WEB-INF/tlds/**,WEB-INF/tags/**
-          			</warSourceIncludes>
+					</warSourceIncludes>
 
 					<archive>
 						<manifest>

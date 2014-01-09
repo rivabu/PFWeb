@@ -38,7 +38,7 @@ public class PFGenerator {
     @Autowired
     HandleFundData fundData;
 
-    public ImageResponse getImage(String type, Transaction trans, String dir, String fundName, String graphType, int turningPoint, float stepSize, int maxColumns) {
+    public ImageResponse getImage(String type, Transaction trans, String dir, String fundName, String graphType, int turningPoint, float stepSize, int maxColumns, int numberOfDays) {
         Levels levels = Levels.getInstance();
 
         if (!dir.contains("intraday")) {
@@ -54,12 +54,15 @@ public class PFGenerator {
             dirFull = Constants.INTRADAY_KOERSENDIR;
         }
         List<Dagkoers> rates = null;
+        if (numberOfDays == -1) {
+        	numberOfDays = Constants.NUMBEROFDAYSTOPRINT;
+        }
         if (type.equals("default")) {
-            fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT);
+            fundData.setNumberOfDays(numberOfDays);
             rates = fundData.getFundRates(fundName, dirFull);
         }
         if (type.equals("trans")) {
-            fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT / 4);
+            fundData.setNumberOfDays(numberOfDays / 4);
             rates = fundData.getFundRates(fundName, dirFull, trans.getStartDate(), trans.getEndDate());
         }
 
