@@ -14,6 +14,7 @@ import org.rients.com.utils.Graph;
 import org.rients.com.utils.HistoricalVotality;
 import org.rients.com.utils.MathFunctions;
 import org.rients.com.utils.RSI;
+import org.rients.com.utils.SMA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class RSIGenerator {
     //private int DAYS = 225;
-    private int DAGENTERUG = 25;
+    private int DAGENTERUG = 50;
     
     @Autowired
     HandleFundData fundData;
@@ -36,10 +37,13 @@ public class RSIGenerator {
 
         for (int i = 0; i < files.size(); i++) {
         	Graph graphCalculator = null;
+        	Graph sma = null;
         	if (type.equals("RSI")) {
         		graphCalculator = new RSI(DAGENTERUG);
         	} else {
         		graphCalculator = new HistoricalVotality(DAGENTERUG);
+        		sma = new SMA(DAGENTERUG);
+        		
         	}
             FundDataHolder dataHolder = new FundDataHolder(files.get(i), Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
             fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
@@ -51,6 +55,9 @@ public class RSIGenerator {
             int days = rates.size();
             for (int j = 0; j < days; j++) {
                 BigDecimal value = graphCalculator.compute(new BigDecimal(rates.get(j).closekoers));
+                if (type.equals("votality")) {
+                	value = sma.compute(value);
+                }
                 if (j >= DAGENTERUG) {
                     matrix.getFundData(i).addValue(rates.get(j).datum, value.intValue());
                 }

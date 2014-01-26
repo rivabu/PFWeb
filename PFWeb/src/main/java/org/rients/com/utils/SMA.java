@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.LinkedList;
 
 
-public class SMA {
+public class SMA implements Graph {
 	
     private final LinkedList values = new LinkedList();
     private final int length;
@@ -42,7 +42,7 @@ public class SMA {
 	
 	        sum = sum.add(value);
 	        values.addLast(value);
-	        average = sum.divide(new BigDecimal(values.size()), 4);
+	        average = sum.divide(new BigDecimal(values.size()), length);
 	
 	        return average;
     	}

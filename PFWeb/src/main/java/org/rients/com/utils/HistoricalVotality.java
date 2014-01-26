@@ -40,6 +40,10 @@ public class HistoricalVotality implements Graph {
 			values.removeFirst();
 		}
 		values.add(value);
+        double FACTOR = 1.1d;
+        double vermenigvuldingsFactor = 1d;
+        double vermenigvuldingsFactorCount = 0d;
+
 		if ((values.size() == length) && (length > 0)) {
 			List<Double> priceChanges = new ArrayList<Double>();
 			BigDecimal lastPrice = BigDecimal.ZERO;
@@ -49,17 +53,19 @@ public class HistoricalVotality implements Graph {
 					lastPrice = values.get(x);
 				} else {
 					double priceChange = Math
-							.log(values.get(x).doubleValue() / lastPrice.doubleValue());
+							.log(values.get(x).doubleValue() / lastPrice.doubleValue()) * vermenigvuldingsFactor;
 					priceChanges.add(priceChange);
 					lastPrice = values.get(x);
+					vermenigvuldingsFactorCount = vermenigvuldingsFactorCount + vermenigvuldingsFactor;
 				}
+                vermenigvuldingsFactor = vermenigvuldingsFactor * FACTOR;
 			}
 			Double[] priceChangesArr = priceChanges.toArray(new Double[0]);
 			StandardDeviation stdDev = new StandardDeviation();
 			double stdDevTmp = stdDev.evaluate(ArrayUtils
 					.toPrimitive(priceChangesArr));
 			double retTemp = stdDevTmp * Math.sqrt(length) * 500;
-			return new BigDecimal(retTemp);
+			return new BigDecimal(Math.sqrt(retTemp));
 
 		}
 		return BigDecimal.ZERO;
