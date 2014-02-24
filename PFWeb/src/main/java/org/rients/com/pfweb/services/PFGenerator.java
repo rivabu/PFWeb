@@ -155,8 +155,8 @@ public class PFGenerator {
             if (PFRegel.getStatus() == DagkoersStatus.LONG) {
                 g.setColor(Color.GREEN);
             }
-            if (PFRegel.getStatus() == DagkoersStatus.SHORT) {
-                g.setColor(Color.RED);
+            if (PFRegel.getStatus() == DagkoersStatus.BUY) {
+                g.setColor(Color.ORANGE);
             }
             if (PFRegel.getStatus() == DagkoersStatus.LATESTDAY) {
                 g.setColor(Color.blue);

@@ -43,7 +43,7 @@ public class RandomKoersGenerator {
     public void execute(String fundname) throws IOException {
         
         HandleFundData fundData = new HandleFundData();
-        fundData.setNumberOfDays(600);
+        fundData.setNumberOfDays(1200);
         List<Dagkoers> rates = fundData.getFundRates(fundname, Constants.READDIR);
 
         String array[] = new String[rates.size() - 1];

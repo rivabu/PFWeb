@@ -66,8 +66,10 @@ public class RSILineGraph {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             if (type.equals("small")) {
                 ChartUtilities.writeChartAsPNG(buffer, chart, 900, 200);
-            } else {
+            } else if (type.equals("normaal")) {
                 ChartUtilities.writeChartAsPNG(buffer, chart, 1250, 300);
+            } else if (type.equals("groot")) {
+                ChartUtilities.writeChartAsPNG(buffer, chart, 1500, 750);
             }
             imageResponse.setContent(buffer.toByteArray());
         } catch (IOException e) {

@@ -95,18 +95,27 @@ public class PFRules {
                 setModelRegelRSI(pfData, rates.get(j).datum, rsi.intValue());
             }
         }
+        boolean red = false;
         for (int j = 0; j < pfData.size(); j++) {
             Modelregel modelregel1 = (Modelregel) pfData.get(j);
             if (modelregel1.getStatus() != DagkoersStatus.BIGMOVER_UP && modelregel1.getStatus() != DagkoersStatus.BIGMOVER_DOWN) {
                 if (modelregel1.getRSI() >= 60) {
                     modelregel1.setStatus(DagkoersStatus.POS_RSI_LARGE);
+            		red = false;
                 } else if ((modelregel1.getRSI() < 60) && (modelregel1.getRSI() >= 50))  {
                     modelregel1.setStatus(DagkoersStatus.POS_RSI);
+            		red = false;
                 } else if ((modelregel1.getRSI() < 50) && (modelregel1.getRSI() >= 40))  {
-                    modelregel1.setStatus(DagkoersStatus.NEG_RSI);
+                	if (red) {
+                		modelregel1.setStatus(DagkoersStatus.BUY);
+                		red = false;
+                	} else {
+                        modelregel1.setStatus(DagkoersStatus.NEG_RSI);
+                		red = false;
+                	}
                 } else if (modelregel1.getRSI() > 0){
                     modelregel1.setStatus(DagkoersStatus.NEG_RSI_LARGE);
-                    
+                    red = true;
                 }
             }
             

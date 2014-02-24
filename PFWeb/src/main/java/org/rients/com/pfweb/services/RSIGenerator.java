@@ -76,23 +76,24 @@ public class RSIGenerator {
         RSILineGraph rsiImage = new RSILineGraph();
 
         String pathFull = Constants.KOERSENDIR + dir + Constants.SEP;
+        List<Dagkoers> rates = fundData.getFundRates(fundName, pathFull);
+        int aantalDagenTonen = Math.min(rates.size() - DAGENTERUG, Constants.NUMBEROFDAYSTOPRINT);
         // een matrix is een array van funddataholders.
         Matrix matrix = null;
         
         Graph graphCalculator = null;
     	if (type.equals("RSI")) {
-    		matrix = new Matrix(2, Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
+    		matrix = new Matrix(2, aantalDagenTonen + DAGENTERUG);
     		graphCalculator = new RSI(DAGENTERUG);
-            FundDataHolder dataHolder = new FundDataHolder("RSI", Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
+            FundDataHolder dataHolder = new FundDataHolder("RSI", aantalDagenTonen + DAGENTERUG);
             matrix.setFundData(dataHolder, 0);
     	} else {
-    		matrix = new Matrix(1, Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
+    		matrix = new Matrix(1, aantalDagenTonen + DAGENTERUG);
     		graphCalculator = new HistoricalVotality(DAGENTERUG);
-            FundDataHolder dataHolderVotaliteit = new FundDataHolder("Votaliteit", Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
+            FundDataHolder dataHolderVotaliteit = new FundDataHolder("Votaliteit", aantalDagenTonen + DAGENTERUG);
             matrix.setFundData(dataHolderVotaliteit, 0);
     	}
-        fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
-        List<Dagkoers> rates = fundData.getFundRates(fundName, pathFull);
+        fundData.setNumberOfDays(aantalDagenTonen + DAGENTERUG);
         matrix.fillDates(rates);
         
         int days = rates.size();
@@ -104,9 +105,9 @@ public class RSIGenerator {
         }
         if (type.equals("RSI")) {
 	        calucateRelativeKoersen(rates);
-	        FundDataHolder dataHolderKoers = new FundDataHolder("Koers", Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
+	        FundDataHolder dataHolderKoers = new FundDataHolder("Koers", aantalDagenTonen + DAGENTERUG);
 	        matrix.setFundData(dataHolderKoers, 1);
-	        int records = Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG;
+	        int records = aantalDagenTonen + DAGENTERUG;
 	        if (records > rates.size()) {
 	            records = rates.size();
 	        }
@@ -115,7 +116,7 @@ public class RSIGenerator {
 	                matrix.getFundData(1).addValue(rates.get(j).datum, MathFunctions.roundToInt(rates.get(j).relativeKoers));
 	        }
         }
-        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "normal", Constants.NUMBEROFDAYSTOPRINT);
+        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "groot", aantalDagenTonen);
         return imageResponse;
     }
     

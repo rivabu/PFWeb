@@ -72,9 +72,15 @@ public class PropertiesUtils {
         try {
             URL url = PropertiesUtils.class.getResource("/" + filename);
             String path = "";
+            if (url != null)  {
+                
                 path = url.getPath();
                 properties.load(PropertiesUtils.class.getResourceAsStream("/" + filename));
-            properties.setProperty("path", path);
+                properties.setProperty("path", path);
+            } else {
+            	path = "E:/trading/fund_properties/" + filename;
+            	properties.setProperty("path", path);
+            }
         } catch (IOException e) {
             System.err.println("Unable to load " + filename + ".");
         }
