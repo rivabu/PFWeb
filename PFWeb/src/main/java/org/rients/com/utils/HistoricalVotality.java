@@ -8,7 +8,7 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
-public class HistoricalVotality implements Graph {
+public class HistoricalVotality implements Formula {
 
 	private final LinkedList<BigDecimal> values = new LinkedList<BigDecimal>();
 	private final int length;

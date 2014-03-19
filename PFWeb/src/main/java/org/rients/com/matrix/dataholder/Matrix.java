@@ -19,7 +19,12 @@ public class Matrix {
     }
     
     
-    public int getMaxFundnameLength() {
+    public String[] getDates() {
+		return dates;
+	}
+
+
+	public int getMaxFundnameLength() {
         int maxLength = 0;
         for (int i = 0; i < this.getAantalFunds(); i++) {
             if (this.getFundData(i).getFundName().length() > maxLength) {

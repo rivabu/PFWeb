@@ -7,20 +7,20 @@ import java.util.TreeMap;
 
 public class FundDataHolder {
     private String fundName;
-    private Map<String, Integer> data = new TreeMap<String, Integer>();
+    private Map<String, Object> data = new TreeMap<String, Object>();
     //int[] data;
     
     public FundDataHolder(String fundName, int days) {
         this.setFundName(fundName);
     }
     
-    public void addValue(String date, int value) {
-        data.put(new String(date), new Integer(value));
+    public void addValue(String date, Object value) {
+        data.put(new String(date), value);
     }
     
-    public int getValue(String date) {
+    public Object getValue(String date) {
         if (data.containsKey(date)) {
-            return ((Integer) data.get(date)).intValue();
+            return data.get(date);
         }
         return 0;
     }
@@ -33,7 +33,7 @@ public class FundDataHolder {
         return data.keySet();
     }
     
-    public Collection<Integer> getValues() {
+    public Collection<Object> getValues() {
         return data.values();
     }
 

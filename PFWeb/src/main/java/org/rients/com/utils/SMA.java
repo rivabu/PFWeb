@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.LinkedList;
 
 
-public class SMA implements Graph {
+public class SMA implements Formula {
 	
     private final LinkedList values = new LinkedList();
     private final int length;

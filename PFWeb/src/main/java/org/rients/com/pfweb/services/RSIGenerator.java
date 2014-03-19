@@ -10,7 +10,7 @@ import org.rients.com.matrix.dataholder.Matrix;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.ImageResponse;
 import org.rients.com.utils.FileUtils;
-import org.rients.com.utils.Graph;
+import org.rients.com.utils.Formula;
 import org.rients.com.utils.HistoricalVotality;
 import org.rients.com.utils.MathFunctions;
 import org.rients.com.utils.RSI;
@@ -36,8 +36,8 @@ public class RSIGenerator {
         Matrix matrix = new Matrix(files.size(), Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
 
         for (int i = 0; i < files.size(); i++) {
-        	Graph graphCalculator = null;
-        	Graph sma = null;
+        	Formula graphCalculator = null;
+        	Formula sma = null;
         	if (type.equals("RSI")) {
         		graphCalculator = new RSI(DAGENTERUG);
         	} else {
@@ -81,7 +81,7 @@ public class RSIGenerator {
         // een matrix is een array van funddataholders.
         Matrix matrix = null;
         
-        Graph graphCalculator = null;
+        Formula graphCalculator = null;
     	if (type.equals("RSI")) {
     		matrix = new Matrix(2, aantalDagenTonen + DAGENTERUG);
     		graphCalculator = new RSI(DAGENTERUG);
@@ -116,7 +116,7 @@ public class RSIGenerator {
 	                matrix.getFundData(1).addValue(rates.get(j).datum, MathFunctions.roundToInt(rates.get(j).relativeKoers));
 	        }
         }
-        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "groot", aantalDagenTonen);
+        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "normaal", aantalDagenTonen);
         return imageResponse;
     }
     

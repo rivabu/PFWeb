@@ -11,7 +11,7 @@ import org.rients.com.model.Modelregel;
 import org.rients.com.model.Transaction;
 import org.rients.com.model.Type;
 import org.rients.com.utils.FileUtils;
-import org.rients.com.utils.Graph;
+import org.rients.com.utils.Formula;
 import org.rients.com.utils.RSI;
 
 
@@ -87,7 +87,7 @@ public class PFRules {
     
     public void setRSI(List<Dagkoers> rates, ArrayList<Modelregel> pfData) {
         int DAGENTERUG = 25;
-        Graph rsiCalculator = new RSI(DAGENTERUG);
+        Formula rsiCalculator = new RSI(DAGENTERUG);
         int days = rates.size();
         for (int j = 0; j < days; j++) {
             BigDecimal rsi = rsiCalculator.compute(new BigDecimal(rates.get(j).closekoers));

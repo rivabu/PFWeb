@@ -2,7 +2,7 @@ package org.rients.com.utils;
 
 import java.math.BigDecimal;
 
-public interface Graph {
+public interface Formula {
 
 	/**
 	 * Compute the moving average. Synchronised so that no changes in the

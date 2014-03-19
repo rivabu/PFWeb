@@ -51,7 +51,7 @@ public class ImageGenerator {
             int counter = 0;
             while (iterator.hasNext()) {
                 String date = iterator.next();
-                int value = matrix.getFundData(fondsTeller).getValue(date);
+                int value = (Integer) matrix.getFundData(fondsTeller).getValue(date);
                 if (value == 0) {
                     g.setColor(Color.WHITE);
                 }

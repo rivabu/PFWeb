@@ -32,7 +32,7 @@ public class RSILineGraph {
         for (int counter = 0; counter < aantalFunds; counter++) {
             String fundName = matrix.getFundData(counter).getFundName();
             XYSeries points = new XYSeries(fundName);
-            Iterator<Integer> iter = matrix.getFundData(counter).getValues().iterator();
+            Iterator<Object> iter = matrix.getFundData(counter).getValues().iterator();
             int size = matrix.getFundData(counter).getValues().size();
             int xas = 0;
             if (size < DAYS) {
@@ -42,7 +42,7 @@ public class RSILineGraph {
                 }
             }
             while (iter.hasNext()) {
-                points.add(xas, iter.next());
+                points.add(xas, ((Integer) iter.next()).intValue());
                 xas ++;
             }
             dataset.addSeries(points);

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.LinkedList;
 
-public class RSI implements Graph {
+public class RSI implements Formula {
 
     private final LinkedList<BigDecimal> values = new LinkedList<BigDecimal>();
     private final int length;

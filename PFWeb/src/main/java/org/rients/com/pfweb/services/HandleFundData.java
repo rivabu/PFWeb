@@ -83,17 +83,17 @@ public class HandleFundData {
             else {
                 beginDateIndex = 0;
             }
-            int endDateIndex = findIndex(beginDate, records);
+            int endDateIndex = findIndex(endDate, records);
             if (endDateIndex == -1) {
                 System.out.println("date: " + endDate + " not found in " + fundName);
             }
-            if (endDateIndex + numberOfDays < aantalRecords) {
-                endDateIndex = endDateIndex + numberOfDays;
-            }
-            else {
-                endDateIndex = aantalRecords;
-            }
-            for (int i = beginDateIndex; i < endDateIndex; i++) {
+//            if (endDateIndex + numberOfDays < aantalRecords) {
+//                endDateIndex = endDateIndex + numberOfDays;
+//            }
+//            else {
+//                endDateIndex = aantalRecords;
+//            }
+            for (int i = beginDateIndex; i <= endDateIndex; i++) {
                 sublistRecords.add(records.get(i));
             }
         }
@@ -121,6 +121,9 @@ public class HandleFundData {
 
     public List<Dagkoers> getAllFundRates(String fundName, String directory) {
         Properties prop = null;
+        if (!directory.endsWith(Constants.SEP)) {
+        	directory = directory +  Constants.SEP;
+        }
         if (!directory.contains("intraday")) {
             //String fileName = Constants.FUND_PROPERTIESDIR + fundName + Constants.PROPERTIES;
             prop = PropertiesUtils.getPropertiesFromClasspath(fundName + Constants.PROPERTIES);

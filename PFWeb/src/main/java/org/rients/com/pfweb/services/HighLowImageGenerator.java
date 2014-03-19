@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 public class HighLowImageGenerator {
 
     private boolean saveImage = true;
-    private int DAYS = 50;
+    private int DAYS = 550;
     private int lookbackPeriod = 5;
     
     @Autowired
