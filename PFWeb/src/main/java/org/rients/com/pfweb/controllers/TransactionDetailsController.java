@@ -59,7 +59,8 @@ public class TransactionDetailsController {
             transactions = fileIOService.readFromTransactiesFile(Constants.TRANSACTIONDIR, Constants.ALL_TRANSACTIONS, null);
         }
         Transaction myTrans = findTransaction(transId, transactions);
-        String realFundName = findRealFundName(myTrans.getFundName());
+//        String realFundName = findRealFundName(myTrans.getFundName());
+        String realFundName = myTrans.getFundName();
         myTrans.setRealFundName(realFundName);
         httpSession.setAttribute("trans", myTrans);
             return "transactionDetails";

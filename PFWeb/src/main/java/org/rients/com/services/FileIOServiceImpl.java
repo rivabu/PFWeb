@@ -183,7 +183,7 @@ public class FileIOServiceImpl implements FileIOService {
                     if (stringtokenizer.countTokens() >= 7) {
                         int startDate = Integer.parseInt(stringtokenizer.nextToken().trim());
                         int endDate = Integer.parseInt(stringtokenizer.nextToken().trim());
-                        int pieces = Integer.parseInt(stringtokenizer.nextToken().trim());
+                        double pieces = Double.parseDouble(stringtokenizer.nextToken().trim());
                         String readFundName = stringtokenizer.nextToken().trim();
                         int id = Integer.parseInt(stringtokenizer.nextToken().trim());
                         float startRate = Float.parseFloat(stringtokenizer.nextToken().trim());

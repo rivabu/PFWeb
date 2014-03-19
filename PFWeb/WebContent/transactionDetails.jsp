@@ -41,7 +41,7 @@
 </table>
    
 <br />
-<img class="decoded" src="http://127.0.0.1:8060/PFWeb/PFImage?id=${trans.buyId}&amp;type=trans&amp;turningPoint=1&amp;stepSize=0.5&amp;row=1&amp;maxcolumns=40">
+<img class="decoded" src="/PFWeb/PFImage?id=${trans.buyId}&amp;type=trans&amp;turningPoint=1&amp;stepSize=0.5&amp;row=1&amp;maxcolumns=40">
 <br />
 <br />
 

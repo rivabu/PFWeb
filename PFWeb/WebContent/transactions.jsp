@@ -11,7 +11,7 @@
  <link rel="stylesheet" type="text/css" href="static/css/global-0.52.css?foo"> 
 <script src="static/js/jquery.js">
 </script>
-<script language="javascript">
+<script language="javascript"> 
 
 $( function () {
 	$("a.lightbox").click(function(event) {

@@ -1,7 +1,10 @@
 package org.rients.com.strengthWeakness;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+
+
 
 
 
@@ -14,6 +17,8 @@ import org.rients.com.matrix.dataholder.FundDataHolder;
 import org.rients.com.matrix.dataholder.Matrix;
 import org.rients.com.model.Categories;
 import org.rients.com.model.Dagkoers;
+import org.rients.com.model.Transaction;
+import org.rients.com.model.Type;
 import org.rients.com.pfweb.services.HandleFundData;
 import org.rients.com.utils.FileUtils;
 import org.rients.com.utils.Formula;
@@ -56,15 +61,16 @@ public class StrengthVersusWeaknessExecutor {
         
         Matrix matrix = createMatrix(aexRates, files);
         fillMatrixWithData(matrix, directory, files);
-        handleMatrixForStrength(matrix, true);
-        handleMatrixForStrength(matrix, false);
+//        List<Transaction> transactions = handleMatrixForStrength(matrix, true);
+        List<Transaction> transactions = handleMatrixForStrength(matrix, false);
+        saveTransactions(transactions);
         
         //System.out.println("here");
 	}
 
-	private void handleMatrixForStrength(Matrix matrix, boolean strong) {
+	private List<Transaction> handleMatrixForStrength(Matrix matrix, boolean strong) {
 		int aantalFunds = matrix.getAantalFunds();
-		
+		List<Transaction> transactions = new ArrayList<Transaction>();
 		String[] dates = matrix.getDates();
 		Double sumProfit = 0d;
 		Double cummProfit = 0d;
@@ -73,6 +79,7 @@ public class StrengthVersusWeaknessExecutor {
 			amounts[i] = 1000d;
 		}
 		int amountCounter = 0;
+		int transId = 1;
 		for (int i=strengthOverDays; i<dates.length; i++) {
 			double maxStrength = -1000;
 			double minStrength = 1000;
@@ -103,10 +110,17 @@ public class StrengthVersusWeaknessExecutor {
 						} else {
 							profit = MathFunctions.round(MathFunctions.procVerschil(verkoopKoers, koopKoers), 2) * -1;
 						}
-						double aantalBought = amounts[amountCounter] / koopKoers;
-						amounts[amountCounter] = aantalBought * verkoopKoers;
+						
 					}
 				}
+			}
+			if (i + sellAfterDays < dates.length) {
+				double aantalBought = amounts[amountCounter] / koopKoers;
+				amounts[amountCounter] = aantalBought * verkoopKoers;
+				Transaction trans = new Transaction(fundName, new Integer(date).intValue(), transId, new Double(koopKoers).floatValue(), aantalBought, Type.LONG);
+				transId ++;
+				trans.addSellInfo(new Integer(futureDate).intValue(), 0, new Double(verkoopKoers).floatValue());
+				transactions.add(trans);
 			}
 			amountCounter++;
 			if (amountCounter == sellAfterDays) {
@@ -120,9 +134,17 @@ public class StrengthVersusWeaknessExecutor {
 		double totalAmount = 0d;
 		for (int i = 0; i<amounts.length; i++) {
 			totalAmount = totalAmount + amounts[i];
-			System.out.println("i = " + i + " :" + MathFunctions.round(amounts[i], 2));
+			//System.out.println("i = " + i + " :" + MathFunctions.round(amounts[i], 2));
 		}
 		System.out.println("total amount: " + MathFunctions.round(totalAmount, 2));
+		return transactions;
+	}
+	
+	private void saveTransactions(List<Transaction> transactions) {
+        System.out.println(transactions.size());
+        String filename = Constants.TRANSACTIONDIR + Constants.SEP + Constants.ALL_TRANSACTIONS;
+        FileUtils.writeToFile(filename, transactions);
+
 	}
 
 	private Matrix createMatrix(List<Dagkoers> aexRates, List<String> files) {

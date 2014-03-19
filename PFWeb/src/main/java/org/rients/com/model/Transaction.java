@@ -30,14 +30,14 @@ public class Transaction {
     public float endRate;
     public int numberOfDays;
     public Type type; // LONG, SHORT
-    public int pieces;
+    public double pieces;
     
     
     public Transaction() {
         super();
     }
     
-    public Transaction(String fundName, int startDate, int buyId, float startRate, int pieces, Type type) {
+    public Transaction(String fundName, int startDate, int buyId, float startRate, double pieces, Type type) {
         super();
         this.fundName = fundName;
         this.startDate = startDate;
@@ -62,7 +62,7 @@ public class Transaction {
     }
 
     public float getScoreAbs() {
-        float score = (endRate - startRate)  * pieces;
+        float score = (endRate - startRate)  * new Double(pieces).floatValue();
         return score;
     }
 
@@ -88,7 +88,7 @@ public class Transaction {
     public String getScoreAbsStr() {
         float score = 0;
         if (endRate != 0) {
-            score = (endRate - startRate)  * pieces;
+            score = (endRate - startRate)  * new Double(pieces).floatValue();
         } else {
             score = 0;
         }
@@ -97,7 +97,7 @@ public class Transaction {
     
     public BigDecimal getScoreAbsBD() {
         if (endRate != 0) {
-            float score = (endRate - startRate)  * pieces;
+            float score = (endRate - startRate)  * new Double(pieces).floatValue();
             return new BigDecimal(MathFunctions.round(score));
         }
         return new BigDecimal(0);
@@ -107,7 +107,7 @@ public class Transaction {
         String sep = ",";
 
         String string =
-            startDate + sep + endDate + sep + pieces + sep + fundName +  sep + buyId + sep + startRate + sep + endRate +  sep + type + sep + getScorePercStr() + sep + getScoreAbsStr();
+            startDate + sep + endDate + sep + MathFunctions.round(pieces, 2) + sep + fundName +  sep + buyId + sep + startRate + sep + endRate +  sep + type + sep + getScorePercStr() + sep + getScoreAbsStr();
 
         return string;
     }
@@ -195,7 +195,7 @@ public class Transaction {
     /**
      * @return the pieces
      */
-    public int getPieces() {
+    public double getPieces() {
         return pieces;
     }
 
@@ -203,7 +203,7 @@ public class Transaction {
     /**
      * @param pieces the pieces to set
      */
-    public void setPieces(int pieces) {
+    public void setPieces(double pieces) {
         this.pieces = pieces;
     }
 

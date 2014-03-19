@@ -68,7 +68,7 @@ public class TransactionExcelConverterExecutor {
                 //continue;
             }
             iterExcel = transExcel.iterator();
-            int numbersToSell = trans.getPieces();
+            double numbersToSell = trans.getPieces();
             while (iterExcel.hasNext() && numbersToSell > 0) {
                 TransactionExcel transSell = iterExcel.next();
                 if (trans.getBuyId() > transSell.getNumber()) {
@@ -76,8 +76,8 @@ public class TransactionExcelConverterExecutor {
                     continue;
                 }
                 if (trans.getBuyId() < transSell.getNumber() && trans.getFundName().equals(transSell.getFundName())) {
-                    int numberBought = trans.getPieces();
-                    int numberSold = transSell.getPieces();
+                    double numberBought = trans.getPieces();
+                    double numberSold = transSell.getPieces();
                     float endRate = transSell.getKoers();
                     numbersToSell = numberBought - numberSold;
                     int endDate = transSell.getDatum();
@@ -85,18 +85,18 @@ public class TransactionExcelConverterExecutor {
                     // situatie 1
                     if (numbersToSell == 0) {
                         iterExcel.remove();
-                        totalPrice = totalPrice + (numberSold * endRate);
+                        totalPrice = totalPrice + (new Double(numberSold).floatValue() * endRate);
                         allSellingTransFound = true;
                     }
                     // situatie 2
                     if (numbersToSell < 0) {
                         transSell.setPieces(numberSold - numberBought);
-                        totalPrice = totalPrice + (numberBought * endRate);
+                        totalPrice = totalPrice + (new Double(numberSold).floatValue() * endRate);
                         allSellingTransFound = true;
                     }
                     // situatie 3 + 4
                     if (numbersToSell > 0) {
-                        totalPrice = totalPrice + (numberSold * endRate);
+                        totalPrice = totalPrice + (new Double(numberSold).floatValue() * endRate);
                         iterExcel.remove();
                         while (numbersToSell > 0 && iterExcel.hasNext()) {
                             
@@ -109,12 +109,12 @@ public class TransactionExcelConverterExecutor {
                             endDate = transSell.getDatum();
                             lastSellId = transSell.getNumber();
                             if (numbersToSell >= numberSold) {
-                                totalPrice = totalPrice + (numberSold * endRate);
+                                totalPrice = totalPrice + (new Double(numberSold).floatValue() * endRate);
                                 iterExcel.remove();
                             }
                             if (numbersToSell < numberSold) {
                                 transSell.setPieces(numberSold - numbersToSell);
-                                totalPrice = totalPrice + numbersToSell * endRate;
+                                totalPrice = totalPrice + new Double(numberSold).floatValue() * endRate;
                             }
                             if (numbersToSell <= numberSold) {
                                 allSellingTransFound = true;
@@ -123,7 +123,7 @@ public class TransactionExcelConverterExecutor {
                         }     
                     }
                     if (allSellingTransFound) {
-                        endRate = MathFunctions.divide(totalPrice, trans.getPieces());
+                        endRate = MathFunctions.divide(totalPrice, new Double(trans.getPieces()).intValue());
                         trans.addSellInfo(endDate, lastSellId, endRate);
                     } else {
                         Transaction clone = new Transaction(trans.getFundName(), trans.getStartDate(), trans.getBuyId(), trans.getStartRate(), trans.getPieces() - numberSold, trans.getType());
