@@ -71,6 +71,7 @@ public class StrengthVersusWeaknessExecutor {
 	private List<Transaction> handleMatrixForStrength(Matrix matrix, boolean strong) {
 		int aantalFunds = matrix.getAantalFunds();
 		List<Transaction> transactions = new ArrayList<Transaction>();
+		Portfolio portfolio = new Portfolio();
 		String[] dates = matrix.getDates();
 		Double sumProfit = 0d;
 		Double cummProfit = 0d;
@@ -90,37 +91,51 @@ public class StrengthVersusWeaknessExecutor {
 			double koopKoers = 0d;
 			double verkoopKoers = 0d;
 			for(int j=0; j<aantalFunds; j++) {
-				//System.out.println(fundName + date);
 				StrengthWeakness strength = (StrengthWeakness) matrix.getFundData(j).getValue(date);
-				if ((strong && strength.strength > maxStrength) || (!strong && strength.strength < minStrength)) {
-					if (strong) {
-						maxStrength = MathFunctions.round(strength.strength, 2);
-					} else {
-						minStrength = MathFunctions.round(strength.strength, 2);
-					}
-
-					if (i + sellAfterDays < dates.length) {
-						fundName = matrix.getFundData(j).getFundName();
-						futureDate = dates[i+sellAfterDays];
-						StrengthWeakness futureStrength = (StrengthWeakness) matrix.getFundData(j).getValue(futureDate);
-						koopKoers = MathFunctions.round(strength.koers, 2);
-						verkoopKoers =  MathFunctions.round(futureStrength.koers, 2);
-						if (verkoopKoers > koopKoers) {
-							profit = MathFunctions.round(MathFunctions.procVerschil(koopKoers, verkoopKoers), 2);
+				if (strength != null) {
+					if ((strong && strength.strength > maxStrength) || (!strong && strength.strength < minStrength)) {
+						if (strong) {
+							maxStrength = MathFunctions.round(strength.strength, 2);
 						} else {
-							profit = MathFunctions.round(MathFunctions.procVerschil(verkoopKoers, koopKoers), 2) * -1;
+							minStrength = MathFunctions.round(strength.strength, 2);
 						}
-						
+	
+						if (i + sellAfterDays < dates.length) {
+							fundName = matrix.getFundData(j).getFundName();
+							koopKoers = MathFunctions.round(strength.koers, 2);
+							for (int k = 0; k < sellAfterDays; k++) {
+								futureDate = dates[i + k];
+								StrengthWeakness futureStrength = (StrengthWeakness) matrix.getFundData(j).getValue(dates[i + k]);
+								verkoopKoers =  MathFunctions.round(futureStrength.koers, 2);
+								double div = MathFunctions.procVerschil(koopKoers, futureStrength.koers);
+								if (div < StrengthWeaknessConstants.stoploss) {
+									// stop loss
+									// max 10% verlies
+									break;
+								}
+							}
+							
+							if (verkoopKoers > koopKoers) {
+								profit = MathFunctions.round(MathFunctions.procVerschil(koopKoers, verkoopKoers), 2);
+							} else {
+								profit = MathFunctions.round(MathFunctions.procVerschil(verkoopKoers, koopKoers), 2) * -1;
+							}
+							
+						}
 					}
 				}
 			}
 			if (i + sellAfterDays < dates.length) {
-				double aantalBought = amounts[amountCounter] / koopKoers;
-				amounts[amountCounter] = aantalBought * verkoopKoers;
-				Transaction trans = new Transaction(fundName, new Integer(date).intValue(), transId, new Double(koopKoers).floatValue(), aantalBought, Type.LONG);
-				transId ++;
-				trans.addSellInfo(new Integer(futureDate).intValue(), 0, new Double(verkoopKoers).floatValue());
-				transactions.add(trans);
+				// kopen als ik hem nog niet heb, of als ik op winst sta.
+				if (!portfolio.hasInStock(fundName) || portfolio.resultSoFar(fundName) > 0) {
+					double aantalBought = amounts[amountCounter] / koopKoers;
+					amounts[amountCounter] = aantalBought * verkoopKoers;
+					Transaction trans = new Transaction(fundName, new Integer(date).intValue(), transId, new Double(koopKoers).floatValue(), aantalBought, Type.LONG);
+					transId ++;
+					trans.addSellInfo(new Integer(futureDate).intValue(), 0, new Double(verkoopKoers).floatValue());
+					transactions.add(trans);
+					portfolio.add(trans);
+				}
 			}
 			amountCounter++;
 			if (amountCounter == sellAfterDays) {
@@ -136,8 +151,12 @@ public class StrengthVersusWeaknessExecutor {
 			totalAmount = totalAmount + amounts[i];
 			//System.out.println("i = " + i + " :" + MathFunctions.round(amounts[i], 2));
 		}
-		System.out.println("total amount: " + MathFunctions.round(totalAmount, 2));
+		System.out.println("cummProfit: " + MathFunctions.round(cummProfit, 2));
 		return transactions;
+	}
+	
+	private double profitSoFar(String fundName) {
+		return 10;
 	}
 	
 	private void saveTransactions(List<Transaction> transactions) {
@@ -178,9 +197,10 @@ public class StrengthVersusWeaknessExecutor {
             int startValue = 0;
             if (rates.size() < totalDAYS && rates.size() > strengthOverDays) {
                 int difference = totalDAYS - rates.size();
+                String[] dates = matrix.getDates();
                 for (int j = 0; j < difference; j++) {
                 	// dummy data
-                    matrix.getFundData(file).addValue("19990101" + j, null);
+                	matrix.getFundData(file).addValue(dates[j], null);
                 }
                 startValue = difference;
             }

@@ -105,17 +105,19 @@ public class HandleFundData {
     
     public int findIndex(int date, List<Dagkoers> records) {
         int counter = -1;
+        int returnValue = -1;
         Iterator<Dagkoers> iter = records.iterator();
         while (iter.hasNext()) {
             counter ++;
             Dagkoers dagkoers = iter.next();
             if (dagkoers.getDatumInt() == date) {
+            	returnValue = counter;
                 break;
             }
         }
         
         
-        return counter;
+        return returnValue;
         
     }
 
