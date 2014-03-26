@@ -12,6 +12,7 @@ import org.rients.com.model.Dagkoers;
 import org.rients.com.model.DagkoersStatus;
 import org.rients.com.model.FondsURL;
 import org.rients.com.model.Modelregel;
+import org.rients.com.model.PFModel;
 import org.rients.com.pfweb.services.HandleFundData;
 import org.rients.com.pfweb.services.HandlePF;
 import org.rients.com.pfweb.services.modelfunctions.ModelFunctions;
@@ -89,17 +90,17 @@ public class DoubleTopAndBottomsLocator {
         fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT);
         List<Dagkoers> rates = fundData.getFundRates(fundName, dir);
 
-        ArrayList<Modelregel> PFData = handlePF.createPFData(rates, fundName, graphType, dir, turningPoint, stepSize);
+        PFModel pfModel = handlePF.createPFData(rates, fundName, graphType, dir, turningPoint, stepSize);
         
         ModelFunctions mf = new ModelFunctions(fundName);
-        mf.setPFData(PFData);
+        mf.setPFData(pfModel.getPfModel());
         mf.handlePFRules(turningPoint, stepSize);
         int lastColumnTopMatch = -10;
         int lastColumnBottomMatch = -10;
         int lastRowTopMatch = -10;
         int lastRowBottomMatch = -10;
         int oneWeekAgo = getOneWeekAgo();
-        for (Modelregel modelRegel : PFData) {
+        for (Modelregel modelRegel : pfModel.getPfModel()) {
             if (modelRegel.getStatus() == DagkoersStatus.DOUBLE_TOP) {
                 if (lastColumnTopMatch + 2 == modelRegel.getKolomnr() && lastRowTopMatch == modelRegel.getRijnr()) {
                     if (Integer.parseInt(modelRegel.getDatum()) > oneWeekAgo) {
@@ -133,13 +134,13 @@ public class DoubleTopAndBottomsLocator {
         fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT);
         List<Dagkoers> rates = fundData.getFundRates(fundName, dir);
 
-        ArrayList<Modelregel> PFData = handlePF.createPFData(rates, fundName, graphType, dir, turningPoint, stepSize);
+        PFModel pfModel = handlePF.createPFData(rates, fundName, graphType, dir, turningPoint, stepSize);
         
         ModelFunctions mf = new ModelFunctions(fundName);
-        mf.setPFData(PFData);
+        mf.setPFData(pfModel.getPfModel());
         mf.handleFindTopsAndBottoms(turningPoint, stepSize);
-        int size = PFData.size() - 1;
-        Modelregel modelRegel = PFData.get(PFData.size() - 1);
+        int size = pfModel.getPfModel().size() - 1;
+        Modelregel modelRegel = pfModel.getPfModel().get(pfModel.getPfModel().size() - 1);
         boolean match = false;
         int lastColumn = modelRegel.getKolomnr();
         if ((modelRegel.getStatus() == DagkoersStatus.TOP &&  type.equals("tops")) || 
@@ -148,7 +149,7 @@ public class DoubleTopAndBottomsLocator {
         }
         if (!match) {
             for (int i = size; i > 0; i--) {
-                modelRegel = PFData.get(i);
+                modelRegel = pfModel.getPfModel().get(i);
                 if ((modelRegel.getKolomnr() == (lastColumn - 1)) && 
                         (modelRegel.getStatus() == DagkoersStatus.TOP &&  type.equals("tops")) || 
                         (modelRegel.getStatus() == DagkoersStatus.BOTTOM && type.equals("bottoms"))) {

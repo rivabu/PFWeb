@@ -162,7 +162,7 @@ public class PFRules {
      * @param pfData
      * @param fileName
      */
-    public List<Transaction> getOptimalDecisions(ArrayList<Modelregel> pfData, String fileName, boolean saveToFile) {
+    public List<Transaction> getOptimalDecisions(List<Modelregel> pfData, String fileName, boolean saveToFile) {
         Transaction trans = null;
         float totalScore = 0;
         List<Transaction> transactions = new ArrayList<Transaction>();

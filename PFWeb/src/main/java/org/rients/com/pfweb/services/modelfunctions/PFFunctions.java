@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.Modelregel;
+import org.rients.com.model.PFModel;
 import org.rients.com.model.Transaction;
 import org.rients.com.pfweb.services.HandleFundData;
 import org.rients.com.pfweb.services.HandlePF;
@@ -24,20 +25,20 @@ public class PFFunctions {
     
     public ArrayList getHigherTopActions(String fundName, String directory, String graphType, int turningPoint, float stepSize) {
         ArrayList transactions = new ArrayList();
-        ArrayList PFData = pfHandler.createPFData(rates, fundName, graphType, directory, turningPoint, stepSize);
+        PFModel pfModel = pfHandler.createPFData(rates, fundName, graphType, directory, turningPoint, stepSize);
         Hashtable tops = new Hashtable();
         Hashtable bottoms = new Hashtable();
-        getTopsAndBottoms(PFData, tops, bottoms);
+        getTopsAndBottoms(pfModel.getPfModel(), tops, bottoms);
         //System.out.println("tops size = "+tops.size());
         Transaction trans = null;
         boolean bought = false;
         boolean last = false;
         int boughtColumn = 0;
-        for (int counter = 0; counter < PFData.size(); counter++) {
-            Modelregel modelregel = (Modelregel) PFData.get(counter);
+        for (int counter = 0; counter < pfModel.getPfModel().size(); counter++) {
+            Modelregel modelregel = (Modelregel) pfModel.getPfModel().get(counter);
             Modelregel vorigeTop_1 = null;
             Modelregel vorigeBodem_1 = null;
-            if(counter == PFData.size() - 1)
+            if(counter == pfModel.getPfModel().size() - 1)
                 last = true;
             if (modelregel.getKolomnr() < 3)
                 continue;
@@ -80,21 +81,21 @@ public class PFFunctions {
 
     public ArrayList getHigherTopsActions(String fundName, String directory, String graphType, int turningPoint, float stepSize) {
         ArrayList transactions = new ArrayList();
-        ArrayList PFData = pfHandler.createPFData(rates, fundName, graphType, directory, turningPoint, stepSize);
+        PFModel pfModel = pfHandler.createPFData(rates, fundName, graphType, directory, turningPoint, stepSize);
         Hashtable tops = new Hashtable();
         Hashtable bottoms = new Hashtable();
-        getTopsAndBottoms(PFData, tops, bottoms);
+        getTopsAndBottoms(pfModel.getPfModel(), tops, bottoms);
         //System.out.println("tops size = "+tops.size());
         Transaction trans = null;
         boolean bought = false;
         boolean last = false;
-        for (int counter = 0; counter < PFData.size(); counter++) {
-            Modelregel modelregel = (Modelregel) PFData.get(counter);
+        for (int counter = 0; counter < pfModel.getPfModel().size(); counter++) {
+            Modelregel modelregel = (Modelregel) pfModel.getPfModel().get(counter);
             Modelregel vorigeTop_1 = null;
             Modelregel vorigeBodem_1 = null;
             Modelregel vorigeTop_2 = null;
             Modelregel vorigeBodem_2 = null;
-            if(counter == PFData.size() - 1)
+            if(counter == pfModel.getPfModel().size() - 1)
                 last = true;
             if (modelregel.getKolomnr() < 5)
                 continue;
@@ -130,19 +131,19 @@ public class PFFunctions {
 
     public ArrayList getLowerBottomsActions(String fundName, String directory, String graphType, int turningPoint, float stepSize) {
         ArrayList transactions = new ArrayList();
-        ArrayList PFData = pfHandler.createPFData(rates, fundName, graphType, directory, turningPoint, stepSize);
+        PFModel pfModel = pfHandler.createPFData(rates, fundName, graphType, directory, turningPoint, stepSize);
         Hashtable tops = new Hashtable();
         Hashtable bottoms = new Hashtable();
-        getTopsAndBottoms(PFData, tops, bottoms);
+        getTopsAndBottoms(pfModel.getPfModel(), tops, bottoms);
         //System.out.println("tops size = "+tops.size());
         Transaction trans = null;
         boolean bought = false;
         boolean last = false;
-        for (int counter = 0; counter < PFData.size(); counter++) {
-            Modelregel modelregel = (Modelregel) PFData.get(counter);
+        for (int counter = 0; counter < pfModel.getPfModel().size(); counter++) {
+            Modelregel modelregel = (Modelregel) pfModel.getPfModel().get(counter);
             Modelregel vorigeTop_1 = null;
             Modelregel vorigeBodem_1 = null;
-            if(counter == PFData.size() - 1)
+            if(counter == pfModel.getPfModel().size() - 1)
                 last = true;
             if (modelregel.getKolomnr() < 3)
                 continue;

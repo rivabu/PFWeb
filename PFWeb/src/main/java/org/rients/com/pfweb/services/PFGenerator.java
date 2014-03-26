@@ -20,6 +20,7 @@ import org.rients.com.model.ImageResponse;
 import org.rients.com.model.Levels;
 import org.rients.com.model.ModelInfo;
 import org.rients.com.model.Modelregel;
+import org.rients.com.model.PFModel;
 import org.rients.com.model.Transaction;
 import org.rients.com.pfweb.services.modelfunctions.ModelFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,9 +67,9 @@ public class PFGenerator {
             rates = fundData.getFundRates(fundName, dirFull, trans.getStartDate(), trans.getEndDate(), 10);
         }
 
-        ArrayList<Modelregel> PFData = handlePF.createPFData(rates, fundName, graphType, dirFull, turningPoint, stepSize);
+        PFModel pfModel = handlePF.createPFData(rates, fundName, graphType, dirFull, turningPoint, stepSize);
         ModelFunctions mf = new ModelFunctions(fundName);
-        mf.setPFData(PFData);
+        mf.setPFData(pfModel.getPfModel());
         mf.setRates(rates);
         if (type.equals("default")) {
             mf.handlePFRules(turningPoint, stepSize);
@@ -79,11 +80,11 @@ public class PFGenerator {
 
         String imageFile = Constants.IMAGESDIR + fundName + "_" + turningPoint + "_" + stepSize + Constants.PNG;
 
-        removeColumns(PFData, maxColumns);
+        removeColumns(pfModel.getPfModel(), maxColumns);
         ImageResponse imageResponse = null;
-        ModelInfo modelInfo = calculateModelInfo(PFData);
+        ModelInfo modelInfo = calculateModelInfo(pfModel.getPfModel());
         try {
-            imageResponse = getImage(PFData, modelInfo, stepSize);
+            imageResponse = getImage(pfModel.getPfModel(), modelInfo, stepSize);
         } catch (Exception e) {
             System.out.println("error creating pfimage for file: " + fundName);
             e.printStackTrace();

@@ -12,6 +12,7 @@ import java.util.List;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.Levels;
 import org.rients.com.model.Modelregel;
+import org.rients.com.model.PFModel;
 import org.rients.com.utils.MathFunctions;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class HandlePF {
 
 
     
-    public ArrayList<Modelregel> createPFData(List<Dagkoers> rates, String fundName, String graphType, String directory, int turningPoint, float stepSize) {
+    public PFModel createPFData(List<Dagkoers> rates, String fundName, String graphType, String directory, int turningPoint, float stepSize) {
 
 
         Levels levels = Levels.getInstance();
@@ -42,7 +43,7 @@ public class HandlePF {
         } 
         
         Modelregel modelregel = null;
-        ArrayList model = new ArrayList();
+        ArrayList<Modelregel> model = new ArrayList<Modelregel>();
         int numberOfDays = rates.size() - 1;
         boolean flag6 = true;
         int i1 = 0, j1 = 0, columnNumber = 0, rowNumber = 0;
@@ -134,8 +135,10 @@ public class HandlePF {
                 }
 
             }
-        }
-        return model;
+        } 
+        PFModel pfModel = new PFModel();
+        pfModel.setPfModel(model);
+        return pfModel;
     }
 
 

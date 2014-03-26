@@ -275,60 +275,6 @@
 					</archive>
 				</configuration>
 			</plugin>
-
-<!-- 			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>jarjar</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<tasks>
-								<taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" />
-								<jarjar
-									jarfile="${project.build.directory}${file.separator}utilities-jarjar.jar">
-									<zipfileset
-										src="${settings.localRepository}/javax/servlet/jsp-api/2.0/jsp-api-2.0.jar" />
-									<zipfileset
-										src="${settings.localRepository}/javax/servlet/jstl/1.1.2/jstl-1.1.2.jar" />
-									<zipfileset
-										src="${settings.localRepository}/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar" />
-									<zipfileset
-										src="${settings.localRepository}/commons-codec/commons-codec/1.2/commons-codec-1.2.jar" />
-									<zipfileset
-										src="${settings.localRepository}/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1.jar" />
-									<zipfileset
-										src="${settings.localRepository}/commons-io/commons-io/1.1/commons-io-1.1.jar" />
-									<zipfileset
-										src="${settings.localRepository}/commons-lang/commons-lang/2.1/commons-lang-2.1.jar" />
-									<zipfileset
-										src="${settings.localRepository}/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar" />
-									<zipfileset
-										src="${settings.localRepository}/jfree/jcommon/1.0.15/jcommon-1.0.15.jar" />
-									<zipfileset
-										src="${settings.localRepository}/jfree/jfreechart/1.0.12/jfreechart-1.0.12.jar" />
-									<zipfileset
-										src="${settings.localRepository}/joda-time/joda-time/1.6/joda-time-1.6.jar" />
-									<zipfileset
-										src="${settings.localRepository}/log4j/log4j/1.2.8/log4j-1.2.8.jar" />
-									<zipfileset
-										src="${settings.localRepository}/taglibs/standard/1.1.2/standard-1.1.2.jar" />
-								</jarjar>
-							</tasks>
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>com.tonicsystems</groupId>
-						<artifactId>jarjar</artifactId>
-						<version>0.6</version>
-					</dependency>
-				</dependencies>
-			</plugin> -->
 		</plugins>
 		<pluginManagement>
 			<plugins>

@@ -17,6 +17,7 @@ import org.rients.com.model.Dagkoers;
 import org.rients.com.model.DagkoersStatus;
 import org.rients.com.model.ImageResponse;
 import org.rients.com.model.Modelregel;
+import org.rients.com.model.PFModel;
 import org.rients.com.model.Transaction;
 import org.rients.com.model.Type;
 import org.rients.com.pfweb.services.modelfunctions.PFRules;
@@ -80,7 +81,6 @@ public class HighLowImageGenerator {
         List<Dagkoers> rates = null;
 
         fundData.setNumberOfDays(DAYS + 100);
-        ArrayList<Modelregel> pfData = null;
         for (int i = 0; i < files.size(); i++) {
             directory = Constants.KOERSENDIR + dir + Constants.SEP;
             rates = fundData.getFundRates(files.get(i), directory);
@@ -88,9 +88,9 @@ public class HighLowImageGenerator {
             // 1, 2);
             // turning point = 2
             // stepsize = 1
-            pfData = handlePF.createPFData(rates, files.get(i), graphType, directory, 2, 1);
+            PFModel pfModel = handlePF.createPFData(rates, files.get(i), graphType, directory, 2, 1);
             PFRules optimum = new PFRules();
-            List<Transaction> transactions = optimum.getOptimalDecisions(pfData, files.get(i), false);
+            List<Transaction> transactions = optimum.getOptimalDecisions(pfModel.getPfModel(), files.get(i), false);
 
             int fillFactor = DAYS - rates.size(); // 400 - 360
             int days = Math.min(DAYS, rates.size());
