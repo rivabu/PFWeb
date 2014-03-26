@@ -5,8 +5,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.constants.SimpleCache;
+import org.rients.com.model.Categories;
+import org.rients.com.model.Dagkoers;
+import org.rients.com.model.Modelregel;
+import org.rients.com.model.PFModel;
 import org.rients.com.model.StrategyResult;
 import org.rients.com.model.Transaction;
+import org.rients.com.pfweb.services.HandlePF;
 import org.rients.com.utils.FileUtils;
 
 public class Portfolio {
@@ -16,10 +22,64 @@ public class Portfolio {
 
 	
 	public void add(Transaction transaction) {
+//		if (transaction.getBuyId() == 659) {
+//			System.out.println("found");
+//		}
+		addPFRules(transaction);
 		inStock.add(transaction);
 		allTransactions.add(transaction);
+
+		removeTransactionFromPortfolio(transaction);
+	}
+	
+	private void addPFRules(Transaction transaction) {
+		HandlePF handlePF = new HandlePF();
+		String directory = Constants.KOERSENDIR + Categories.HOOFDFONDEN;
+		@SuppressWarnings("unchecked")
+		PFModel pfModel = (PFModel) SimpleCache.getInstance().getObject("PFMODEL_" + transaction.getFundName());
+		List<Dagkoers> rates = (List<Dagkoers>) SimpleCache.getInstance().getObject("RATES_" + transaction.getFundName());
+		if (pfModel == null) {
+			pfModel = handlePF.createPFData(rates, transaction.getFundName(), "EXP", directory, 1, new Float(0.5));
+			SimpleCache.getInstance().addObject("PFMODEL_" + transaction.getFundName(), pfModel);
+		}
+		if (!pfModel.isPlusOnDate(transaction.getStartDate())) {
+			// go to the next day with a plus
+			Modelregel mr = pfModel.findNextPlus(transaction.getStartDate());
+			if (mr.getDatumInt() < transaction.getEndDate()) {
+				Dagkoers nextDag = findKoersByDate(rates, mr.getDatumInt());
+				if (nextDag != null) {
+					transaction.setStartDate(Integer.parseInt(nextDag.datum));
+					transaction.setStartRate(nextDag.closekoers);
+				}
+				
+			}
+		}
+	}
+
+//	private Dagkoers findNextDay(List<Dagkoers> rates, int datum) {
+//		boolean getNext = false;
+//		for (Dagkoers dk : rates) {
+//			if (getNext) {
+//				return dk;
+//			}
+//			if (dk.datum.equals(new Integer(datum).toString())) {
+//				getNext = true;
+//			}
+//		}
+//		return null;
+//	}
+
+	private Dagkoers findKoersByDate(List<Dagkoers> rates, int datum) {
+		for (Dagkoers dk : rates) {
+			if (dk.datum.equals(new Integer(datum).toString())) {
+				return dk;
+			}
+		}
+		return null;
+	}
+
+	private void removeTransactionFromPortfolio(Transaction transaction) {
 		int today = transaction.getStartDate();
-		
 		Iterator<Transaction> iter = inStock.iterator();
 		while (iter.hasNext()) {
 			Transaction t = iter.next();
@@ -32,6 +92,7 @@ public class Portfolio {
 	public List<Transaction> getAllTransactions() {
 		return allTransactions;
 	}
+	
 	public boolean hasInStock(String fundName) {
 		boolean returnValue = false;
 		Iterator<Transaction> iter = inStock.iterator();

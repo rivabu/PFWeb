@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.constants.SimpleCache;
 import org.rients.com.matrix.dataholder.FundDataHolder;
 import org.rients.com.matrix.dataholder.Matrix;
 import org.rients.com.model.Categories;
@@ -28,14 +29,15 @@ public class StrengthVersusWeaknessExecutor {
     
 	public void process() {
 
-//        boolean save = false;
-//        for (int i=1; i<20; i++) {
+        boolean save = false;
+//        for (int i=10; i<20; i++) {
 //			for (int j=20; j<25; j++) {
 //				fillKoersMatrix(i, j, save);
 //				
 //			}
 //		}
-		fillKoersMatrix(11, 23, true);
+		// fillKoersMatrix(11, 23, true);
+		fillKoersMatrix(15, 20, true);
 	}
 	
 	public void fillKoersMatrix(int strengthOverDays_, int sellAfterDays_, boolean save) {
@@ -51,7 +53,8 @@ public class StrengthVersusWeaknessExecutor {
         
         Matrix matrix = createMatrix(aexRates, files);
         fillMatrixWithData(matrix, directory, files);
-        Portfolio portfolio = handleMatrixForStrength(matrix, false);
+        Portfolio portfolio = handleMatrixForStrength(matrix, true);
+        //Portfolio portfolio = handleMatrixForStrength(matrix, false);
         if (save) {
         	portfolio.saveTransactions();
         }
@@ -77,21 +80,23 @@ public class StrengthVersusWeaknessExecutor {
 			double koopKoers = 0d;
 			double verkoopKoers = 0d;
 			for(int j=0; j<aantalFunds; j++) {
-				StrengthWeakness strength = (StrengthWeakness) matrix.getFundData(j).getValue(date);
-				if (strength != null) {
-					if ((strong && strength.strength > maxStrength) || (!strong && strength.strength < minStrength)) {
-						if (strong) {
-							maxStrength = MathFunctions.round(strength.strength, 2);
-						} else {
-							minStrength = MathFunctions.round(strength.strength, 2);
-						}
-	
-						if (i + sellAfterDays < dates.length) {
-							fundName = matrix.getFundData(j).getFundName();
-							koopKoers = MathFunctions.round(strength.koers, 2);
-							StrengthWeakness futureStrength = (StrengthWeakness) matrix.getFundData(j).getValue(dates[i + sellAfterDays]);
-							futureDate = dates[i + sellAfterDays];
-							verkoopKoers =  MathFunctions.round(futureStrength.koers, 2);
+				if (matrix.getFundData(j).getValue(date) instanceof StrengthWeakness) {
+					StrengthWeakness strength = (StrengthWeakness) matrix.getFundData(j).getValue(date);
+					if (strength != null) {
+						if ((strong && strength.strength > maxStrength) || (!strong && strength.strength < minStrength)) {
+							if (strong) {
+								maxStrength = MathFunctions.round(strength.strength, 2);
+							} else {
+								minStrength = MathFunctions.round(strength.strength, 2);
+							}
+		
+							if (i + sellAfterDays < dates.length) {
+								fundName = matrix.getFundData(j).getFundName();
+								koopKoers = MathFunctions.round(strength.koers, 2);
+								StrengthWeakness futureStrength = (StrengthWeakness) matrix.getFundData(j).getValue(dates[i + sellAfterDays]);
+								futureDate = dates[i + sellAfterDays];
+								verkoopKoers =  MathFunctions.round(futureStrength.koers, 2);
+							}
 						}
 					}
 				}
@@ -140,6 +145,8 @@ public class StrengthVersusWeaknessExecutor {
 
 		fundData.setNumberOfDays(strengthOverDays);
         List<Dagkoers> aexRates = fundData.getFundRates(Constants.AEX_INDEX, indexDir, StrengthWeaknessConstants.startDate, StrengthWeaknessConstants.endDate, 0);
+		SimpleCache.getInstance().addObject("RATES_" + Constants.AEX_INDEX, aexRates);
+
 		return aexRates;
 	}
 	
@@ -150,6 +157,8 @@ public class StrengthVersusWeaknessExecutor {
         fundData.setNumberOfDays(strengthOverDays);
         for (int file = 0; file < files.size(); file++) {
                 rates = fundData.getFundRates(files.get(file), directory, StrengthWeaknessConstants.startDate, StrengthWeaknessConstants.endDate, 0);
+    			SimpleCache.getInstance().addObject("RATES_" + files.get(file), rates);
+
             int startValue = 0;
             if (rates.size() < totalDAYS && rates.size() > strengthOverDays) {
                 int difference = totalDAYS - rates.size();
