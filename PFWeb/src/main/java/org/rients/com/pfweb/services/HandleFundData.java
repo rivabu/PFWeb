@@ -66,7 +66,7 @@ public class HandleFundData {
     }
 
 
-    public List<Dagkoers> getFundRates(String fundName, String directory, int beginDate, int endDate) {
+    public List<Dagkoers> getFundRates(String fundName, String directory, int beginDate, int endDate, int extraDays) {
         List<Dagkoers> sublistRecords = new ArrayList<Dagkoers>();
         
         List<Dagkoers> records = getAllFundRates(fundName, directory);
@@ -87,13 +87,15 @@ public class HandleFundData {
             if (endDateIndex == -1) {
                 System.out.println("date: " + endDate + " not found in " + fundName);
             }
-//            if (endDateIndex + numberOfDays < aantalRecords) {
-//                endDateIndex = endDateIndex + numberOfDays;
-//            }
-//            else {
-//                endDateIndex = aantalRecords;
-//            }
-            for (int i = beginDateIndex; i <= endDateIndex; i++) {
+            if (extraDays > 0) {
+	            if (endDateIndex + extraDays < aantalRecords) {
+	                endDateIndex = endDateIndex + extraDays;
+	            }
+	            else {
+	                endDateIndex = aantalRecords;
+	            }
+            }
+            for (int i = beginDateIndex; i < endDateIndex; i++) {
                 sublistRecords.add(records.get(i));
             }
         }

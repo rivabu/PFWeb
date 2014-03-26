@@ -1,16 +1,7 @@
 package org.rients.com.strengthWeakness;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-
-
-
-
-
-
-
-
 
 import org.rients.com.constants.Constants;
 import org.rients.com.matrix.dataholder.FundDataHolder;
@@ -23,7 +14,6 @@ import org.rients.com.pfweb.services.HandleFundData;
 import org.rients.com.utils.FileUtils;
 import org.rients.com.utils.Formula;
 import org.rients.com.utils.MathFunctions;
-import org.rients.com.utils.RSI;
 
 public class StrengthVersusWeaknessExecutor {
 
@@ -31,50 +21,47 @@ public class StrengthVersusWeaknessExecutor {
     
     private int totalDAYS;
     private int strengthOverDays;
-    private int sellAfterDays=10;
+    private int sellAfterDays = 24;
 
     
     
     
 	public void process() {
-//		for (int i=1; i<20; i++) {
+
+//        boolean save = false;
+//        for (int i=1; i<20; i++) {
 //			for (int j=20; j<25; j++) {
-//				fillKoersMatrix(i, j);
+//				fillKoersMatrix(i, j, save);
 //				
 //			}
 //		}
-		fillKoersMatrix(19, 24);
+		fillKoersMatrix(11, 23, true);
 	}
 	
-	public void fillKoersMatrix(int strengthOverDays_, int sellAfterDays_) {
+	public void fillKoersMatrix(int strengthOverDays_, int sellAfterDays_, boolean save) {
 		
         strengthOverDays = strengthOverDays_;
         sellAfterDays = sellAfterDays_;
+//        List<Transaction> transactions = handleMatrixForStrength(matrix, true);
         String directory = Constants.KOERSENDIR + Categories.HOOFDFONDEN;
         // get aex rates
         List<Dagkoers> aexRates = getAexRates();
 		List<String> files = FileUtils.getFiles(directory, "csv", false);
-        
         totalDAYS = aexRates.size();
-
-        //System.out.println(totalDAYS);
         
         Matrix matrix = createMatrix(aexRates, files);
         fillMatrixWithData(matrix, directory, files);
-//        List<Transaction> transactions = handleMatrixForStrength(matrix, true);
-        List<Transaction> transactions = handleMatrixForStrength(matrix, false);
-        saveTransactions(transactions);
-        
-        //System.out.println("here");
+        Portfolio portfolio = handleMatrixForStrength(matrix, false);
+        if (save) {
+        	portfolio.saveTransactions();
+        }
+        System.out.println("strengthOverDays: "+ strengthOverDays + " sellAfterDays: " + sellAfterDays + portfolio.getResultData());
 	}
 
-	private List<Transaction> handleMatrixForStrength(Matrix matrix, boolean strong) {
+	private Portfolio handleMatrixForStrength(Matrix matrix, boolean strong) {
 		int aantalFunds = matrix.getAantalFunds();
-		List<Transaction> transactions = new ArrayList<Transaction>();
 		Portfolio portfolio = new Portfolio();
 		String[] dates = matrix.getDates();
-		Double sumProfit = 0d;
-		Double cummProfit = 0d;
 		Double[] amounts = new Double[sellAfterDays];
 		for (int i = 0; i<amounts.length; i++) {
 			amounts[i] = 1000d;
@@ -87,7 +74,6 @@ public class StrengthVersusWeaknessExecutor {
 			String fundName = "";
 			String date = dates[i];
 			String futureDate = null;
-			Double profit = 0d;
 			double koopKoers = 0d;
 			double verkoopKoers = 0d;
 			for(int j=0; j<aantalFunds; j++) {
@@ -103,24 +89,9 @@ public class StrengthVersusWeaknessExecutor {
 						if (i + sellAfterDays < dates.length) {
 							fundName = matrix.getFundData(j).getFundName();
 							koopKoers = MathFunctions.round(strength.koers, 2);
-							for (int k = 0; k < sellAfterDays; k++) {
-								futureDate = dates[i + k];
-								StrengthWeakness futureStrength = (StrengthWeakness) matrix.getFundData(j).getValue(dates[i + k]);
-								verkoopKoers =  MathFunctions.round(futureStrength.koers, 2);
-								double div = MathFunctions.procVerschil(koopKoers, futureStrength.koers);
-								if (div < StrengthWeaknessConstants.stoploss) {
-									// stop loss
-									// max 10% verlies
-									break;
-								}
-							}
-							
-							if (verkoopKoers > koopKoers) {
-								profit = MathFunctions.round(MathFunctions.procVerschil(koopKoers, verkoopKoers), 2);
-							} else {
-								profit = MathFunctions.round(MathFunctions.procVerschil(verkoopKoers, koopKoers), 2) * -1;
-							}
-							
+							StrengthWeakness futureStrength = (StrengthWeakness) matrix.getFundData(j).getValue(dates[i + sellAfterDays]);
+							futureDate = dates[i + sellAfterDays];
+							verkoopKoers =  MathFunctions.round(futureStrength.koers, 2);
 						}
 					}
 				}
@@ -133,7 +104,6 @@ public class StrengthVersusWeaknessExecutor {
 					Transaction trans = new Transaction(fundName, new Integer(date).intValue(), transId, new Double(koopKoers).floatValue(), aantalBought, Type.LONG);
 					transId ++;
 					trans.addSellInfo(new Integer(futureDate).intValue(), 0, new Double(verkoopKoers).floatValue());
-					transactions.add(trans);
 					portfolio.add(trans);
 				}
 			}
@@ -141,29 +111,15 @@ public class StrengthVersusWeaknessExecutor {
 			if (amountCounter == sellAfterDays) {
 				amountCounter = 0;
 			}
-			sumProfit = sumProfit + profit;
-			cummProfit = cummProfit + profit;
-			//System.out.println(date + ", " + fundName + ", " + profit + " (" + koopKoers + " -> " + verkoopKoers + ")" + ", " + MathFunctions.round(cummProfit, 2));
 		}
-		System.out.println(strengthOverDays + " " + sellAfterDays + " sumprofit: "+ MathFunctions.round(sumProfit/sellAfterDays, 2));
+		//System.out.println("profit: " + MathFunctions.round(portfolio.getProfit(), 2));
 		double totalAmount = 0d;
 		for (int i = 0; i<amounts.length; i++) {
 			totalAmount = totalAmount + amounts[i];
-			//System.out.println("i = " + i + " :" + MathFunctions.round(amounts[i], 2));
+			System.out.println("i = " + i + " :" + MathFunctions.round(amounts[i] - 1000, 2));
 		}
-		System.out.println("cummProfit: " + MathFunctions.round(cummProfit, 2));
-		return transactions;
-	}
-	
-	private double profitSoFar(String fundName) {
-		return 10;
-	}
-	
-	private void saveTransactions(List<Transaction> transactions) {
-        System.out.println(transactions.size());
-        String filename = Constants.TRANSACTIONDIR + Constants.SEP + Constants.ALL_TRANSACTIONS;
-        FileUtils.writeToFile(filename, transactions);
-
+		System.out.println("totalAmount: " + MathFunctions.round(totalAmount - (sellAfterDays * 1000), 2));
+		return portfolio;
 	}
 
 	private Matrix createMatrix(List<Dagkoers> aexRates, List<String> files) {
@@ -183,7 +139,7 @@ public class StrengthVersusWeaknessExecutor {
         String indexDir = Constants.KOERSENDIR + Constants.INDEXDIR + Constants.SEP;
 
 		fundData.setNumberOfDays(strengthOverDays);
-        List<Dagkoers> aexRates = fundData.getFundRates(Constants.AEX_INDEX, indexDir, StrengthWeaknessConstants.startDate, StrengthWeaknessConstants.endDate);
+        List<Dagkoers> aexRates = fundData.getFundRates(Constants.AEX_INDEX, indexDir, StrengthWeaknessConstants.startDate, StrengthWeaknessConstants.endDate, 0);
 		return aexRates;
 	}
 	
@@ -193,7 +149,7 @@ public class StrengthVersusWeaknessExecutor {
         List<Dagkoers> rates = null;
         fundData.setNumberOfDays(strengthOverDays);
         for (int file = 0; file < files.size(); file++) {
-                rates = fundData.getFundRates(files.get(file), directory, StrengthWeaknessConstants.startDate, StrengthWeaknessConstants.endDate);
+                rates = fundData.getFundRates(files.get(file), directory, StrengthWeaknessConstants.startDate, StrengthWeaknessConstants.endDate, 0);
             int startValue = 0;
             if (rates.size() < totalDAYS && rates.size() > strengthOverDays) {
                 int difference = totalDAYS - rates.size();

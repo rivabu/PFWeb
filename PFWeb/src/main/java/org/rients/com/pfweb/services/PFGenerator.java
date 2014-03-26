@@ -63,7 +63,7 @@ public class PFGenerator {
         }
         if (type.equals("trans")) {
             fundData.setNumberOfDays(numberOfDays / 4);
-            rates = fundData.getFundRates(fundName, dirFull, trans.getStartDate(), trans.getEndDate());
+            rates = fundData.getFundRates(fundName, dirFull, trans.getStartDate(), trans.getEndDate(), 10);
         }
 
         ArrayList<Modelregel> PFData = handlePF.createPFData(rates, fundName, graphType, dirFull, turningPoint, stepSize);
@@ -147,10 +147,10 @@ public class PFGenerator {
                 g.setColor(Color.RED);
             }    
             if (PFRegel.getStatus() == DagkoersStatus.BIGMOVER_UP) {
-                g.setColor(Color.magenta);
+                g.setColor(Color.GREEN);
             }
             if (PFRegel.getStatus() == DagkoersStatus.BIGMOVER_DOWN) {
-                g.setColor(Color.cyan);
+                g.setColor(Color.RED);
             }
             if (PFRegel.getStatus() == DagkoersStatus.LONG) {
                 g.setColor(Color.GREEN);
