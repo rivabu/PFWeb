@@ -62,7 +62,15 @@ $( function () {
 		<tr>
 			<td valign="top"><img alt="" src="TransactionImage"></td>
 		</tr>
+		<tr>
+			<td valign="top">&nbsp;</td>
+		</tr>
+		<tr>
+			<td valign="top"><img alt="" src="RSIImage?fund=aex-index&dir=aaa&type=RSI"></td>
+		</tr>
 	</table>
+	
+	
 	<div id="lightbox"></div>
     <div id="content">Hier komt de content</div>
 	

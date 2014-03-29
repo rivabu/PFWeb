@@ -42,7 +42,7 @@ public class TransactionGraph {
 
             List<Transaction> list = fileIOService.readFromTransactiesFile(Constants.TRANSACTIONDIR, Constants.ALL_TRANSACTIONS, null);
             Iterator<Transaction> iter = list.iterator();
-            float totalScore = 0;
+            float totalScore = 60000;
             Map<Integer, Float> data = new TreeMap<Integer, Float>();
             
             while(iter.hasNext()) {

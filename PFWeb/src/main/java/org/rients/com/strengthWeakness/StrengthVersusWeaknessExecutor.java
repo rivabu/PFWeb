@@ -22,7 +22,8 @@ public class StrengthVersusWeaknessExecutor {
     
     private int totalDAYS;
     private int strengthOverDays;
-    private int sellAfterDays = 24;
+    private int sellAfterDays;
+    private int numberOfBoxes;
 
     
     
@@ -44,6 +45,7 @@ public class StrengthVersusWeaknessExecutor {
 		
         strengthOverDays = strengthOverDays_;
         sellAfterDays = sellAfterDays_;
+        numberOfBoxes = sellAfterDays;
 //        List<Transaction> transactions = handleMatrixForStrength(matrix, true);
         String directory = Constants.KOERSENDIR + Categories.HOOFDFONDEN;
         // get aex rates
@@ -63,68 +65,138 @@ public class StrengthVersusWeaknessExecutor {
 
 	private Portfolio handleMatrixForStrength(Matrix matrix, boolean strong) {
 		int aantalFunds = matrix.getAantalFunds();
+		double startBedrag = 3000d;
 		Portfolio portfolio = new Portfolio();
 		String[] dates = matrix.getDates();
-		Double[] amounts = new Double[sellAfterDays];
-		for (int i = 0; i<amounts.length; i++) {
-			amounts[i] = 1000d;
+		Double[] boxes = new Double[numberOfBoxes];
+		for (int i = 0; i<boxes.length; i++) {
+			boxes[i] = startBedrag;
 		}
-		int amountCounter = 0;
+		int boxCounter = 0;
 		int transId = 1;
-		for (int i=strengthOverDays; i<dates.length; i++) {
+		double cash = 0;
+		double totaleWaardePortefeuille = numberOfBoxes * startBedrag;
+		int days = 0;
+		boolean allBoxesFilled = false;
+		for (int dagTeller = strengthOverDays; dagTeller < dates.length; dagTeller++) {
 			double maxStrength = -1000;
 			double minStrength = 1000;
 			String fundName = "";
-			String date = dates[i];
+			String currentDate = dates[dagTeller];
 			String futureDate = null;
 			double koopKoers = 0d;
 			double verkoopKoers = 0d;
-			for(int j=0; j<aantalFunds; j++) {
-				if (matrix.getFundData(j).getValue(date) instanceof StrengthWeakness) {
-					StrengthWeakness strength = (StrengthWeakness) matrix.getFundData(j).getValue(date);
+			Type typeAankoop = Type.LONG;
+			for (int fundCounter = 0; fundCounter < aantalFunds; fundCounter++) {
+				if (matrix.getFundData(fundCounter).getValue(currentDate) instanceof StrengthWeakness) {
+					StrengthWeakness strength = (StrengthWeakness) matrix.getFundData(fundCounter).getValue(currentDate);
 					if (strength != null) {
 						if ((strong && strength.strength > maxStrength) || (!strong && strength.strength < minStrength)) {
 							if (strong) {
+								// maxStrength -> grootste stijger afgelopen tijd
 								maxStrength = MathFunctions.round(strength.strength, 2);
 							} else {
+								// minStrength -> grootste daler afgelopen tijd
 								minStrength = MathFunctions.round(strength.strength, 2);
 							}
-		
-							if (i + sellAfterDays < dates.length) {
-								fundName = matrix.getFundData(j).getFundName();
+							int verkoopDatumTeller = dagTeller + sellAfterDays;
+							if (verkoopDatumTeller < dates.length) {
+								// enddate found
+								if (matrix.getFundData(fundCounter).getValue(dates[verkoopDatumTeller]) != null) {
+									koopKoers = MathFunctions.round(strength.koers, 2);
+									fundName = matrix.getFundData(fundCounter).getFundName();
+									StrengthWeakness futureStrength = (StrengthWeakness) matrix.getFundData(fundCounter).getValue(dates[verkoopDatumTeller]);
+									futureDate = dates[verkoopDatumTeller];
+									verkoopKoers =  MathFunctions.round(futureStrength.koers, 2);
+									typeAankoop = Type.LONG;
+								} else {
+									// deze situatie komt voor als er van een fonds data mist, de matrix moet de afvangen!
+									fundName = matrix.getFundData(fundCounter).getFundName();
+									String datum = dates[verkoopDatumTeller];
+									System.out.println("fund: " + fundName + " datum: " + datum + " not found in matrix!");
+								}
+							} else {
+								// verkoopdatum nog niet bereikt, want die ligt in de toekomst, transactie kan niet afgesloten worden (=UNFINISHED)
 								koopKoers = MathFunctions.round(strength.koers, 2);
-								StrengthWeakness futureStrength = (StrengthWeakness) matrix.getFundData(j).getValue(dates[i + sellAfterDays]);
-								futureDate = dates[i + sellAfterDays];
+								fundName = matrix.getFundData(fundCounter).getFundName();
+								String laatsteDatum = dates[dates.length - 1];
+								StrengthWeakness futureStrength = (StrengthWeakness) matrix.getFundData(fundCounter).getValue(laatsteDatum);
+								futureDate = laatsteDatum;
 								verkoopKoers =  MathFunctions.round(futureStrength.koers, 2);
+								typeAankoop = Type.UNFINISHED;
 							}
 						}
 					}
 				}
 			}
-			if (i + sellAfterDays < dates.length) {
+			if (dagTeller < dates.length) {
 				// kopen als ik hem nog niet heb, of als ik op winst sta.
 				if (!portfolio.hasInStock(fundName) || portfolio.resultSoFar(fundName) > 0) {
-					double aantalBought = amounts[amountCounter] / koopKoers;
-					amounts[amountCounter] = aantalBought * verkoopKoers;
-					Transaction trans = new Transaction(fundName, new Integer(date).intValue(), transId, new Double(koopKoers).floatValue(), aantalBought, Type.LONG);
+					double before = boxes[boxCounter];
+					double aantalBought = boxes[boxCounter] / koopKoers;
+					
+					Transaction trans = new Transaction(fundName, new Integer(currentDate).intValue(), transId, new Double(koopKoers).floatValue(), aantalBought, typeAankoop);
 					transId ++;
 					trans.addSellInfo(new Integer(futureDate).intValue(), 0, new Double(verkoopKoers).floatValue());
 					portfolio.add(trans);
+
+					boxes[boxCounter] = aantalBought * trans.getEndRate();
+					
+					double diff = boxes[boxCounter] - before;
+					totaleWaardePortefeuille = totaleWaardePortefeuille + diff;
+					if (allBoxesFilled) {
+						double avrBoxContent = totaleWaardePortefeuille / numberOfBoxes;
+						double surplus = boxes[boxCounter] - avrBoxContent;
+						if (surplus > 0) {
+							// haal uit de box, plaats in cash;
+							cash = cash + surplus;
+							boxes[boxCounter] = boxes[boxCounter] - surplus;
+						} else {
+							double shortage = surplus * -1;
+							if (cash > 0) {
+								if (cash - shortage >= 0) {
+									cash = cash - shortage;
+									boxes[boxCounter] = boxes[boxCounter] + shortage;
+								} else {
+									// niet genoeg in cash om hele tekort aan te vullen
+									cash  = 0;
+									boxes[boxCounter] = boxes[boxCounter] + cash;
+								}
+							}
+						}
+					}
+					days = debugBox1(boxes, boxCounter, days, dagTeller,
+							currentDate, trans, diff);
+					boxCounter++;
 				}
 			}
-			amountCounter++;
-			if (amountCounter == sellAfterDays) {
-				amountCounter = 0;
+			if (boxCounter == numberOfBoxes) {
+				boxCounter = 0;
+				allBoxesFilled = true;
 			}
 		}
 		//System.out.println("profit: " + MathFunctions.round(portfolio.getProfit(), 2));
+		System.out.println("cash : " + cash);
 		double totalAmount = 0d;
-		for (int i = 0; i<amounts.length; i++) {
-			totalAmount = totalAmount + amounts[i];
-			System.out.println("i = " + i + " :" + MathFunctions.round(amounts[i] - 1000, 2));
+		for (int i = 0; i<boxes.length; i++) {
+			totalAmount = totalAmount + boxes[i];
+			System.out.println("i = " + i + " :" + MathFunctions.round(boxes[i] - 1000, 2));
 		}
 		System.out.println("totalAmount: " + MathFunctions.round(totalAmount - (sellAfterDays * 1000), 2));
 		return portfolio;
+	}
+
+	private int debugBox1(Double[] amounts, int amountCounter, int days,
+			int dagTeller, String currentDate, Transaction trans, double diff) {
+		if (amountCounter == 1) {
+			days = days + sellAfterDays;
+			if (diff > 0)
+				System.out.println(currentDate + " " + amounts[amountCounter] + " " + trans.getFundName() + " K " + trans.getStartRate() + " V " + trans.getEndRate() + " Profit %: " + trans.getScorePercStr() + " "+ trans.getScoreAbsStr() + " DIFF: " + diff);
+			else
+				System.err.println(currentDate + " " + amounts[amountCounter] + " " + trans.getFundName() + " K " + trans.getStartRate() + " V " + trans.getEndRate() + " Profit %: " + trans.getScorePercStr() + " "+ trans.getScoreAbsStr() + " DIFF: " + diff);
+			System.out.println(days + " " + dagTeller);	
+		}
+		return days;
 	}
 
 	private Matrix createMatrix(List<Dagkoers> aexRates, List<String> files) {
@@ -156,6 +228,7 @@ public class StrengthVersusWeaknessExecutor {
         List<Dagkoers> rates = null;
         fundData.setNumberOfDays(strengthOverDays);
         for (int file = 0; file < files.size(); file++) {
+        		System.out.println(files.get(file));
                 rates = fundData.getFundRates(files.get(file), directory, StrengthWeaknessConstants.startDate, StrengthWeaknessConstants.endDate, 0);
     			SimpleCache.getInstance().addObject("RATES_" + files.get(file), rates);
 
@@ -169,7 +242,7 @@ public class StrengthVersusWeaknessExecutor {
                 }
                 startValue = difference;
             }
-            Formula computeStrength = new ComputeStrength(strengthOverDays);
+            Formula computeStrength = new ComputeStrength(strengthOverDays); //15
             if (rates.size() + startValue == totalDAYS) {
                 int koersenCounter = 0;
                 for (int j = startValue; j < totalDAYS; j++) {

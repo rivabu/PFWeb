@@ -30,11 +30,11 @@ public class ComputeStrength implements Formula {
 	 * Compute the moving average. Synchronised so that no changes in the
 	 * underlying data is made during calculation.
 	 * 
-	 * @param value
+	 * @param currentValue
 	 *            The value
 	 * @return The average
 	 */
-	public BigDecimal compute(final BigDecimal value) {
+	public BigDecimal compute(final BigDecimal currentValue) {
 		double total = 0;
 		double result = 0;
         //double totalLosses = 0;
@@ -44,17 +44,16 @@ public class ComputeStrength implements Formula {
         if ((values.size() == length) && (length > 0)) {
         	// begin algoritme
             for (int i = 0; i < length; i++) {
-                BigDecimal currentValue = values.get(i);
-                double procVerschil = MathFunctions.procVerschil(currentValue.doubleValue(), value.doubleValue());
+                BigDecimal oldValue = values.get(i);
+                double procVerschil = MathFunctions.procVerschil(oldValue.doubleValue(), currentValue.doubleValue());
                 vermenigvuldingsFactorCount = vermenigvuldingsFactorCount + vermenigvuldingsFactor;
                 procVerschil = procVerschil * vermenigvuldingsFactor;
                	total = total + procVerschil;
                 vermenigvuldingsFactor = vermenigvuldingsFactor * FACTOR;
-                
             }
             result = total / vermenigvuldingsFactorCount;
         }
-        handleNewValue(value);
+        handleNewValue(currentValue);
         return new BigDecimal(result).round(MathContext.DECIMAL32);
 	}
 

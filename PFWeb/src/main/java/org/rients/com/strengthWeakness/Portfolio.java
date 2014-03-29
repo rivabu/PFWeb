@@ -29,7 +29,7 @@ public class Portfolio {
 		inStock.add(transaction);
 		allTransactions.add(transaction);
 
-		removeTransactionFromPortfolio(transaction);
+		removeTransactionFromPortfolio(transaction.getStartDate());
 	}
 	
 	private void addPFRules(Transaction transaction) {
@@ -42,15 +42,51 @@ public class Portfolio {
 			pfModel = handlePF.createPFData(rates, transaction.getFundName(), "EXP", directory, 1, new Float(0.5));
 			SimpleCache.getInstance().addObject("PFMODEL_" + transaction.getFundName(), pfModel);
 		}
-		if (!pfModel.isPlusOnDate(transaction.getStartDate())) {
-			// go to the next day with a plus
-			Modelregel mr = pfModel.findNextPlus(transaction.getStartDate());
-			if (mr.getDatumInt() < transaction.getEndDate()) {
-				Dagkoers nextDag = findKoersByDate(rates, mr.getDatumInt());
-				if (nextDag != null) {
-					transaction.setStartDate(Integer.parseInt(nextDag.datum));
-					transaction.setStartRate(nextDag.closekoers);
+//		if (!pfModel.isPlusOnDate(transaction.getStartDate())) {
+//			// go to the next day with a plus
+//			Modelregel mr = pfModel.findNextPlus(transaction.getStartDate());
+//			if (mr.getDatumInt() < transaction.getEndDate()) {
+//				Dagkoers nextDag = findKoersByDate(rates, mr.getDatumInt());
+//				if (nextDag != null) {
+//					transaction.setStartDate(Integer.parseInt(nextDag.datum));
+//					transaction.setStartRate(nextDag.closekoers);
+//				}
+//				
+//			}
+//		}
+//		while (pfModel.isPlusOnDate(transaction.getEndDate())) {
+//			Dagkoers nextDag = findKoersAfterByDate(rates, transaction.getEndDate());
+//			transaction.setEndDate(nextDag.getDatumInt());
+//			transaction.setEndRate(nextDag.closekoers);
+//		}
+		
+//		sellBelowTop(rates, transaction);
+//		Dagkoers eenNaLaatsteDag = findKoersBeforeByDate(rates, transaction.getEndDate());
+//		if (!pfModel.isPlusOnDate(eenNaLaatsteDag.getDatumInt())) {
+//			transaction.setEndDate(eenNaLaatsteDag.getDatumInt());
+//			transaction.setEndRate(eenNaLaatsteDag.closekoers);
+//		}
+		
+	}
+	
+	private void sellBelowTop(List<Dagkoers> rates, Transaction transaction) {
+		float maxKoers = transaction.getStartRate();
+		boolean start = false;
+		for (Dagkoers dk : rates) {
+			if (dk.datum.equals(new Integer(transaction.getEndDate()).toString())) {
+				break;
+			}
+			if (start) {
+				if (dk.closekoers > maxKoers) {
+					maxKoers = dk.closekoers;
 				}
+				if (dk.closekoers < (maxKoers * 0.75)) {
+					transaction.setEndDate(dk.getDatumInt());
+					transaction.setEndRate(dk.closekoers);
+				}
+			}
+			if (dk.datum.equals(new Integer(transaction.getStartDate()).toString())) {
+				start = true;
 				
 			}
 		}
@@ -77,9 +113,33 @@ public class Portfolio {
 		}
 		return null;
 	}
+	
+	private Dagkoers findKoersBeforeByDate(List<Dagkoers> rates, int datum) {
+		Dagkoers dkBefore = null;
+		for (Dagkoers dk : rates) {
+			if (dk.datum.equals(new Integer(datum).toString())) {
+				return dkBefore;
+			}
+			dkBefore = dk;
+		}
+		return null;
+	}
+	
+	private Dagkoers findKoersAfterByDate(List<Dagkoers> rates, int datum) {
+		boolean found = false;
+		for (Dagkoers dk : rates) {
+			if (found) {
+				return dk;
+			}
+			if (dk.datum.equals(new Integer(datum).toString())) {
+				found = true;
+			}
+		}
+		return null;
+	}
+	
 
-	private void removeTransactionFromPortfolio(Transaction transaction) {
-		int today = transaction.getStartDate();
+	private void removeTransactionFromPortfolio(int today) {
 		Iterator<Transaction> iter = inStock.iterator();
 		while (iter.hasNext()) {
 			Transaction t = iter.next();
