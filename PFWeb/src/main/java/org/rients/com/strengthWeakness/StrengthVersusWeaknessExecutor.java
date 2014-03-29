@@ -38,14 +38,15 @@ public class StrengthVersusWeaknessExecutor {
 //			}
 //		}
 		// fillKoersMatrix(11, 23, true);
-		fillKoersMatrix(15, 20, true);
+		fillKoersMatrix(StrengthWeaknessConstants.strengthOverDays, StrengthWeaknessConstants.sellAfterDays , true);
 	}
 	
-	public void fillKoersMatrix(int strengthOverDays_, int sellAfterDays_, boolean save) {
+	public void fillKoersMatrix(int strengthOverDays, int sellAfterDays, boolean save) {
 		
-        strengthOverDays = strengthOverDays_;
-        sellAfterDays = sellAfterDays_;
-        numberOfBoxes = sellAfterDays;
+        this.strengthOverDays = strengthOverDays;
+        this.sellAfterDays = sellAfterDays;
+        // voor iedere box 1 dag
+        this.numberOfBoxes = sellAfterDays;
 //        List<Transaction> transactions = handleMatrixForStrength(matrix, true);
         String directory = Constants.KOERSENDIR + Categories.HOOFDFONDEN;
         // get aex rates
@@ -201,7 +202,7 @@ public class StrengthVersusWeaknessExecutor {
 
 	private Matrix createMatrix(List<Dagkoers> aexRates, List<String> files) {
 		Matrix matrix = new Matrix(files.size(), totalDAYS);
-        fundData.setNumberOfDays(totalDAYS + StrengthWeaknessConstants.strengthOverDays);
+        fundData.setNumberOfDays(totalDAYS + strengthOverDays);
         matrix.fillDates(aexRates);
         for (int i = 0; i < files.size(); i++) {
         	//System.out.println(files.get(i));
