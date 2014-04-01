@@ -82,7 +82,7 @@ public class RandomKoersGenerator {
                 FundPropertiesService propService = new FundPropertiesServiceImpl();
                 Map<String, String> fundProperties = propService.extractFundProperties(fundnameNew, dataout);
                 fundnameNew = changeExtension(fundnameNew, Constants.PROPERTIES);
-                PropertiesUtils.saveProperties(fundnameNew, fundProperties);
+                PropertiesUtils.saveExistingProperties(fundnameNew, fundProperties);
 
             }
             float varianceNew = Variance.variances(dataout);

@@ -14,6 +14,7 @@ import org.rients.com.model.StrategyResult;
 import org.rients.com.model.Transaction;
 import org.rients.com.pfweb.services.HandlePF;
 import org.rients.com.utils.FileUtils;
+import org.rients.com.utils.MathFunctions;
 
 public class Portfolio {
 
@@ -33,39 +34,42 @@ public class Portfolio {
 	}
 	
 	private void addPFRules(Transaction transaction) {
-		HandlePF handlePF = new HandlePF();
-		String directory = Constants.KOERSENDIR + Categories.HOOFDFONDEN;
-		@SuppressWarnings("unchecked")
-		PFModel pfModel = (PFModel) SimpleCache.getInstance().getObject("PFMODEL_" + transaction.getFundName());
-		List<Dagkoers> rates = (List<Dagkoers>) SimpleCache.getInstance().getObject("RATES_" + transaction.getFundName());
-		if (pfModel == null) {
-			pfModel = handlePF.createPFData(rates, transaction.getFundName(), "EXP", directory, 1, new Float(0.5));
-			SimpleCache.getInstance().addObject("PFMODEL_" + transaction.getFundName(), pfModel);
+		if (!transaction.getFundName().equals("cash")) {
+			HandlePF handlePF = new HandlePF();
+			String directory = Constants.KOERSENDIR + Categories.HOOFDFONDEN;
+			@SuppressWarnings("unchecked")
+			PFModel pfModel = (PFModel) SimpleCache.getInstance().getObject("PFMODEL_" + transaction.getFundName());
+			List<Dagkoers> rates = (List<Dagkoers>) SimpleCache.getInstance().getObject("RATES_" + transaction.getFundName());
+			if (pfModel == null) {
+				pfModel = handlePF.createPFData(rates, transaction.getFundName(), "EXP", directory, 1, new Float(0.5));
+				SimpleCache.getInstance().addObject("PFMODEL_" + transaction.getFundName(), pfModel);
+			}
+			stopLoss(rates, transaction);
+	//		if (!pfModel.isPlusOnDate(transaction.getStartDate())) {
+	//			// go to the next day with a plus
+	//			Modelregel mr = pfModel.findNextPlus(transaction.getStartDate());
+	//			if (mr.getDatumInt() < transaction.getEndDate()) {
+	//				Dagkoers nextDag = findKoersByDate(rates, mr.getDatumInt());
+	//				if (nextDag != null) {
+	//					transaction.setStartDate(Integer.parseInt(nextDag.datum));
+	//					transaction.setStartRate(nextDag.closekoers);
+	//				}
+	//				
+	//			}
+	//		}
+	//		while (pfModel.isPlusOnDate(transaction.getEndDate())) {
+	//			Dagkoers nextDag = findKoersAfterByDate(rates, transaction.getEndDate());
+	//			transaction.setEndDate(nextDag.getDatumInt());
+	//			transaction.setEndRate(nextDag.closekoers);
+	//		}
+			
+	//		sellBelowTop(rates, transaction);
+	//		Dagkoers eenNaLaatsteDag = findKoersBeforeByDate(rates, transaction.getEndDate());
+	//		if (!pfModel.isPlusOnDate(eenNaLaatsteDag.getDatumInt())) {
+	//			transaction.setEndDate(eenNaLaatsteDag.getDatumInt());
+	//			transaction.setEndRate(eenNaLaatsteDag.closekoers);
+	//		}
 		}
-//		if (!pfModel.isPlusOnDate(transaction.getStartDate())) {
-//			// go to the next day with a plus
-//			Modelregel mr = pfModel.findNextPlus(transaction.getStartDate());
-//			if (mr.getDatumInt() < transaction.getEndDate()) {
-//				Dagkoers nextDag = findKoersByDate(rates, mr.getDatumInt());
-//				if (nextDag != null) {
-//					transaction.setStartDate(Integer.parseInt(nextDag.datum));
-//					transaction.setStartRate(nextDag.closekoers);
-//				}
-//				
-//			}
-//		}
-//		while (pfModel.isPlusOnDate(transaction.getEndDate())) {
-//			Dagkoers nextDag = findKoersAfterByDate(rates, transaction.getEndDate());
-//			transaction.setEndDate(nextDag.getDatumInt());
-//			transaction.setEndRate(nextDag.closekoers);
-//		}
-		
-//		sellBelowTop(rates, transaction);
-//		Dagkoers eenNaLaatsteDag = findKoersBeforeByDate(rates, transaction.getEndDate());
-//		if (!pfModel.isPlusOnDate(eenNaLaatsteDag.getDatumInt())) {
-//			transaction.setEndDate(eenNaLaatsteDag.getDatumInt());
-//			transaction.setEndRate(eenNaLaatsteDag.closekoers);
-//		}
 		
 	}
 	
@@ -92,7 +96,27 @@ public class Portfolio {
 		}
 	}
 
-//	private Dagkoers findNextDay(List<Dagkoers> rates, int datum) {
+	private void stopLoss(List<Dagkoers> rates, Transaction transaction) {
+		float koopkoers = transaction.getStartRate();
+		boolean start = false;
+		for (Dagkoers dk : rates) {
+			if (dk.datum.equals(new Integer(transaction.getEndDate()).toString())) {
+				break;
+			}
+			if (start) {
+				if (MathFunctions.procVerschil(koopkoers, dk.closekoers) < -100) {
+					transaction.setEndDate(dk.getDatumInt());
+					transaction.setEndRate(dk.closekoers);
+				}
+			}
+			if (dk.datum.equals(new Integer(transaction.getStartDate()).toString())) {
+				start = true;
+				
+			}
+		}
+	}
+
+	//	private Dagkoers findNextDay(List<Dagkoers> rates, int datum) {
 //		boolean getNext = false;
 //		for (Dagkoers dk : rates) {
 //			if (getNext) {

@@ -28,7 +28,7 @@ public class PropertiesUtils {
     }
 
     
-    public static void saveProperties(String file, Map<String, String> fundProperties) {
+    public static void saveExistingProperties(String file, Map<String, String> fundProperties) {
         // load first the existing, then add the new values
         Properties properties = getPropertiesFromClasspath(file);
         Set<String> set = fundProperties.keySet();
@@ -54,9 +54,7 @@ public class PropertiesUtils {
     
     public static void saveProperties(String file, Properties properties) {
         try {
-            String path = properties.get("path").toString();
-            properties.remove("path");
-            properties.store(new FileOutputStream(path), "Java properties test");
+            properties.store(new FileOutputStream(file), "Java properties test");
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -76,6 +76,15 @@ public class HandleFundData {
             int beginDateIndex = findIndex(beginDate, records);
             if (beginDateIndex == -1) {
                 System.out.println("date: " + beginDate + " not found in " + fundName);
+                int i =0;
+                while ( i < 10) {
+                	beginDate =  beginDate + 1;
+                	beginDateIndex = findIndex(beginDate, records);
+                	 if (beginDateIndex > 0) {
+                		 break;
+                	 }
+                	i++;
+                }
             }
             if (beginDateIndex - numberOfDays > 0) {
                 beginDateIndex = beginDateIndex - numberOfDays;
@@ -83,9 +92,23 @@ public class HandleFundData {
             else {
                 beginDateIndex = 0;
             }
-            int endDateIndex = findIndex(endDate, records);
-            if (endDateIndex == -1) {
-                System.out.println("date: " + endDate + " not found in " + fundName);
+            int endDateIndex = 0;
+            if (endDate == -1) {
+            	endDateIndex = records.size();
+            } else {
+            	endDateIndex = findIndex(endDate, records);
+	            if (endDateIndex == -1) {
+	                System.out.println("date: " + endDate + " not found in " + fundName);
+	                int i =0;
+	                while ( i < 10) {
+	                	endDate =  endDate + 1;
+	                	endDateIndex = findIndex(endDate, records);
+	                	 if (endDateIndex > 0) {
+	                		 break;
+	                	 }
+	                	i++;
+	                }
+	            }
             }
             if (extraEndDays > 0) {
 	            if (endDateIndex + extraEndDays < aantalRecords) {

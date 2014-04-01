@@ -21,6 +21,7 @@ public class Categories {
     public final static String VALUTA = 				"Valuta";
     public final static String DIVERSE = 				"Diverse";
     public final static String USA =                	"USA";
+    public final static String INTRADAY =                "Intraday";
 
     Categories() {
         super();

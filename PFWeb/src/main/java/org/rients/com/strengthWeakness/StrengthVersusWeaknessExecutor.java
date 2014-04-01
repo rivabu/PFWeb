@@ -2,9 +2,11 @@ package org.rients.com.strengthWeakness;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Properties;
 
 import org.rients.com.constants.Constants;
 import org.rients.com.constants.SimpleCache;
+import org.rients.com.executables.IntradayDownloadExecutor;
 import org.rients.com.matrix.dataholder.FundDataHolder;
 import org.rients.com.matrix.dataholder.Matrix;
 import org.rients.com.model.Categories;
@@ -15,6 +17,7 @@ import org.rients.com.pfweb.services.HandleFundData;
 import org.rients.com.utils.FileUtils;
 import org.rients.com.utils.Formula;
 import org.rients.com.utils.MathFunctions;
+import org.rients.com.utils.TimeUtils;
 
 public class StrengthVersusWeaknessExecutor {
 
@@ -51,13 +54,30 @@ public class StrengthVersusWeaknessExecutor {
         String directory = Constants.KOERSENDIR + Categories.HOOFDFONDEN;
         // get aex rates
         List<Dagkoers> aexRates = getAexRates();
+        int lastDate = Integer.parseInt((aexRates.get(aexRates.size()-1)).datum);
+		System.out.println("last downloaded date " + lastDate);
+		
+        int nowString = Integer.parseInt("20" + TimeUtils.getNowString());
+		System.out.println("nowString " + nowString);
+		
 		List<String> files = FileUtils.getFiles(directory, "csv", false);
         totalDAYS = aexRates.size();
-        
-        Matrix matrix = createMatrix(aexRates, files);
-        fillMatrixWithData(matrix, directory, files);
+        Matrix matrix = null;
+
+		if (TimeUtils.isBetween(9, 18) && StrengthWeaknessConstants.downloadIntradays) {
+			// download de intradays
+			IntradayDownloadExecutor demo = new IntradayDownloadExecutor();
+			Properties intradays = demo.process();
+			aexRates.add(new Dagkoers(nowString+"", 0));
+			totalDAYS = totalDAYS + 1;
+			matrix = createMatrix(aexRates, files);
+	        fillMatrixWithData(matrix, directory, files, intradays);
+		}
+		else {
+			matrix = createMatrix(aexRates, files);
+	        fillMatrixWithData(matrix, directory, files, null);
+		}
         Portfolio portfolio = handleMatrixForStrength(matrix, true);
-        //Portfolio portfolio = handleMatrixForStrength(matrix, false);
         if (save) {
         	portfolio.saveTransactions();
         }
@@ -66,7 +86,7 @@ public class StrengthVersusWeaknessExecutor {
 
 	private Portfolio handleMatrixForStrength(Matrix matrix, boolean strong) {
 		int aantalFunds = matrix.getAantalFunds();
-		double startBedrag = 3000d;
+		double startBedrag = 1000d;
 		Portfolio portfolio = new Portfolio();
 		String[] dates = matrix.getDates();
 		Double[] boxes = new Double[numberOfBoxes];
@@ -77,7 +97,6 @@ public class StrengthVersusWeaknessExecutor {
 		int transId = 1;
 		double cash = 0;
 		double totaleWaardePortefeuille = numberOfBoxes * startBedrag;
-		int days = 0;
 		boolean allBoxesFilled = false;
 		for (int dagTeller = strengthOverDays; dagTeller < dates.length; dagTeller++) {
 			double maxStrength = -1000;
@@ -103,7 +122,8 @@ public class StrengthVersusWeaknessExecutor {
 							int verkoopDatumTeller = dagTeller + sellAfterDays;
 							if (verkoopDatumTeller < dates.length) {
 								// enddate found
-								if (matrix.getFundData(fundCounter).getValue(dates[verkoopDatumTeller]) != null) {
+								if (matrix.getFundData(fundCounter).getValue(dates[verkoopDatumTeller]) != null && 
+										matrix.getFundData(fundCounter).getValue(dates[verkoopDatumTeller]) instanceof StrengthWeakness) {
 									koopKoers = MathFunctions.round(strength.koers, 2);
 									fundName = matrix.getFundData(fundCounter).getFundName();
 									StrengthWeakness futureStrength = (StrengthWeakness) matrix.getFundData(fundCounter).getValue(dates[verkoopDatumTeller]);
@@ -144,30 +164,14 @@ public class StrengthVersusWeaknessExecutor {
 					boxes[boxCounter] = aantalBought * trans.getEndRate();
 					
 					double diff = boxes[boxCounter] - before;
+					//System.out.println("maxStrength: " + maxStrength + " profit " + diff);
 					totaleWaardePortefeuille = totaleWaardePortefeuille + diff;
 					if (allBoxesFilled) {
-						double avrBoxContent = totaleWaardePortefeuille / numberOfBoxes;
-						double surplus = boxes[boxCounter] - avrBoxContent;
-						if (surplus > 0) {
-							// haal uit de box, plaats in cash;
-							cash = cash + surplus;
-							boxes[boxCounter] = boxes[boxCounter] - surplus;
-						} else {
-							double shortage = surplus * -1;
-							if (cash > 0) {
-								if (cash - shortage >= 0) {
-									cash = cash - shortage;
-									boxes[boxCounter] = boxes[boxCounter] + shortage;
-								} else {
-									// niet genoeg in cash om hele tekort aan te vullen
-									cash  = 0;
-									boxes[boxCounter] = boxes[boxCounter] + cash;
-								}
-							}
-						}
+						cash = reOrderBoxes(boxes, boxCounter, cash, totaleWaardePortefeuille);
+						System.out.println("cash: " + MathFunctions.round(cash, 2));
 					}
-					days = debugBox1(boxes, boxCounter, days, dagTeller,
-							currentDate, trans, diff);
+//					days = debugBox1(boxes, boxCounter, days, dagTeller,
+//							currentDate, trans, diff);
 					boxCounter++;
 				}
 			}
@@ -178,13 +182,46 @@ public class StrengthVersusWeaknessExecutor {
 		}
 		//System.out.println("profit: " + MathFunctions.round(portfolio.getProfit(), 2));
 		System.out.println("cash : " + cash);
-		double totalAmount = 0d;
+		if (cash > 0) {
+			String laatsteDatum = dates[dates.length - 1];
+			Transaction trans = new Transaction("cash", new Integer(laatsteDatum).intValue(), transId, new Double(0).floatValue(), 1, Type.CASH);
+			transId ++;
+			trans.addSellInfo(new Integer(laatsteDatum).intValue(), 0, new Double(cash).floatValue());
+			portfolio.add(trans);
+			
+		}
+		double totalAmount = cash;
 		for (int i = 0; i<boxes.length; i++) {
 			totalAmount = totalAmount + boxes[i];
-			System.out.println("i = " + i + " :" + MathFunctions.round(boxes[i] - 1000, 2));
+			System.out.println("i = " + i + " :" + MathFunctions.round(boxes[i], 2));
 		}
-		System.out.println("totalAmount: " + MathFunctions.round(totalAmount - (sellAfterDays * 1000), 2));
+		System.out.println("totalAmount: " + MathFunctions.round(totalAmount - (sellAfterDays * startBedrag), 2));
 		return portfolio;
+	}
+
+	private double reOrderBoxes(Double[] boxes, int boxCounter, double cash,
+			double totaleWaardePortefeuille) {
+		double avrBoxContent = totaleWaardePortefeuille / numberOfBoxes;
+		double surplus = boxes[boxCounter] - avrBoxContent;
+		if (surplus > 0) {
+			// haal uit de box, plaats in cash;
+			cash = cash + surplus;
+			boxes[boxCounter] = boxes[boxCounter] - surplus;
+		} else {
+			double shortage = surplus * -1;
+			if (cash > 0) {
+				if (cash - shortage >= 0) {
+					// genoeg in cash om shortage op te vangen
+					cash = cash - shortage;
+					boxes[boxCounter] = boxes[boxCounter] + shortage;
+				} else {
+					// niet genoeg in cash om hele tekort aan te vullen
+					boxes[boxCounter] = boxes[boxCounter] + cash;
+					cash  = 0;
+				}
+			}
+		}
+		return cash;
 	}
 
 	private int debugBox1(Double[] amounts, int amountCounter, int days,
@@ -225,13 +262,18 @@ public class StrengthVersusWeaknessExecutor {
 	
 
 	
-	private void fillMatrixWithData(Matrix matrix, String directory, List<String> files) {
+	private void fillMatrixWithData(Matrix matrix, String directory, List<String> files, Properties intradays) {
         List<Dagkoers> rates = null;
         fundData.setNumberOfDays(strengthOverDays);
+        String nowString = "20" + TimeUtils.getNowString();
         for (int file = 0; file < files.size(); file++) {
-        		System.out.println(files.get(file));
-                rates = fundData.getFundRates(files.get(file), directory, StrengthWeaknessConstants.startDate, StrengthWeaknessConstants.endDate, 0);
-    			SimpleCache.getInstance().addObject("RATES_" + files.get(file), rates);
+        		String filename = files.get(file);
+        		System.out.println(filename);
+                rates = fundData.getFundRates(filename, directory, StrengthWeaknessConstants.startDate, StrengthWeaknessConstants.endDate, 0);
+                if (intradays != null && intradays.contains(filename)) {
+                	rates.add(new Dagkoers(nowString, new Float(intradays.get(filename).toString()).floatValue()));
+                }
+    			SimpleCache.getInstance().addObject("RATES_" + filename, rates);
 
             int startValue = 0;
             if (rates.size() < totalDAYS && rates.size() > strengthOverDays) {

@@ -9,6 +9,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import org.joda.time.DateTime;
+
 
 /**
  * @author Rients
@@ -43,5 +45,24 @@ public class TimeUtils {
     
     public static void main(String args[]) {
         System.out.println(today());
+    }
+    
+    public static String getNowString() {
+		DateTime now = new DateTime();
+		return now.toString("yyMMdd");
+    }
+    
+    public static boolean isBeforeHour(int hour) {
+    	boolean returnValue = false;
+		DateTime now = new DateTime();
+		int nine = hour * 60 * 60;
+		if (now.getSecondOfDay() < nine) {
+			returnValue = true;
+		} 
+		return returnValue;
+    }
+
+    public static boolean isBetween(int from, int to) {
+    	return !isBeforeHour(from) && isBeforeHour(to);
     }
 }
