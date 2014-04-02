@@ -33,30 +33,34 @@ public class IntradayDownloadExecutor {
 
 	public static void main(String[] args) {
 		IntradayDownloadExecutor demo = new IntradayDownloadExecutor();
-					demo.process();
+					demo.process(false);
 	}
 
-	public Properties process()  {
+	public Properties process(boolean download)  {
 		Properties koersen = new Properties();
 		String nowString = TimeUtils.getNowString();
-
-		String directory = Constants.KOERSENDIR + Categories.HOOFDFONDEN;
-		List<String> files = FileUtils.getFiles(directory, "csv", false);
-		for (String fondsNaam : files) {
-		
-			String intradayFile = Constants.INTRADAY_KOERSENDIR + "20" + nowString + "_" + fondsNaam + ".csv";
-
-			if (FileUtils.fileExists(intradayFile)) {
-				FileUtils.removeFile(intradayFile);
-			}
-			String koers = handleOneFile(fondsNaam, nowString, intradayFile);
-			if (koers != null) {
-				koersen.put(fondsNaam, koers);
-			}
-			FileUtils.removeFile(Constants.INTRADAY_TEMPFILE);
-		}
 		String filenaam = Constants.KOERSENDIR + Categories.INTRADAY + "/20" + nowString + ".properties";
-		PropertiesUtils.saveProperties(filenaam, koersen);
+		if (download) {
+			String directory = Constants.KOERSENDIR + Categories.HOOFDFONDEN;
+			List<String> files = FileUtils.getFiles(directory, "csv", false);
+			for (String fondsNaam : files) {
+			
+				String intradayFile = Constants.INTRADAY_KOERSENDIR + "20" + nowString + "_" + fondsNaam + ".csv";
+	
+				if (FileUtils.fileExists(intradayFile)) {
+					FileUtils.removeFile(intradayFile);
+				}
+				String koers = handleOneFile(fondsNaam, nowString, intradayFile);
+				if (koers != null) {
+					koersen.put(fondsNaam, koers);
+				}
+				FileUtils.removeFile(Constants.INTRADAY_TEMPFILE);
+			}
+			PropertiesUtils.saveProperties(filenaam, koersen);
+		} else {
+			koersen = PropertiesUtils.getProperties(filenaam);
+			System.out.println("intradays file found, aantal properties: " + koersen.size());
+		}
 		return koersen;
 	}
 

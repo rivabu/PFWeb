@@ -12,6 +12,7 @@ import org.rients.com.model.Modelregel;
 import org.rients.com.model.PFModel;
 import org.rients.com.model.StrategyResult;
 import org.rients.com.model.Transaction;
+import org.rients.com.model.Type;
 import org.rients.com.pfweb.services.HandlePF;
 import org.rients.com.utils.FileUtils;
 import org.rients.com.utils.MathFunctions;
@@ -231,6 +232,10 @@ public class Portfolio {
 		Iterator<Transaction> iter = allTransactions.iterator();
 		while (iter.hasNext()) {
 			Transaction t = iter.next();
+			if (t.type == Type.CASH) {
+				endResult = endResult + t.getScoreAbs();
+				continue;
+			}
 			endResult = endResult + t.getScoreAbs();
 			if (t.getScorePerc() >= 0) {
 				if (maxWin < t.getScorePerc()) {

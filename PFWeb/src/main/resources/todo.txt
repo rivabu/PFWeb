@@ -1,9 +1,0 @@
-ik wil elke dag een mail met de plaatjes
-
-ik wil automatische portefeuille bewaking en order uitvoeren
-
-ik wil alerts per sms
-
-ik wil de app draaien op apache op mijn werk als een service
-
-ik wil auto download instelbaar

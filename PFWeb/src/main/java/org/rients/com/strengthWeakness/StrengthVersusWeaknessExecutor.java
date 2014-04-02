@@ -64,10 +64,10 @@ public class StrengthVersusWeaknessExecutor {
         totalDAYS = aexRates.size();
         Matrix matrix = null;
 
-		if (TimeUtils.isBetween(9, 18) && StrengthWeaknessConstants.downloadIntradays) {
+		if (TimeUtils.isBetween(9, 18) && (StrengthWeaknessConstants.downloadIntradays || StrengthWeaknessConstants.useIntradays)) {
 			// download de intradays
 			IntradayDownloadExecutor demo = new IntradayDownloadExecutor();
-			Properties intradays = demo.process();
+			Properties intradays = demo.process(StrengthWeaknessConstants.downloadIntradays);
 			aexRates.add(new Dagkoers(nowString+"", 0));
 			totalDAYS = totalDAYS + 1;
 			matrix = createMatrix(aexRates, files);
@@ -107,10 +107,12 @@ public class StrengthVersusWeaknessExecutor {
 			double koopKoers = 0d;
 			double verkoopKoers = 0d;
 			Type typeAankoop = Type.LONG;
+			boolean somethingBought = false;
 			for (int fundCounter = 0; fundCounter < aantalFunds; fundCounter++) {
 				if (matrix.getFundData(fundCounter).getValue(currentDate) instanceof StrengthWeakness) {
 					StrengthWeakness strength = (StrengthWeakness) matrix.getFundData(fundCounter).getValue(currentDate);
-					if (strength != null) {
+					boolean isFundDataAvailable = isFundDataAvailable(matrix.getFundData(fundCounter), dagTeller, dates);
+					if (strength != null && isFundDataAvailable) {
 						if ((strong && strength.strength > maxStrength) || (!strong && strength.strength < minStrength)) {
 							if (strong) {
 								// maxStrength -> grootste stijger afgelopen tijd
@@ -119,38 +121,29 @@ public class StrengthVersusWeaknessExecutor {
 								// minStrength -> grootste daler afgelopen tijd
 								minStrength = MathFunctions.round(strength.strength, 2);
 							}
+							fundName = matrix.getFundData(fundCounter).getFundName();
+							koopKoers = MathFunctions.round(strength.koers, 2);
 							int verkoopDatumTeller = dagTeller + sellAfterDays;
 							if (verkoopDatumTeller < dates.length) {
 								// enddate found
-								if (matrix.getFundData(fundCounter).getValue(dates[verkoopDatumTeller]) != null && 
-										matrix.getFundData(fundCounter).getValue(dates[verkoopDatumTeller]) instanceof StrengthWeakness) {
-									koopKoers = MathFunctions.round(strength.koers, 2);
-									fundName = matrix.getFundData(fundCounter).getFundName();
-									StrengthWeakness futureStrength = (StrengthWeakness) matrix.getFundData(fundCounter).getValue(dates[verkoopDatumTeller]);
-									futureDate = dates[verkoopDatumTeller];
-									verkoopKoers =  MathFunctions.round(futureStrength.koers, 2);
-									typeAankoop = Type.LONG;
-								} else {
-									// deze situatie komt voor als er van een fonds data mist, de matrix moet de afvangen!
-									fundName = matrix.getFundData(fundCounter).getFundName();
-									String datum = dates[verkoopDatumTeller];
-									System.out.println("fund: " + fundName + " datum: " + datum + " not found in matrix!");
-								}
+								StrengthWeakness futureStrength = (StrengthWeakness) matrix.getFundData(fundCounter).getValue(dates[verkoopDatumTeller]);
+								futureDate = dates[verkoopDatumTeller];
+								verkoopKoers =  MathFunctions.round(futureStrength.koers, 2);
+								typeAankoop = Type.LONG;
 							} else {
-								// verkoopdatum nog niet bereikt, want die ligt in de toekomst, transactie kan niet afgesloten worden (=UNFINISHED)
-								koopKoers = MathFunctions.round(strength.koers, 2);
-								fundName = matrix.getFundData(fundCounter).getFundName();
 								String laatsteDatum = dates[dates.length - 1];
+								// verkoopdatum nog niet bereikt, want die ligt in de toekomst, transactie kan niet afgesloten worden (=UNFINISHED)
 								StrengthWeakness futureStrength = (StrengthWeakness) matrix.getFundData(fundCounter).getValue(laatsteDatum);
 								futureDate = laatsteDatum;
 								verkoopKoers =  MathFunctions.round(futureStrength.koers, 2);
 								typeAankoop = Type.UNFINISHED;
 							}
+							somethingBought = true;
 						}
 					}
 				}
 			}
-			if (dagTeller < dates.length) {
+			if (dagTeller < dates.length && somethingBought) {
 				// kopen als ik hem nog niet heb, of als ik op winst sta.
 				if (!portfolio.hasInStock(fundName) || portfolio.resultSoFar(fundName) > 0) {
 					double before = boxes[boxCounter];
@@ -158,6 +151,9 @@ public class StrengthVersusWeaknessExecutor {
 					
 					Transaction trans = new Transaction(fundName, new Integer(currentDate).intValue(), transId, new Double(koopKoers).floatValue(), aantalBought, typeAankoop);
 					transId ++;
+					if (futureDate == null) {
+						System.out.println("futureDate is null" + verkoopKoers + " " + fundName);
+					}
 					trans.addSellInfo(new Integer(futureDate).intValue(), 0, new Double(verkoopKoers).floatValue());
 					portfolio.add(trans);
 
@@ -199,6 +195,21 @@ public class StrengthVersusWeaknessExecutor {
 		return portfolio;
 	}
 
+	
+	private boolean isFundDataAvailable(FundDataHolder dataHolder, int  dagTeller, String[] dates) {
+		boolean returnValue = false;
+		int verkoopDatumTeller = dagTeller + sellAfterDays;
+		if (verkoopDatumTeller < dates.length) {
+			if (dataHolder.getValue(dates[verkoopDatumTeller]) instanceof StrengthWeakness)
+			returnValue = true;
+		} else {
+			String laatsteDatum = dates[dates.length - 1];
+			if (dataHolder.getValue(laatsteDatum) instanceof StrengthWeakness) {
+				returnValue = true;
+			}
+		}
+		return returnValue;
+	}
 	private double reOrderBoxes(Double[] boxes, int boxCounter, double cash,
 			double totaleWaardePortefeuille) {
 		double avrBoxContent = totaleWaardePortefeuille / numberOfBoxes;
@@ -270,7 +281,7 @@ public class StrengthVersusWeaknessExecutor {
         		String filename = files.get(file);
         		System.out.println(filename);
                 rates = fundData.getFundRates(filename, directory, StrengthWeaknessConstants.startDate, StrengthWeaknessConstants.endDate, 0);
-                if (intradays != null && intradays.contains(filename)) {
+                if (intradays != null && intradays.containsKey(filename)) {
                 	rates.add(new Dagkoers(nowString, new Float(intradays.get(filename).toString()).floatValue()));
                 }
     			SimpleCache.getInstance().addObject("RATES_" + filename, rates);
