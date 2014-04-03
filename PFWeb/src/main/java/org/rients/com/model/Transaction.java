@@ -54,7 +54,10 @@ public class Transaction {
     }
     
     public float getScorePerc() {
-    	float score = ((endRate - startRate) / endRate) * 100;
+    	if (startRate == 0) {
+    		return 0;
+    	}
+    	float score = ((endRate - startRate) / startRate) * 100;
     	if (type == Type.SHORT) {
     	    score = score * -1;
     	}
@@ -68,8 +71,8 @@ public class Transaction {
 
     public String getScorePercStr() {
         float score = 0;
-        if (endRate != 0) {
-            score = ((endRate - startRate) / endRate) * 100;
+        if (startRate != 0) {
+            score = ((endRate - startRate) / startRate) * 100;
         } else {
             score = 0;
         }
@@ -77,8 +80,8 @@ public class Transaction {
     }
     
     public BigDecimal getScorePercBD() {
-        if (endRate != 0) {
-            float score = ((endRate - startRate) / endRate) * 100;
+        if (startRate != 0) {
+            float score = ((endRate - startRate) / startRate) * 100;
             return new BigDecimal(MathFunctions.round(score));
         }
         return new BigDecimal(0);

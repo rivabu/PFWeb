@@ -46,6 +46,15 @@ public class Matrix {
         return fundData[number];
     }
     
+    public FundDataHolder getFundData(String fundName) {
+        for (int i = 0; i < this.getAantalFunds(); i++) {
+            if (this.getFundData(i).getFundName().equals(fundName)) {
+                return fundData[i];
+            }
+        }
+        return null;
+    }
+    
     public void setFundData(FundDataHolder data, int number) {
         fundData[number] = data;
     }

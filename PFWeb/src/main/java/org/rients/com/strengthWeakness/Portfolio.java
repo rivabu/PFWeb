@@ -64,12 +64,12 @@ public class Portfolio {
 	//			transaction.setEndRate(nextDag.closekoers);
 	//		}
 			
-	//		sellBelowTop(rates, transaction);
-	//		Dagkoers eenNaLaatsteDag = findKoersBeforeByDate(rates, transaction.getEndDate());
-	//		if (!pfModel.isPlusOnDate(eenNaLaatsteDag.getDatumInt())) {
-	//			transaction.setEndDate(eenNaLaatsteDag.getDatumInt());
-	//			transaction.setEndRate(eenNaLaatsteDag.closekoers);
-	//		}
+//			sellBelowTop(rates, transaction);
+//			Dagkoers eenNaLaatsteDag = findKoersBeforeByDate(rates, transaction.getEndDate());
+//			if (!pfModel.isPlusOnDate(eenNaLaatsteDag.getDatumInt())) {
+//				transaction.setEndDate(eenNaLaatsteDag.getDatumInt());
+//				transaction.setEndRate(eenNaLaatsteDag.closekoers);
+//			}
 		}
 		
 	}
@@ -191,19 +191,30 @@ public class Portfolio {
 		return returnValue;
 	}
 	
-	public double resultSoFar(String fundName) {
+	// ik koop hem niet, want ik weet dat ie verlies op gaat leveren!
+	// ik koop bij, want ik weet dat ie winst op gaat leveren!
+	public double resultSoFar(String fundName, float huidigeKoers) {
 		double returnValue = 0d;
 		Iterator<Transaction> iter = inStock.iterator();
 		while (iter.hasNext()) {
 			Transaction t = iter.next();
 			if (t.getFundName().equals(fundName)) {
-				double result = t.getScorePerc();
-				returnValue = returnValue + result;
+//				if (t.getScorePerc() > 0)
+	 				double result = getScorePerc(t.startRate, huidigeKoers);
+					returnValue = returnValue + result;
 			}
 		}
 		return returnValue;
 	}
 	
+   public float getScorePerc(float startRate, float endRate) {
+    	if (startRate == 0) {
+    		return 0;
+    	}
+    	float score = ((endRate - startRate) / startRate) * 100;
+    	return score;
+    }
+	   
 	public double getProfit() {
 		double returnValue = 0d;
 		Iterator<Transaction> iter = allTransactions.iterator();
@@ -233,7 +244,6 @@ public class Portfolio {
 		while (iter.hasNext()) {
 			Transaction t = iter.next();
 			if (t.type == Type.CASH) {
-				endResult = endResult + t.getScoreAbs();
 				continue;
 			}
 			endResult = endResult + t.getScoreAbs();

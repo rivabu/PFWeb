@@ -42,7 +42,7 @@ public class SMA implements Formula {
 	
 	        sum = sum.add(value);
 	        values.addLast(value);
-	        average = sum.divide(new BigDecimal(values.size()), length);
+	        average = sum.divide(new BigDecimal(values.size()));
 	
 	        return average;
     	}

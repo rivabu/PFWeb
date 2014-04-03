@@ -52,7 +52,7 @@ public class HandleFundData {
         if (records != null) {
             int aantalRecords = records.size();
             int fromIndex = 0;
-            if (aantalRecords > numberOfDays) {
+            if (numberOfDays > 0 && aantalRecords > numberOfDays) {
                 fromIndex = aantalRecords - numberOfDays;
             }
             for (int i = fromIndex; i < aantalRecords; i++) {
@@ -75,7 +75,7 @@ public class HandleFundData {
 
             int beginDateIndex = findIndex(beginDate, records);
             if (beginDateIndex == -1) {
-                System.out.println("date: " + beginDate + " not found in " + fundName);
+                //System.out.println("date: " + beginDate + " not found in " + fundName);
                 int i =0;
                 while ( i < 10) {
                 	beginDate =  beginDate + 1;

@@ -209,8 +209,7 @@ public final class FileUtils
         }
         catch(Exception exception)
         {
-            //System.out.println("error in lezen file: " + exception);
-            //exception.printStackTrace();
+            exception.printStackTrace();
             return null;
         }
         return bufferedreader;

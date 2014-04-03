@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.rients.com.strengthWeakness.StrengthWeakness;
+
 public class FundDataHolder {
     private String fundName;
     private Map<String, Object> data = new TreeMap<String, Object>();
@@ -24,6 +26,16 @@ public class FundDataHolder {
         }
         return 0;
     }
+    
+    public float getKoers(String date) {
+        if (data.containsKey(date)) {
+        	if (data.get(date) instanceof StrengthWeakness) {
+        		return ((StrengthWeakness) data.get(date)).getKoers();
+        	}
+        }
+        return 0;
+    }
+    
     
     public int getSize() {
         return data.size();
