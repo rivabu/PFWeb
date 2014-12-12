@@ -193,7 +193,7 @@ public class PFRules {
                 else 
                 {
                     // sluit kooptrans
-                    if (trans != null && trans.getType() == Type.LONG) {
+                    if (trans != null && trans.getType() == Type.SHORT) {
                          trans.setEndDate(switchDatum);
                          trans.setEndRate(swithKoers);
                          transactions.add(trans);

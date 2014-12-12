@@ -6,7 +6,14 @@ import org.rients.com.model.Transaction;
 public class OddEvenTableDecorator extends TableDecorator {
     public String addRowClass()
     {
-        return ((Transaction) getCurrentRowObject()).getScoreAbs() >= 0 ? "odd" : "even";
+    	String returnValue = "even";
+    	Transaction t = (Transaction) getCurrentRowObject();
+    	if (t.getScoreAbs() >= 0) {
+    		returnValue = "odd";
+    	} else {
+    		returnValue = "even";
+    	}
+    	return returnValue;
     }
     
 }

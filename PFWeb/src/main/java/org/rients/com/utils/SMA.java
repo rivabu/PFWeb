@@ -1,6 +1,7 @@
 package org.rients.com.utils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.LinkedList;
 
 
@@ -42,9 +43,14 @@ public class SMA implements Formula {
 	
 	        sum = sum.add(value);
 	        values.addLast(value);
-	        average = sum.divide(new BigDecimal(values.size()));
+	        average = sum.divide(new BigDecimal(values.size()), 2, RoundingMode.HALF_UP);
 	
 	        return average;
     	}
     }
+
+	public BigDecimal getAvr() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

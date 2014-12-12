@@ -39,6 +39,9 @@ public class Matrix {
         for (Dagkoers dagkoers : aexRates) {
             dates[counter] = dagkoers.getDatum();
             counter++;
+            if (counter == dates.length) {
+            	break;
+            }
         }
     }
     

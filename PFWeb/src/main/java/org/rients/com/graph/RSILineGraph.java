@@ -22,13 +22,13 @@ public class RSILineGraph {
         ImageResponse imageResponse = new ImageResponse();
         XYSeriesCollection dataset = new XYSeriesCollection();
         int aantalFunds = matrix.getAantalFunds();
-        XYSeries middleLine = new XYSeries("");
-        Integer fifty = new Integer(50);
+        // middleLine = new XYSeries("");
+        //Integer fifty = new Integer(50);
         // rechte lijn in het midden
-        for (int i = 0; i < DAYS; i++) {
-            middleLine.add(i, fifty );
-        }
-        dataset.addSeries(middleLine);
+        //for (int i = 0; i < DAYS; i++) {
+        //    middleLine.add(i, fifty );
+        //}
+        //.addSeries(middleLine);
         for (int counter = 0; counter < aantalFunds; counter++) {
             String fundName = matrix.getFundData(counter).getFundName();
             XYSeries points = new XYSeries(fundName);
@@ -37,7 +37,7 @@ public class RSILineGraph {
             int xas = 0;
             if (size < DAYS) {
                 for (int teller = size; teller < DAYS; teller++) {
-                    points.add(xas, fifty);
+                    //points.add(xas, fifty);
                     xas ++;
                 }
             }
@@ -69,7 +69,7 @@ public class RSILineGraph {
             } else if (type.equals("normaal")) {
                 ChartUtilities.writeChartAsPNG(buffer, chart, 1250, 300);
             } else if (type.equals("groot")) {
-                ChartUtilities.writeChartAsPNG(buffer, chart, 1500, 750);
+                ChartUtilities.writeChartAsPNG(buffer, chart, 1500, 400);
             }
             imageResponse.setContent(buffer.toByteArray());
         } catch (IOException e) {

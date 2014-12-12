@@ -36,23 +36,6 @@
 		</c:forEach>
 	</tr>
 </table>
-<table >
-	<tr>
-		<td>
-		<img alt="" src="MatrixImage?&dir=${dir}&type=higherlower">
-		</td>
-	</tr>
-	<tr>
-		<td>
-		<br />
-		</td>
-	</tr>
-	<tr>
-		<td>
-		<img alt="" src="MatrixImage?&dir=${dir}&type=updown">
-		</td>
-	</tr>
-</table>
 <table>
 <tr>
 	<td>

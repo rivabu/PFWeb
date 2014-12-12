@@ -58,14 +58,17 @@ public class Transaction {
     		return 0;
     	}
     	float score = ((endRate - startRate) / startRate) * 100;
-    	if (type == Type.SHORT) {
-    	    score = score * -1;
-    	}
+        if (type == Type.SHORT) {
+        	score = score * -1;
+        }
     	return score;
     }
 
     public float getScoreAbs() {
         float score = (endRate - startRate)  * new Double(pieces).floatValue();
+        if (type == Type.SHORT) {
+        	score = score * -1;
+        }
         return score;
     }
 
@@ -76,12 +79,18 @@ public class Transaction {
         } else {
             score = 0;
         }
+        if (type == Type.SHORT) {
+        	score = score * -1;
+        }
         return MathFunctions.round(score);
     }
     
     public BigDecimal getScorePercBD() {
         if (startRate != 0) {
             float score = ((endRate - startRate) / startRate) * 100;
+            if (type == Type.SHORT) {
+            	score = score * -1;
+            }
             return new BigDecimal(MathFunctions.round(score));
         }
         return new BigDecimal(0);
@@ -92,6 +101,9 @@ public class Transaction {
         float score = 0;
         if (endRate != 0) {
             score = (endRate - startRate)  * new Double(pieces).floatValue();
+            if (type == Type.SHORT) {
+            	score = score * -1;
+            }
         } else {
             score = 0;
         }
@@ -101,6 +113,9 @@ public class Transaction {
     public BigDecimal getScoreAbsBD() {
         if (endRate != 0) {
             float score = (endRate - startRate)  * new Double(pieces).floatValue();
+            if (type == Type.SHORT) {
+            	score = score * -1;
+            }
             return new BigDecimal(MathFunctions.round(score));
         }
         return new BigDecimal(0);

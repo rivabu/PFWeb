@@ -72,4 +72,10 @@ public class RSI implements Formula {
         }
         return RSIvalue.round(MathContext.DECIMAL32);
     }
+
+
+	public BigDecimal getAvr() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

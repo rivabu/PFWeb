@@ -13,5 +13,7 @@ public interface Formula {
 	 * @return The average
 	 */
 	public abstract BigDecimal compute(BigDecimal value);
+	
+	public abstract BigDecimal getAvr();
 
 }

@@ -65,21 +65,22 @@ public class TransactionGraph {
                 if (trans.getEndRate() > 0) {
                     if (data.containsKey(date)) {
                         Float value = data.get(date);
-                        if (trans.getType() == Type.WAIT) {
-                            value = value + new Float(trans.getScoreAbs() * -1);
-                        } else {
+                        //if (trans.getType() == Type.WAIT) {
+                        //    value = value + new Float(trans.getScoreAbs() * -1);
+                        //} else {
                             value = value + new Float(trans.getScoreAbs());
-                        }
+                        //}
                         data.put(date, value);
-                        if (trans.getType() != Type.WAIT) {
+                        if (trans.getType() != Type.SHORT) {
                             data2.put(date, value);
                         }
                     } else {
-                        if (trans.getType() != Type.WAIT) {
+                    	data.put(date, new Float(trans.getScoreAbs()));
+                        if (trans.getType() != Type.SHORT) {
                         	 data2.put(date, new Float(trans.getScoreAbs()));
-                             data.put(date, new Float(trans.getScoreAbs()));
-                        } else {
-                            data.put(date, new Float(trans.getScoreAbs() * -1));
+                             
+//                         } else {
+//                           data.put(date, new Float(trans.getScoreAbs() * -1));
                         }
                     }
                 }

@@ -63,4 +63,9 @@ public class ComputeStrength implements Formula {
         }
         values.add(value);
 	}
+
+	public BigDecimal getAvr() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

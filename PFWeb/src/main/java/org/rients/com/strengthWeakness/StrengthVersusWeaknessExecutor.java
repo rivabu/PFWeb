@@ -38,13 +38,13 @@ public class StrengthVersusWeaknessExecutor {
 	public void process() {
 
 //        boolean save = false;
-//        for (int i=10; i<20; i++) {
-//			for (int j=20; j<25; j++) {
+//        for (int i=15; i<20; i++) {
+//			for (int j=35; j<50; j++) {
 //				fillKoersMatrix(i, j, save);
 //				
 //			}
 //		}
-//		fillKoersMatrix(16, 40, true);
+//		fillKoersMatrix(19, 40, true);
 		fillKoersMatrix(StrengthWeaknessConstants.strengthOverDays, StrengthWeaknessConstants.sellAfterDays , true);
 	}
 	
@@ -182,8 +182,8 @@ public class StrengthVersusWeaknessExecutor {
 					boxes[boxCounter].setFundName(fundName);
 					boxes[boxCounter].setBeginDatum(new Integer(currentDate).intValue());
 					boxes[boxCounter].setEindDatum(new Integer(verkoopDatum).intValue());
-					if (totaleWaardePortefeuille < avrRealKoers) {
-						typeAankoop = Type.WAIT;
+					if (huidigeWaarde < avrRealKoers) {
+						typeAankoop = Type.SHORT;
 					}
 					Transaction trans = new Transaction(fundName, new Integer(currentDate).intValue(), transId, new Double(koopKoers).floatValue(), aantal, typeAankoop);
 					transId ++;
@@ -192,7 +192,7 @@ public class StrengthVersusWeaknessExecutor {
 					}
 					trans.addSellInfo(new Integer(verkoopDatum).intValue(), 0, new Double(verkoopKoers).floatValue());
 					portfolio.add(trans);
-
+					
 					boxes[boxCounter].setValue((aantal * trans.getEndRate()) + restWaarde);
 					
 					double diff = boxes[boxCounter].getValue() - before;
@@ -216,7 +216,7 @@ public class StrengthVersusWeaknessExecutor {
 			}
 		}
 		//System.out.println("profit: " + MathFunctions.round(portfolio.getProfit(), 2));
-		//System.out.println("cash : " + cash + " aantalInPortefeille: " + aantalInPortefeille);
+		System.out.println("cash : " + cash);
 		if (cash > 0) {
 			String laatsteDatum = dates[dates.length - 1];
 			Transaction trans = new Transaction("cash", new Integer(laatsteDatum).intValue(), transId, new Double(0).floatValue(), 1, Type.CASH);

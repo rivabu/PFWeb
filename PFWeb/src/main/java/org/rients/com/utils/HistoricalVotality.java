@@ -1,6 +1,7 @@
 package org.rients.com.utils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +13,8 @@ public class HistoricalVotality implements Formula {
 
 	private final LinkedList<BigDecimal> values = new LinkedList<BigDecimal>();
 	private final int length;
+	private BigDecimal sum = BigDecimal.ZERO;
+	private int count;
 
 	/**
 	 * 
@@ -28,7 +31,7 @@ public class HistoricalVotality implements Formula {
 	}
 
 	/**
-	 * Compute the moving average. Synchronised so that no changes in the
+	 * Compute the HistoricalVotality. Synchronised so that no changes in the
 	 * underlying data is made during calculation.
 	 * 
 	 * @param value
@@ -65,10 +68,17 @@ public class HistoricalVotality implements Formula {
 			double stdDevTmp = stdDev.evaluate(ArrayUtils
 					.toPrimitive(priceChangesArr));
 			double retTemp = stdDevTmp * Math.sqrt(length) * 500;
-			return new BigDecimal(Math.sqrt(retTemp));
+			BigDecimal result = new BigDecimal(Math.sqrt(retTemp));
+			sum = sum.add(result);
+			count++;
+			return result;
 
 		}
 		return BigDecimal.ZERO;
+	}
+
+	public BigDecimal getAvr() {
+		return sum.divide(new BigDecimal(count), 2, RoundingMode.HALF_UP);
 	}
 
 //	public float getHistoricalVolatility(List<> stockPrices, int idx,
