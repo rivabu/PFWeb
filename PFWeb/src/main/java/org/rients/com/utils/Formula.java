@@ -14,6 +14,5 @@ public interface Formula {
 	 */
 	public abstract BigDecimal compute(BigDecimal value);
 	
-	public abstract BigDecimal getAvr();
 
 }

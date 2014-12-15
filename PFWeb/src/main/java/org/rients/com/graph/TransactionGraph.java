@@ -127,7 +127,7 @@ public class TransactionGraph {
         final TimeSeries t3 = new TimeSeries("");
         HandleFundData dataService = new  HandleFundData();
         List<Dagkoers> data =  dataService.getFundRates("result", Constants.TRANSACTIONDIR);
-        Formula sma = new SMA(10);
+        Formula sma = new SMA(10, 0);
         for (int i = 0; i < data.size(); i++) {
         	Dagkoers k = data.get(i);
             int year = Integer.parseInt(k.getDatum().substring(0, 4));

@@ -44,7 +44,7 @@ public class HighLowImageGenerator {
         List<String> files = FileUtils.getFiles(Constants.KOERSENDIR + dir, "csv", false);
 
         // een matrix is een array van funddataholders.
-        Matrix matrix = new Matrix(files.size(), getDAYS());
+        Matrix matrix = new Matrix("HighLow", files.size(), getDAYS());
         String directory = Constants.KOERSENDIR + Constants.INDEXDIR + Constants.SEP;
         fundData.setNumberOfDays(DAYS);
         List<Dagkoers> aexRates = fundData.getFundRates(Constants.AEX_INDEX, directory);
@@ -54,12 +54,12 @@ public class HighLowImageGenerator {
         for (int i = 0; i < files.size(); i++) {
             FundDataHolder dataHolder;
             if (i == 0) {
-                dataHolder = new FundDataHolder(files.get(i), getDAYS());
+                dataHolder = new FundDataHolder(files.get(i), getDAYS(), true);
 
             } else {
-                dataHolder = new FundDataHolder(files.get(i), getDAYS());
+                dataHolder = new FundDataHolder(files.get(i), getDAYS(), true);
             }
-            matrix.setFundData(dataHolder, i);
+            matrix.setColumn(dataHolder, i);
         }
         if (type.equals("higherlower")) {
             fillMatrixHigherLowerThanLookback(matrix, dir, files);
@@ -97,12 +97,12 @@ public class HighLowImageGenerator {
             for (int j = 0; j < days; j++) {
                 fillFactor = 0;
                 if (transactionIsPlus(transactions, rates.get(j + fillFactor).datum) == 1) {
-                    matrix.getFundData(i).addValue(rates.get(j + fillFactor).datum, 1);
+                    matrix.getColumn(i).addValue(rates.get(j + fillFactor).datum, 1);
                 } else if (transactionIsPlus(transactions, rates.get(j + fillFactor).datum) == -1) {
-                    matrix.getFundData(i).addValue(rates.get(j + fillFactor).datum, -1);
+                    matrix.getColumn(i).addValue(rates.get(j + fillFactor).datum, -1);
                 } else {
                     if (j > 0) {
-                        matrix.getFundData(i).addValue(rates.get(j).datum, matrix.getFundData(i).getValue(rates.get(j - 1).datum));
+                        matrix.getColumn(i).addValue(rates.get(j).datum, matrix.getColumn(i).getValue(rates.get(j - 1).datum));
                     }
                 }
             }
@@ -131,7 +131,7 @@ public class HighLowImageGenerator {
             if (rates.size() < DAYS + lookbackPeriod && rates.size() > lookbackPeriod) {
                 int difference = DAYS + lookbackPeriod - rates.size();
                 for (int j = 0; j < difference; j++) {
-                    matrix.getFundData(file).addValue("1999" + j, -2);
+                    matrix.getColumn(file).addValue("1999" + j, -2);
                 }
                 startValue = difference;
             }
@@ -140,12 +140,12 @@ public class HighLowImageGenerator {
                 for (int j = startValue; j < DAYS; j++) {
                     if (isHighest(rates, koersenCounter, koersenCounter + lookbackPeriod, rates
                             .get(koersenCounter + lookbackPeriod).getClosekoers())) {
-                        matrix.getFundData(file).addValue(rates.get(koersenCounter + lookbackPeriod).getDatum(), 1);
+                        matrix.getColumn(file).addValue(rates.get(koersenCounter + lookbackPeriod).getDatum(), 1);
                     } else if (isLowest(rates, koersenCounter, koersenCounter + lookbackPeriod,
                             rates.get(koersenCounter + lookbackPeriod).getClosekoers())) {
-                        matrix.getFundData(file).addValue(rates.get(koersenCounter + lookbackPeriod).getDatum(), -1);
+                        matrix.getColumn(file).addValue(rates.get(koersenCounter + lookbackPeriod).getDatum(), -1);
                     } else {
-                        matrix.getFundData(file).addValue(rates.get(koersenCounter + lookbackPeriod).getDatum(), 0);
+                        matrix.getColumn(file).addValue(rates.get(koersenCounter + lookbackPeriod).getDatum(), 0);
                     }
                     koersenCounter++;
                 }
@@ -191,11 +191,11 @@ public class HighLowImageGenerator {
             for (int j = 0; j < rates.size(); j++) {
                 Dagkoers koers = rates.get(j);
                 if (selectedDatesUp.contains(koers.datum) && koers.getStatus() == DagkoersStatus.DEFAULT) {
-                    matrix.getFundData(file).addValue(koers.getDatum(), 1);
+                    matrix.getColumn(file).addValue(koers.getDatum(), 1);
                 } else if (selectedDatesDown.contains(koers.datum) && koers.getStatus() == DagkoersStatus.DEFAULT) {
-                    matrix.getFundData(file).addValue(koers.getDatum(), -1);
+                    matrix.getColumn(file).addValue(koers.getDatum(), -1);
                 } else
-                    matrix.getFundData(file).addValue(koers.getDatum(), 0);
+                    matrix.getColumn(file).addValue(koers.getDatum(), 0);
 
             }
         }

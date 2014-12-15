@@ -25,9 +25,10 @@ public class RandomKoersGenerator {
     }
 
     
-    public static String oneFundname = "aex-index";
+    public static String oneFundname = "s.p.500";
+//    public static String oneFundname = "aex-index";
     public static int AANTAL = 20;
-    public static boolean save = false;
+    public static boolean save = true;
     public static boolean printTussenResults = false;
     public static boolean oneStock = true;
 

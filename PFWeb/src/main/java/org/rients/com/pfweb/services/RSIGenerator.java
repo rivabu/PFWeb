@@ -14,7 +14,6 @@ import org.rients.com.utils.Formula;
 import org.rients.com.utils.HistoricalVotality;
 import org.rients.com.utils.MathFunctions;
 import org.rients.com.utils.RSI;
-import org.rients.com.utils.SMA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,39 +26,28 @@ public class RSIGenerator {
     @Autowired
     HandleFundData fundData;
 
-    public ImageResponse getImage(String dir, String type) {
+    public ImageResponse getImage(String dir) {
         RSILineGraph rsiImage = new RSILineGraph();
 
         List<String> files = FileUtils.getFiles(Constants.KOERSENDIR + dir, "csv", false);
         String dirFull = Constants.KOERSENDIR + dir + Constants.SEP;
         // een matrix is een array van funddataholders.
-        Matrix matrix = new Matrix(files.size(), Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
+        Matrix matrix = new Matrix("RSIMatrix", files.size(), Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
 
         for (int i = 0; i < files.size(); i++) {
-        	Formula graphCalculator = null;
-        	Formula sma = null;
-        	if (type.equals("RSI")) {
-        		graphCalculator = new RSI(DAGENTERUG);
-        	} else {
-        		graphCalculator = new HistoricalVotality(DAGENTERUG);
-        		sma = new SMA(DAGENTERUG);
-        		
-        	}
-            FundDataHolder dataHolder = new FundDataHolder(files.get(i), Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
+        	Formula graphCalculator = new RSI(DAGENTERUG);
+            FundDataHolder dataHolder = new FundDataHolder(files.get(i), Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG, true);
             fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
             List<Dagkoers> rates = fundData.getFundRates(files.get(i), dirFull);
             if (i == 0) {
                 matrix.fillDates(rates);
             }
-            matrix.setFundData(dataHolder, i);
+            matrix.setColumn(dataHolder, i);
             int days = rates.size();
             for (int j = 0; j < days; j++) {
                 BigDecimal value = graphCalculator.compute(new BigDecimal(rates.get(j).closekoers));
-                if (type.equals("votality")) {
-                	value = sma.compute(value);
-                }
                 if (j >= DAGENTERUG) {
-                    matrix.getFundData(i).addValue(rates.get(j).datum, value.intValue());
+                    matrix.getColumn(i).addValue(rates.get(j).datum, value.intValue());
                 }
             }
         }
@@ -72,75 +60,47 @@ public class RSIGenerator {
      * DAYS is 225
      * DAGENTERUG = 25
      */
-    public ImageResponse getImage(String dir, String type, String fundName) {
+    public ImageResponse getImage(String dir, String fundName) {
         RSILineGraph rsiImage = new RSILineGraph();
         
         
         String pathFull = Constants.KOERSENDIR + dir + Constants.SEP;
         List<Dagkoers> rates = fundData.getFundRates(fundName, pathFull);
         
-        int chaosBorder = 40;
-        int avr = 0;
-        Formula avrCalculator = new HistoricalVotality(DAGENTERUG);
-        for (int j = 0; j < rates.size(); j++) {
-        	avrCalculator.compute(new BigDecimal(rates.get(j).closekoers));
-        }
-        avr = avrCalculator.getAvr().intValue();
-        int aantalDagenTonen = Math.min(rates.size() - DAGENTERUG, Constants.NUMBEROFDAYSTOPRINT);
+        //double avr = 0;
+//        Formula avrCalculator = new HistoricalVotality(DAGENTERUG, 0);
+//        for (int j = 0; j < rates.size(); j++) {
+//        	avrCalculator.compute(new BigDecimal(rates.get(j).closekoers));
+//        }
+        //avr = 30;
+        int aantalDagenTonen = Math.min(rates.size(), Constants.NUMBEROFDAYSTOPRINT);
         // een matrix is een array van funddataholders.
         Matrix matrix = null;
         
-        Formula graphCalculator = null;
-        Formula sma10 = null;
-        Formula sma5 = null;
-    	if (type.equals("RSI")) {
-    		matrix = new Matrix(2, aantalDagenTonen + DAGENTERUG);
-    		graphCalculator = new RSI(DAGENTERUG);
-            FundDataHolder dataHolder = new FundDataHolder("RSI", aantalDagenTonen + DAGENTERUG);
-            matrix.setFundData(dataHolder, 0);
-	        FundDataHolder dataHolderKoers = new FundDataHolder("Koers", aantalDagenTonen + DAGENTERUG);
-	        matrix.setFundData(dataHolderKoers, 1);
-    	} else {
-    		matrix = new Matrix(3, aantalDagenTonen + DAGENTERUG);
-    		graphCalculator = new HistoricalVotality(DAGENTERUG);
-    		sma10 = new SMA(10);
-    		sma5 = new SMA(5);
-            FundDataHolder dataHolderVotaliteit = new FundDataHolder("Votaliteit", aantalDagenTonen + DAGENTERUG);
-            matrix.setFundData(dataHolderVotaliteit, 0);
-	        FundDataHolder dataHolderKoers = new FundDataHolder("Koers", aantalDagenTonen + DAGENTERUG);
-	        matrix.setFundData(dataHolderKoers, 1);
-	        FundDataHolder dataHolderKoers2 = new FundDataHolder("Koers", aantalDagenTonen + DAGENTERUG);
-	        matrix.setFundData(dataHolderKoers2, 2);
-    	}
-        fundData.setNumberOfDays(aantalDagenTonen + DAGENTERUG);
+        //Formula graphCalculator = null;
+    		matrix = new Matrix(fundName, 1, aantalDagenTonen);
+    		//graphCalculator = new RSI(DAGENTERUG);
+            //FundDataHolder dataHolder = new FundDataHolder("RSI", aantalDagenTonen);
+            //matrix.setColumn(dataHolder, 0);
+	        FundDataHolder dataHolderKoers = new FundDataHolder("Koers", aantalDagenTonen, true);
+	        matrix.setColumn(dataHolderKoers, 0);
+        fundData.setNumberOfDays(aantalDagenTonen );
         matrix.fillDates(rates);
         
-        int days = rates.size();
-        for (int j = 0; j < days; j++) {
-            BigDecimal value = graphCalculator.compute(new BigDecimal(rates.get(j).closekoers));
-            if (j >= DAGENTERUG) {
-                //matrix.getFundData(0).addValue(rates.get(j).datum, value.intValue());
-                matrix.getFundData(0).addValue(rates.get(j).datum, avr);
-                if (type.equals("votality")) {
-                    int smaValue5 = sma5.compute(value).intValue();
-                    //smaValue5 = Math.min(chaosBorder, smaValue5);
-                	matrix.getFundData(1).addValue(rates.get(j).datum, smaValue5);
-                    int smaValue10 = sma10.compute(value).intValue();
-                    //smaValue10 =  Math.min(chaosBorder, smaValue10);
-                	matrix.getFundData(2).addValue(rates.get(j).datum, smaValue10);
-                }
-            }
+        //int days = rates.size();
+        //for (int j = 0; j < days; j++) {
+            //BigDecimal value = graphCalculator.compute(new BigDecimal(rates.get(j).closekoers));
+            //matrix.getFundData(0).addValue(rates.get(j).datum, value.intValue());
+            //matrix.getColumn(0).addValue(rates.get(j).datum, avr);
+        //}
+        calucateRelativeKoersen(rates);
+        int records = aantalDagenTonen;
+        if (records > rates.size()) {
+            records = rates.size();
         }
-        if (type.equals("RSI")) {
-	        calucateRelativeKoersen(rates);
-	        int records = aantalDagenTonen + DAGENTERUG;
-	        if (records > rates.size()) {
-	            records = rates.size();
-	        }
-	
-	        for (int j = DAGENTERUG; j < records; j++) {
-	                matrix.getFundData(1).addValue(rates.get(j).datum, MathFunctions.roundToInt(rates.get(j).relativeKoers));
-	        }
+
+        for (int j = 0; j < records; j++) {
+                matrix.getColumn(0).addValue(rates.get(j).datum, new Double(rates.get(j).relativeKoers).doubleValue());
         }
         ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "groot", aantalDagenTonen);
         return imageResponse;

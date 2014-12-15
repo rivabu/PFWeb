@@ -8,12 +8,13 @@ import java.util.TreeMap;
 import org.rients.com.strengthWeakness.StrengthWeakness;
 
 public class FundDataHolder {
-    private String fundName;
+    private String columnName;
+    private boolean toGraph;
     private Map<String, Object> data = new TreeMap<String, Object>();
-    //int[] data;
     
-    public FundDataHolder(String fundName, int days) {
-        this.setFundName(fundName);
+    public FundDataHolder(String fundName, int days, boolean toGraph) {
+        this.setColumnName(fundName);
+        this.toGraph = toGraph;
     }
     
     public void addValue(String date, Object value) {
@@ -27,6 +28,13 @@ public class FundDataHolder {
         return 0;
     }
     
+    public String getValueAsString(String date) {
+        if (data.containsKey(date)) {
+            return data.get(date).toString();
+        }
+        return "";
+    }
+
     public float getKoers(String date) {
         if (data.containsKey(date)) {
         	if (data.get(date) instanceof StrengthWeakness) {
@@ -49,11 +57,19 @@ public class FundDataHolder {
         return data.values();
     }
 
-    public void setFundName(String fundName) {
-        this.fundName = fundName;
+    public void setColumnName(String fundName) {
+        this.columnName = fundName;
     }
 
-    public String getFundName() {
-        return fundName;
+    public String getColumnName() {
+        return columnName;
     }
+
+	public boolean isToGraph() {
+		return toGraph;
+	}
+
+	public void setToGraph(boolean toGraph) {
+		this.toGraph = toGraph;
+	}
 }

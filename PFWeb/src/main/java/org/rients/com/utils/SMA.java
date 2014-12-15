@@ -11,12 +11,14 @@ public class SMA implements Formula {
     private final int length;
     private BigDecimal sum = BigDecimal.ZERO;
     private BigDecimal average = BigDecimal.ZERO;
+    private BigDecimal defValue = BigDecimal.ZERO;
 
     /**
      *
      * @param length the maximum length
      */
-    public SMA(final int length) {
+    public SMA(final int length, double defaultValue) {
+		defValue = new BigDecimal(defaultValue);
         if (length <= 0) {
             throw new IllegalArgumentException("length must be greater than zero");
         }
@@ -49,8 +51,5 @@ public class SMA implements Formula {
     	}
     }
 
-	public BigDecimal getAvr() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 }

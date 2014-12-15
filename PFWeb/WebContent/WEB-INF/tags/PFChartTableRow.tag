@@ -36,8 +36,8 @@
 			</td>
 			<td valign="top"><img alt="" 
 				src="PFImage?type=default&fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[0][0]}&stepSize=${file.graphParameters[0][1]}&row=1"><br />
-				<img alt="" src="RSIImage?fund=${file.FUNDNAME}&dir=${dir}&type=RSI"><br />
-				<img alt="" src="RSIImage?fund=${file.FUNDNAME}&dir=${dir}&type=votality"><br />
+				<img alt="" src="RSIImage?fund=${file.FUNDNAME}&dir=${dir}"><br />
+				<img alt="" src="VotalityImage?fund=${file.FUNDNAME}&dir=${dir}"><br />
 			</td>
 			<td valign="top"><img alt="" 
 				src="PFImage?type=default&fund=${file.FUNDNAME}&dir=${dir}&turningPoint=${file.graphParameters[1][0]}&stepSize=${file.graphParameters[1][1]}&row=1">

@@ -11,17 +11,17 @@ import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
 public class HistoricalVotality implements Formula {
 
-	private final LinkedList<BigDecimal> values = new LinkedList<BigDecimal>();
+	protected final LinkedList<BigDecimal> values = new LinkedList<BigDecimal>();
 	private final int length;
-	private BigDecimal sum = BigDecimal.ZERO;
-	private int count;
+	private BigDecimal defValue = BigDecimal.ZERO;
 
 	/**
 	 * 
 	 * @param length
 	 *            the maximum length
 	 */
-	public HistoricalVotality(final int length) {
+	public HistoricalVotality(final int length, double defaultValue) {
+		defValue = new BigDecimal(defaultValue);
 		if (length <= 0) {
 			throw new IllegalArgumentException(
 					"length must be greater than zero");
@@ -29,6 +29,7 @@ public class HistoricalVotality implements Formula {
 
 		this.length = length;
 	}
+
 
 	/**
 	 * Compute the HistoricalVotality. Synchronised so that no changes in the
@@ -69,55 +70,10 @@ public class HistoricalVotality implements Formula {
 					.toPrimitive(priceChangesArr));
 			double retTemp = stdDevTmp * Math.sqrt(length) * 500;
 			BigDecimal result = new BigDecimal(Math.sqrt(retTemp));
-			sum = sum.add(result);
-			count++;
 			return result;
 
 		}
-		return BigDecimal.ZERO;
+		return defValue;
 	}
 
-	public BigDecimal getAvr() {
-		return sum.divide(new BigDecimal(count), 2, RoundingMode.HALF_UP);
-	}
-
-//	public float getHistoricalVolatility(List<> stockPrices, int idx,
-//			int period, int tradingDays) {
-//		if (period == 0) {
-//			period = 20;
-//		}
-//		if (tradingDays == 0) {
-//			tradingDays = 252;
-//		}
-//
-//		if (idx >= period) { // User 'period', instead of (period -1) since the
-//								// first calc is period+1
-//			List<Double> priceChanges = new ArrayList<Double>();
-//			float lastPrice = 0;
-//			for (int x = 0; x < stockPrices.size(); x++) {
-//				if (x == 0) {
-//					priceChanges.add(0.0);
-//					lastPrice = stockPrices.get(x).closing_price;
-//				} else {
-//					double priceChange = Math
-//							.log(stockPrices.get(x).closing_price / lastPrice);
-//					priceChanges.add(priceChange);
-//					lastPrice = stockPrices.get(x).closing_price;
-//				}
-//			}
-//			// Grab an array of price changes over the selected period
-//			int tmp_price_changes_st = idx - (period - 1);
-//			int tmp_price_changes_end = tmp_price_changes_st + period;
-//			List<Double> tmp_price_changes = priceChanges.subList(
-//					tmp_price_changes_st, tmp_price_changes_end);
-//			Double[] priceChangesArr = tmp_price_changes.toArray(new Double[0]);
-//			StandardDeviation stdDev = new StandardDeviation();
-//			double stdDevTmp = stdDev.evaluate(ArrayUtils
-//					.toPrimitive(priceChangesArr));
-//			double retTemp = stdDevTmp * Math.sqrt(tradingDays);
-//			return (float) retTemp;
-//		} else {
-//			return 0.0f;
-//		}
-//	}
 }

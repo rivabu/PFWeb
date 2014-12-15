@@ -25,8 +25,8 @@ public class ImageGenerator {
         int fundNameLength = getStringWidth(StringUtils.rightPad("", maxLengthFundNames + 1), cellSize);
 
         int width = fundNameLength + fundNameLength + (DAYS * cellSize);
-        int lines = (matrix.getAantalFunds() / 5) + 1;
-        int height = (matrix.getAantalFunds() * cellSize) + lines;
+        int lines = (matrix.getAantalColumns() / 5) + 1;
+        int height = (matrix.getAantalColumns() * cellSize) + lines;
         BufferedImage buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics g = buffer.createGraphics();
         g.setColor(Color.WHITE);
@@ -37,13 +37,13 @@ public class ImageGenerator {
         g.setColor(Color.GRAY);
         g.drawLine(0, 0, width, 0);
         int lineCount = 1;
-        Set<String> aexDates = matrix.getFundData(0).getDates();
+        Set<String> aexDates = matrix.getColumn(0).getDates();
 
-        for (int fondsTeller = 0; fondsTeller < matrix.getAantalFunds(); fondsTeller++) {
+        for (int fondsTeller = 0; fondsTeller < matrix.getAantalColumns(); fondsTeller++) {
             int x_pos = 0;
             int y_pos = ((fondsTeller + 1) * cellSize) + lineCount;
             g.setColor(Color.BLACK);
-            g.drawString(formatFundName(matrix.getFundData(fondsTeller).getFundName(), maxLengthFundNames, true), x_pos, y_pos);
+            g.drawString(formatFundName(matrix.getColumn(fondsTeller).getColumnName(), maxLengthFundNames, true), x_pos, y_pos);
 
             // j moet eigenlijk de datum zijn!
 
@@ -51,7 +51,7 @@ public class ImageGenerator {
             int counter = 0;
             while (iterator.hasNext()) {
                 String date = iterator.next();
-                int value = (Integer) matrix.getFundData(fondsTeller).getValue(date);
+                int value = (Integer) matrix.getColumn(fondsTeller).getValue(date);
                 if (value == 0) {
                     g.setColor(Color.WHITE);
                 }
@@ -69,7 +69,7 @@ public class ImageGenerator {
                 counter++;
             }
             g.setColor(Color.BLACK);
-            g.drawString(formatFundName(matrix.getFundData(fondsTeller).getFundName(), maxLengthFundNames, false), fundNameLength
+            g.drawString(formatFundName(matrix.getColumn(fondsTeller).getColumnName(), maxLengthFundNames, false), fundNameLength
                     + DAYS * cellSize, ((fondsTeller + 1) * cellSize) + lineCount);
             if (fondsTeller % 5 == 4) {
                 int y_pos_line = (fondsTeller * cellSize) + cellSize + lineCount;

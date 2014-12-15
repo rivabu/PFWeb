@@ -21,31 +21,26 @@ public class RSILineGraph {
     public ImageResponse generateRSIGraph(Matrix matrix, String type, int DAYS) {
         ImageResponse imageResponse = new ImageResponse();
         XYSeriesCollection dataset = new XYSeriesCollection();
-        int aantalFunds = matrix.getAantalFunds();
-        // middleLine = new XYSeries("");
-        //Integer fifty = new Integer(50);
-        // rechte lijn in het midden
-        //for (int i = 0; i < DAYS; i++) {
-        //    middleLine.add(i, fifty );
-        //}
-        //.addSeries(middleLine);
-        for (int counter = 0; counter < aantalFunds; counter++) {
-            String fundName = matrix.getFundData(counter).getFundName();
-            XYSeries points = new XYSeries(fundName);
-            Iterator<Object> iter = matrix.getFundData(counter).getValues().iterator();
-            int size = matrix.getFundData(counter).getValues().size();
-            int xas = 0;
-            if (size < DAYS) {
-                for (int teller = size; teller < DAYS; teller++) {
-                    //points.add(xas, fifty);
-                    xas ++;
-                }
-            }
-            while (iter.hasNext()) {
-                points.add(xas, ((Integer) iter.next()).intValue());
-                xas ++;
-            }
-            dataset.addSeries(points);
+        int aantalColumns = matrix.getAantalColumns();
+
+        for (int counter = 0; counter < aantalColumns; counter++) {
+        	if (matrix.getColumn(counter).isToGraph()) {
+	            String fundName = matrix.getColumn(counter).getColumnName();
+	            XYSeries points = new XYSeries(fundName);
+	            Iterator<Object> iter = matrix.getColumn(counter).getValues().iterator();
+	            int size = matrix.getColumn(counter).getValues().size();
+	            int xas = 0;
+	            if (size < DAYS) {
+	                for (int teller = size; teller < DAYS; teller++) {
+	                    xas ++;
+	                }
+	            }
+	            while (iter.hasNext()) {
+	                points.add(xas, (Double) iter.next());
+	                xas ++;
+	            }
+	            dataset.addSeries(points);
+        	}
         }
         // Generate the graph
         JFreeChart chart = ChartFactory.createXYLineChart("", // Title
@@ -59,8 +54,7 @@ public class RSILineGraph {
                 );
         
         chart.getPlot().setBackgroundPaint(Color.BLACK);
-        LegendTitle legend = chart.getLegend();
-       // legend.setPosition(RectangleEdge.RIGHT);
+
         chart.setBackgroundPaint(Color.BLACK);
         try {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
