@@ -12,7 +12,7 @@ import org.rients.com.utils.FileUtils;
 import org.rients.com.utils.Formula;
 import org.rients.com.utils.HistoricalVotality;
 import org.rients.com.utils.HistoricalVotalityAvr;
-import org.rients.com.utils.NumberUtils;
+import org.rients.com.utils.MathFunctions;
 import org.rients.com.utils.SMA;
 
 
@@ -57,9 +57,9 @@ public class VotalityExecutor {
         List<Dagkoers> rates = fundData.getFundRates(fundName, pathFull);
         
         HistoricalVotalityAvr avrCalculator = getAvr(rates);
-        double avr = NumberUtils.roundBigDecimal(avrCalculator.getAvr());
-    	double highMeridiaan = NumberUtils.roundBigDecimal(avrCalculator.getMeridiaanHigh(TOP_PERC));;
-    	double lowMeridiaan = NumberUtils.roundBigDecimal(avrCalculator.getMeridiaanLow(BOTTOM_PERC));;
+        double avr = MathFunctions.roundBigDecimal(avrCalculator.getAvr());
+    	double highMeridiaan = MathFunctions.roundBigDecimal(avrCalculator.getMeridiaanHigh(TOP_PERC));;
+    	double lowMeridiaan = MathFunctions.roundBigDecimal(avrCalculator.getMeridiaanLow(BOTTOM_PERC));;
 
         
         int aantalDagenTonen = Math.min(rates.size(), Constants.NUMBEROFDAYSTOPRINT);
@@ -112,12 +112,12 @@ public class VotalityExecutor {
         	}
 
             BigDecimal value = graphCalculator.compute(new BigDecimal(rates.get(j).closekoers));
-            matrix.getColumn(VAR_VOTALITEIT).addValue(rates.get(j).datum, NumberUtils.roundBigDecimal(value));
+            matrix.getColumn(VAR_VOTALITEIT).addValue(rates.get(j).datum, MathFunctions.roundBigDecimal(value));
             
             matrix.getColumn(VAR_GEMIDDELDE).addValue(rates.get(j).datum, avr);
-            double smaValue5 = NumberUtils.roundBigDecimal(smaShort.compute(value));
+            double smaValue5 = MathFunctions.roundBigDecimal(smaShort.compute(value));
         	matrix.getColumn(VAR_VOORSCHRIJDEND_GEMIDDELDE_KORT).addValue(rates.get(j).datum, smaValue5);
-            double smaValue10 = NumberUtils.roundBigDecimal(smaLong.compute(value));
+            double smaValue10 = MathFunctions.roundBigDecimal(smaLong.compute(value));
         	matrix.getColumn(VAR_VOORSCHRIJDEND_GEMIDDELDE_LANG).addValue(rates.get(j).datum, smaValue10);
         	matrix.getColumn(VAR_MERIDIAAN_HOOG).addValue(rates.get(j).datum, highMeridiaan);
         	matrix.getColumn(VAR_MERIDIAAN_LAAG).addValue(rates.get(j).datum, lowMeridiaan);

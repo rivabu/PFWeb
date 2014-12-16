@@ -13,7 +13,6 @@ import org.rients.com.utils.FileUtils;
 import org.rients.com.utils.Formula;
 import org.rients.com.utils.HistoricalVotality;
 import org.rients.com.utils.MathFunctions;
-import org.rients.com.utils.NumberUtils;
 import org.rients.com.utils.RSI;
 import org.rients.com.votality.VotalityExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,7 @@ public class VotalityGenerator {
             for (int j = 0; j < days; j++) {
                 BigDecimal value = graphCalculator.compute(new BigDecimal(rates.get(j).closekoers));
                 if (j >= DAGENTERUG) {
-                    matrix.getColumn(i).addValue(rates.get(j).datum, NumberUtils.roundBigDecimal(value));
+                    matrix.getColumn(i).addValue(rates.get(j).datum, MathFunctions.roundBigDecimal(value));
                 }
             }
         }

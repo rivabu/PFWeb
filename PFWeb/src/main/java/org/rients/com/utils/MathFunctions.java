@@ -4,6 +4,7 @@
 package org.rients.com.utils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 
 import org.rients.com.model.Dagkoers;
@@ -127,4 +128,11 @@ public class MathFunctions {
 
         return temp;
     }
+
+	public static double roundBigDecimal(BigDecimal value) {
+	
+		value = value.setScale(2, RoundingMode.HALF_UP);
+		return value.doubleValue();
+	
+	}
 }
