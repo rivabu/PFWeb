@@ -121,6 +121,7 @@ public class Matrix {
 		double koersVorig = 0;
 		Iterator<Transaction> iter = transactions.getAllTransactions().iterator();
 		double currentValue = 100;
+		double newValue = 100;
 		while (iter.hasNext()) {
 			Transaction t = iter.next();
 			while (Integer.parseInt(dates[dateCounter]) <= t.startDate ) {
@@ -134,7 +135,7 @@ public class Matrix {
 			while (Integer.parseInt(dates[dateCounter]) <= t.endDate) {
 				koersVorig = koers;
 				koers = koersen.getValueAsDouble(dates[dateCounter]);
-				double newValue = currentValue * (1 + MathFunctions.procVerschil(koersVorig, koers) / 100);
+				newValue = currentValue * (1 + MathFunctions.procVerschil(koersVorig, koers) / 100);
 				transactionsPerc.addValue(dates[dateCounter], newValue);
 				currentValue = newValue;
 				dateCounter++;
@@ -147,7 +148,9 @@ public class Matrix {
 		while (dateCounter < dates.length ) {
 			koersVorig = koers;
 			koers = koersen.getValueAsDouble(dates[dateCounter]);
-			double newValue = currentValue * (1 + MathFunctions.procVerschil(koersVorig, koers) / 100);
+			if (koersVorig > 0) {
+				newValue = currentValue * (1 + MathFunctions.procVerschil(koersVorig, koers) / 100);
+			} 
 			transactionsPerc.addValue(dates[dateCounter], newValue);
 			currentValue = newValue;
 			dateCounter++;

@@ -17,8 +17,8 @@ public class AllTransactions {
 	}
 	
 
-	public void saveTransactions() {
-        String filename = Constants.TRANSACTIONDIR + Constants.SEP + Constants.ALL_TRANSACTIONS;
+	public void saveTransactions(String fundName) {
+        String filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_trans.csv";
         FileUtils.writeToFile(filename, allTransactions);
 	}
 	

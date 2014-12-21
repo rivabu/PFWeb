@@ -56,7 +56,7 @@ public class VotalityExecutor {
 		matrix.setTransactions(transactions);
         matrix.writeToFile();
         //if (save) {
-        transactions.saveTransactions();
+        transactions.saveTransactions(fundName);
         //}
         System.out.println("result: " + transactions.getResultData());
 
