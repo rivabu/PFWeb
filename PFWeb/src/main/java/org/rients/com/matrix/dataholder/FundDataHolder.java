@@ -5,19 +5,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.rients.com.strengthWeakness.StrengthWeakness;
+import org.rients.com.utils.MathFunctions;
 
 public class FundDataHolder {
     private String columnName;
     private boolean toGraph;
+    private boolean isKoers;
+    private Object firstValue;
+    
     private Map<String, Object> data = new TreeMap<String, Object>();
     
-    public FundDataHolder(String fundName, int days, boolean toGraph) {
-        this.setColumnName(fundName);
+    public FundDataHolder(String columnName, boolean toGraph) {
+        this.setColumnName(columnName);
+        this.columnName = columnName;
         this.toGraph = toGraph;
     }
     
     public void addValue(String date, Object value) {
+    	if (isKoers && data.isEmpty()) {
+    		firstValue = value;
+    	}
         data.put(new String(date), value);
     }
     
@@ -29,20 +36,29 @@ public class FundDataHolder {
     }
     
     public String getValueAsString(String date) {
-        if (data.containsKey(date)) {
-            return data.get(date).toString();
-        }
-        return "";
-    }
+    	String returnValue = "";
 
-    public float getKoers(String date) {
         if (data.containsKey(date)) {
-        	if (data.get(date) instanceof StrengthWeakness) {
-        		return ((StrengthWeakness) data.get(date)).getKoers();
+        	if (!isKoers || firstValue == null) {
+        		try {
+               		returnValue = MathFunctions.round(new Double(data.get(date).toString()).doubleValue(), 2) + "";
+        		} catch (NumberFormatException nfe) {
+        			System.out.println("columnName: " + columnName + " date: " + date + " value: " + data.get(date));
+        		}
+        	} else {
+        		returnValue = data.get(date).toString() + ", " + MathFunctions.round(100 * MathFunctions.procVerschil(firstValue.toString(), data.get(date).toString()), 2);
         	}
         }
-        return 0;
+        return returnValue;
     }
+
+    public double getValueAsDouble(String date) {
+    	if (data.containsKey(date)) {
+            return new Double(data.get(date).toString()).doubleValue();
+        }
+        return 0d;
+    }
+
     
     
     public int getSize() {
@@ -71,5 +87,13 @@ public class FundDataHolder {
 
 	public void setToGraph(boolean toGraph) {
 		this.toGraph = toGraph;
+	}
+
+	public boolean isKoers() {
+		return isKoers;
+	}
+
+	public void setKoers(boolean isKoers) {
+		this.isKoers = isKoers;
 	}
 }

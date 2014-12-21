@@ -36,7 +36,7 @@ public class RSIGenerator {
 
         for (int i = 0; i < files.size(); i++) {
         	Formula graphCalculator = new RSI(DAGENTERUG);
-            FundDataHolder dataHolder = new FundDataHolder(files.get(i), Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG, true);
+            FundDataHolder dataHolder = new FundDataHolder(files.get(i), true);
             fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT + DAGENTERUG);
             List<Dagkoers> rates = fundData.getFundRates(files.get(i), dirFull);
             if (i == 0) {
@@ -82,7 +82,7 @@ public class RSIGenerator {
     		//graphCalculator = new RSI(DAGENTERUG);
             //FundDataHolder dataHolder = new FundDataHolder("RSI", aantalDagenTonen);
             //matrix.setColumn(dataHolder, 0);
-	        FundDataHolder dataHolderKoers = new FundDataHolder("Koers", aantalDagenTonen, true);
+	        FundDataHolder dataHolderKoers = new FundDataHolder("Koers", true);
 	        matrix.setColumn(dataHolderKoers, 0);
         fundData.setNumberOfDays(aantalDagenTonen );
         matrix.fillDates(rates);

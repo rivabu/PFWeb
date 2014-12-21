@@ -1,13 +1,18 @@
 package org.rients.com.votality;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.rients.com.constants.Constants;
 import org.rients.com.matrix.dataholder.FundDataHolder;
 import org.rients.com.matrix.dataholder.Matrix;
+import org.rients.com.model.AllTransactions;
 import org.rients.com.model.Dagkoers;
+import org.rients.com.model.Transaction;
+import org.rients.com.model.Type;
 import org.rients.com.pfweb.services.HandleFundData;
+import org.rients.com.strengthWeakness.Portfolio;
 import org.rients.com.utils.FileUtils;
 import org.rients.com.utils.Formula;
 import org.rients.com.utils.HistoricalVotality;
@@ -18,7 +23,7 @@ import org.rients.com.utils.SMA;
 
 public class VotalityExecutor {
 
-    private int DAGENTERUG = 50;
+    private int DAGENTERUG = 45;
     
     private int VAR_KOERS = 0;
     private int VAR_VOTALITEIT = 1;
@@ -29,7 +34,7 @@ public class VotalityExecutor {
     private int VAR_MERIDIAAN_LAAG = 6;
     
     private int VOORSCHRIJDEND_GEMIDDELDE_KORT = 5;
-    private int VOORSCHRIJDEND_GEMIDDELDE_LANG = 10;
+    private int VOORSCHRIJDEND_GEMIDDELDE_LANG = 9;
     
     private int TOP_PERC = 5;
     private int BOTTOM_PERC = 5;
@@ -47,8 +52,101 @@ public class VotalityExecutor {
 	public void processFile(String fundName) {
         String pathFull = Constants.FAVORITESDIR;
 		Matrix matrix = fillMatrix(fundName, pathFull, false);
+		AllTransactions transactions = runRuleSet(matrix);
+		matrix.setTransactions(transactions);
         matrix.writeToFile();
+        //if (save) {
+        transactions.saveTransactions();
+        //}
+        System.out.println("result: " + transactions.getResultData());
 
+	}
+	
+	public AllTransactions runRuleSet(Matrix matrix) {
+		
+		String[] dates = matrix.getDates();
+		float koopkoers = 0;
+		boolean gekocht = false;
+		double gemiddelde_lang_vorig = 1000;
+		double gemiddelde_kort_vorig = 1000;
+		double koop_gemiddelde_lang = 0;
+		int days = 0;
+		int totalGekochteDays = 0;
+		double profit = 0;
+		double totalProfit = 100;
+		float vorigekoers = 0;
+		float koers = 0;
+		float top = 0;
+		int transId = 0;
+		double topgrens = (Double) matrix.getColumn(VAR_MERIDIAAN_HOOG).getValue(dates[0]);
+		double bodemgrens = (Double) matrix.getColumn(VAR_MERIDIAAN_LAAG).getValue(dates[0]);
+		double gemiddelde = (Double) matrix.getColumn(VAR_GEMIDDELDE).getValue(dates[0]);
+		AllTransactions transactions = new AllTransactions();
+		Transaction trans = null;
+		String date = null;
+		for (int i = DAGENTERUG; i < dates.length; i++) {
+			date = dates[i];
+			koers = (Float) matrix.getColumn(VAR_KOERS).getValue(date);
+			double gemiddelde_lang = (Double) matrix.getColumn(VAR_VOORSCHRIJDEND_GEMIDDELDE_LANG).getValue(date);
+			double gemiddelde_kort = (Double) matrix.getColumn(VAR_VOORSCHRIJDEND_GEMIDDELDE_KORT).getValue(date);
+			//System.out.println("date: " + date + " koers: " + koers + " gemiddelde lang: " + gemiddelde_lang);
+			if (gemiddelde_kort_vorig > gemiddelde_kort && !gekocht  && gemiddelde_kort > gemiddelde) {
+				koopkoers = koers;
+				koop_gemiddelde_lang = gemiddelde_lang;
+				top = koopkoers;
+				trans = new Transaction(matrix.getFundname(), new Integer(date).intValue(), transId, koers, 1, Type.LONG);
+				transId ++;
+
+				gekocht = true;
+			} 
+			if (gemiddelde_kort_vorig < gemiddelde_kort && gekocht && vorigekoers > koers && gemiddelde_lang < gemiddelde) {
+//			if (gemiddelde_lang_vorig < gemiddelde_lang && gekocht && vorigekoers > koers) {
+				trans.addSellInfo(new Integer(date).intValue(), 0, koers);
+				transactions.add(trans);
+				gekocht = false;
+				profit = MathFunctions.procVerschil(koopkoers, koers);
+				top = 0;
+				totalProfit = totalProfit * ((profit + 100) / 100);
+				System.out.println("koopkoers: "+ koopkoers + " profit: " + profit + " totalProfit: " + totalProfit + " koop_gemiddelde_lang: " + koop_gemiddelde_lang + " days: " + days);
+				days = 0;
+				
+			}
+//			if (koers < stoploss(top)) {
+//				gekocht = false;
+//				profit = MathFunctions.procVerschil(koopkoers, koers);
+//				top = 0;
+//				totalProfit = totalProfit * ((profit + 100) / 100);
+//				System.out.println("koopkoers: "+ koopkoers + " profit: " + profit + " totalProfit: " + totalProfit + " koop_gemiddelde_lang: " + koop_gemiddelde_lang + " days: " + days);
+//				days = 0;
+//			}
+			if (gekocht) {
+				if (koers > top) {
+					top = koers;
+				}
+				days++;
+				totalGekochteDays ++;
+			}
+			vorigekoers = koers;
+			gemiddelde_lang_vorig = gemiddelde_lang;
+			gemiddelde_kort_vorig = gemiddelde_kort;
+			
+		}
+		if (gekocht) {
+			trans.addSellInfo(new Integer(date).intValue(), 0, koers);
+			transactions.add(trans);
+			profit = MathFunctions.procVerschil(koopkoers, koers);
+			totalProfit = totalProfit * ((profit + 100) / 100);
+		}
+		totalProfit = totalProfit - 100;
+		int allDays = dates.length - DAGENTERUG;
+		
+		System.out.println("totalProfit: " + totalProfit + " totalDays: " + totalGekochteDays  + "( " + allDays + " )");
+		return transactions;
+		
+	}
+	
+	public double stoploss(double koers) {
+		return koers * .85;
 	}
 	
 	public Matrix fillMatrix(String fundName, String pathFull, boolean forImage) {
@@ -75,25 +173,26 @@ public class VotalityExecutor {
 		smaLong = new SMA(VOORSCHRIJDEND_GEMIDDELDE_LANG, avr);
 		smaShort = new SMA(VOORSCHRIJDEND_GEMIDDELDE_KORT, avr);
 		
-        FundDataHolder dataHolderKoers = new FundDataHolder("Koers", aantalDagenTonen, false);
+        FundDataHolder dataHolderKoers = new FundDataHolder("Koers", false);
+        dataHolderKoers.setKoers(true);
         matrix.setColumn(dataHolderKoers, VAR_KOERS);
         
-        FundDataHolder dataHolderVotaliteit = new FundDataHolder("Votaliteit", aantalDagenTonen, true);
+        FundDataHolder dataHolderVotaliteit = new FundDataHolder("Votaliteit", true);
         matrix.setColumn(dataHolderVotaliteit, VAR_VOTALITEIT);
 
-        FundDataHolder dataHolderGemiddelde = new FundDataHolder("Gemiddelde", aantalDagenTonen, true);
+        FundDataHolder dataHolderGemiddelde = new FundDataHolder("Gemiddelde", true);
         matrix.setColumn(dataHolderGemiddelde, VAR_GEMIDDELDE);
         
-        FundDataHolder dataHolderSMA5 = new FundDataHolder("Gewogen gemiddelde 5", aantalDagenTonen, true);
+        FundDataHolder dataHolderSMA5 = new FundDataHolder("Gewogen gemiddelde 5", true);
         matrix.setColumn(dataHolderSMA5, VAR_VOORSCHRIJDEND_GEMIDDELDE_KORT);
 
-        FundDataHolder dataHolderSMA10 = new FundDataHolder("Gewogen gemiddelde 10", aantalDagenTonen, true);
+        FundDataHolder dataHolderSMA10 = new FundDataHolder("Gewogen gemiddelde 10", true);
         matrix.setColumn(dataHolderSMA10, VAR_VOORSCHRIJDEND_GEMIDDELDE_LANG);
         
-        FundDataHolder dataHolderMeridiaanHoog = new FundDataHolder("VAR_MERIDIAAN_HOOG", aantalDagenTonen, true);
+        FundDataHolder dataHolderMeridiaanHoog = new FundDataHolder("VAR_MERIDIAAN_HOOG", true);
         matrix.setColumn(dataHolderMeridiaanHoog, VAR_MERIDIAAN_HOOG);
 
-        FundDataHolder dataHolderMeridiaanLaag = new FundDataHolder("VAR_MERIDIAAN_LAAG", aantalDagenTonen, true);
+        FundDataHolder dataHolderMeridiaanLaag = new FundDataHolder("VAR_MERIDIAAN_LAAG", true);
         matrix.setColumn(dataHolderMeridiaanLaag, VAR_MERIDIAAN_LAAG);
 
         

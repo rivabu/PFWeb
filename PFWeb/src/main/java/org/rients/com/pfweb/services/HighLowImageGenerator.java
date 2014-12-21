@@ -54,10 +54,10 @@ public class HighLowImageGenerator {
         for (int i = 0; i < files.size(); i++) {
             FundDataHolder dataHolder;
             if (i == 0) {
-                dataHolder = new FundDataHolder(files.get(i), getDAYS(), true);
+                dataHolder = new FundDataHolder(files.get(i), true);
 
             } else {
-                dataHolder = new FundDataHolder(files.get(i), getDAYS(), true);
+                dataHolder = new FundDataHolder(files.get(i), true);
             }
             matrix.setColumn(dataHolder, i);
         }

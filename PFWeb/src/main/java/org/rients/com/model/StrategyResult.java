@@ -5,6 +5,7 @@ import org.rients.com.utils.MathFunctions;
 public class StrategyResult {
 
 	private int numberOfTransactions;
+	private double endResultPerc;
 	private double endResult;
 	private double avrResult;
 	private double avrWin;
@@ -16,6 +17,7 @@ public class StrategyResult {
 	
 	public String toString() {
 		return "numberOfTransactions: " + numberOfTransactions
+				+ ", endResultPerc: " + MathFunctions.round(endResultPerc, 2) +  " %"
 				+ ", endResult: " + MathFunctions.round(endResult, 2)
 				+ ", avrResult: " + MathFunctions.round(avrResult, 2)
 				+ ", avrWin: " + MathFunctions.round(avrWin, 2) + " %"
@@ -78,6 +80,12 @@ public class StrategyResult {
 	}
 	public void setAvrLoss(double avrLoss) {
 		this.avrLoss = avrLoss;
+	}
+	public double getEndResultPerc() {
+		return endResultPerc;
+	}
+	public void setEndResultPerc(double endResultPerc) {
+		this.endResultPerc = endResultPerc;
 	}
 	
 }

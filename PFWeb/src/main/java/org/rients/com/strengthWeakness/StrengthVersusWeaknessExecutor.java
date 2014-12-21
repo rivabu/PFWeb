@@ -160,8 +160,8 @@ public class StrengthVersusWeaknessExecutor {
 				Dagkoers vandaag = waarde[dagTeller];
 				for (int i = 0; i < boxes.length; i++) {
 					if (boxes[i].inVoorraad(Integer.parseInt(currentDate))) {
-						double koersGisteren = matrix.getFundData(boxes[i].getFundName()).getKoers(yesterday);
-						double koersVandaag = matrix.getFundData(boxes[i].getFundName()).getKoers(currentDate);
+						double koersGisteren = matrix.getFundData(boxes[i].getFundName()).getValueAsDouble(yesterday);
+						double koersVandaag = matrix.getFundData(boxes[i].getFundName()).getValueAsDouble(currentDate);
 						double opbrengst = (koersVandaag - koersGisteren) * boxes[i].getNumberOfStocks();
 						vandaag.setClosekoers((float) (huidigeWaarde + opbrengst));
 						huidigeWaarde = huidigeWaarde + opbrengst;
@@ -301,7 +301,7 @@ public class StrengthVersusWeaknessExecutor {
         for (int i = 0; i < files.size(); i++) {
         	//System.out.println(files.get(i));
             FundDataHolder dataHolder;
-            dataHolder = new FundDataHolder(files.get(i), totalDAYS, true);
+            dataHolder = new FundDataHolder(files.get(i), true);
             matrix.setColumn(dataHolder, i);
         }
 		return matrix;

@@ -27,7 +27,7 @@ public class Portfolio {
 //		if (transaction.getBuyId() == 659) {
 //			System.out.println("found");
 //		}
-		addPFRules(transaction);
+		//addPFRules(transaction);
 		inStock.add(transaction);
 		allTransactions.add(transaction);
 
@@ -235,6 +235,7 @@ public class Portfolio {
 		int numberOfWinners = 0;
 		int numberOfLosers = 0;
 		double endResult = 0;
+		double endResultPerc = 100;
 		double resultWinners = 0;
 		double resultLosers = 0;
 		double maxWin = 0;
@@ -246,7 +247,9 @@ public class Portfolio {
 			if (t.type == Type.CASH) {
 				continue;
 			}
+			System.out.println("trans: " + t);
 			endResult = endResult + t.getScoreAbs();
+			endResultPerc = endResultPerc * ((100 + t.getScorePerc()) / 100);
 			if (t.getScorePerc() >= 0) {
 				if (maxWin < t.getScorePerc()) {
 					maxWin = t.getScorePerc();
@@ -264,11 +267,24 @@ public class Portfolio {
 		result.setNumberOfWinners(numberOfWinners);
 		result.setNumberOfLosers(numberOfLosers);
 		result.setEndResult(endResult);
-		result.setAvrWin(resultWinners/numberOfWinners);
-		result.setAvrLoss(resultLosers/numberOfLosers);
+		result.setEndResultPerc(endResultPerc - 100);
+		if (numberOfWinners> 0) {
+			result.setAvrWin(resultWinners/numberOfWinners);
+		} else {
+			result.setAvrWin(0);
+		}
+		if (numberOfLosers> 0) {
+			result.setAvrLoss(resultLosers/numberOfLosers);
+		} else {
+			result.setAvrLoss(0);
+		}
 		result.setMaxLoss(maxLoss);
 		result.setMaxProfit(maxWin);
-		result.setAvrResult(endResult / allTransactions.size());
+		if (allTransactions.size()> 0) {
+			result.setAvrResult(endResult/allTransactions.size());
+		} else {
+			result.setAvrResult(0);
+		}
 		return result;
 	}
 	
