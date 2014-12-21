@@ -17,6 +17,7 @@ public class Matrix {
 
 	String[] dates = null;
 	String fundname = null;
+	List<Dagkoers> rates;
 
 	FundDataHolder[] columns = null;
 	int aantalColumns = 0;
@@ -165,5 +166,14 @@ public class Matrix {
 		}
 		return null;
 	}
+	
+	public List<Dagkoers> getRates() {
+		return rates;
+	}
+
+	public void setRates(List<Dagkoers> rates) {
+		this.rates = rates;
+	}
+
 
 }

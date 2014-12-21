@@ -9,9 +9,12 @@ import org.rients.com.matrix.dataholder.FundDataHolder;
 import org.rients.com.matrix.dataholder.Matrix;
 import org.rients.com.model.AllTransactions;
 import org.rients.com.model.Dagkoers;
+import org.rients.com.model.PFModel;
 import org.rients.com.model.Transaction;
 import org.rients.com.model.Type;
 import org.rients.com.pfweb.services.HandleFundData;
+import org.rients.com.pfweb.services.HandlePF;
+import org.rients.com.pfweb.services.modelfunctions.ModelFunctions;
 import org.rients.com.strengthWeakness.Portfolio;
 import org.rients.com.utils.FileUtils;
 import org.rients.com.utils.Formula;
@@ -24,6 +27,8 @@ import org.rients.com.utils.SMA;
 public class MaisExecutor {
 
     private int DAGENTERUG = 45;
+    private int TURNING_POINT = 1;
+    private float STEPSIZE = 1.5f;
     
     private int VAR_KOERS = 0;
 
@@ -53,6 +58,13 @@ public class MaisExecutor {
 	public AllTransactions runRuleSet(Matrix matrix) {
 		
 		AllTransactions transactions = new AllTransactions();
+		HandlePF handlePF = new HandlePF();
+        PFModel pfModel = handlePF.createPFData(matrix.getRates(), matrix.getFundname(), TURNING_POINT, STEPSIZE);
+        ModelFunctions mf = new ModelFunctions(matrix.getFundname());
+        mf.setPFData(pfModel.getPfModel());
+        mf.setRates(matrix.getRates());
+        mf.handleSimplePFRules(transactions);
+		
 		return transactions;
 		
 	}
@@ -66,6 +78,7 @@ public class MaisExecutor {
         int aantalDagenTonen = Math.min(rates.size(), Constants.NUMBEROFDAYSTOPRINT);
         Matrix matrix = new Matrix(fundName, 1, aantalDagenTonen);
         matrix.fillDates(rates);
+        matrix.setRates(rates);
 
 		
         FundDataHolder dataHolderKoers = new FundDataHolder("Koers", false);

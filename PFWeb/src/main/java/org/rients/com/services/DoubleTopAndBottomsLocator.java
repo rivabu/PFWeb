@@ -90,7 +90,7 @@ public class DoubleTopAndBottomsLocator {
         fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT);
         List<Dagkoers> rates = fundData.getFundRates(fundName, dir);
 
-        PFModel pfModel = handlePF.createPFData(rates, fundName, graphType, dir, turningPoint, stepSize);
+        PFModel pfModel = handlePF.createPFData(rates, fundName, turningPoint, stepSize);
         
         ModelFunctions mf = new ModelFunctions(fundName);
         mf.setPFData(pfModel.getPfModel());
@@ -134,7 +134,7 @@ public class DoubleTopAndBottomsLocator {
         fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT);
         List<Dagkoers> rates = fundData.getFundRates(fundName, dir);
 
-        PFModel pfModel = handlePF.createPFData(rates, fundName, graphType, dir, turningPoint, stepSize);
+        PFModel pfModel = handlePF.createPFData(rates, fundName, turningPoint, stepSize);
         
         ModelFunctions mf = new ModelFunctions(fundName);
         mf.setPFData(pfModel.getPfModel());

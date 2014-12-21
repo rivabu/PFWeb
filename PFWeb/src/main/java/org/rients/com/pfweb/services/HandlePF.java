@@ -30,17 +30,11 @@ public class HandlePF {
 
 
     
-    public PFModel createPFData(List<Dagkoers> rates, String fundName, String graphType, String directory, int turningPoint, float stepSize) {
+    public PFModel createPFData(List<Dagkoers> rates, String fundName, int turningPoint, float stepSize) {
 
 
         Levels levels = Levels.getInstance();
-        if (!directory.contains("intraday")) {
-            if (graphType.equals("EXP")) {
-                levels.createExpLevelArray(stepSize, 0.01F);
-            } else {
-                levels.createNormalLevelArray(stepSize, 0);
-            }
-        } 
+        levels.createExpLevelArray(stepSize, 0.01F);
         
         Modelregel modelregel = null;
         ArrayList<Modelregel> model = new ArrayList<Modelregel>();

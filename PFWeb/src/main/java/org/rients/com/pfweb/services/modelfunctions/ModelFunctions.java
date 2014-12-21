@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.rients.com.model.AllTransactions;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.DagkoersStatus;
 import org.rients.com.model.Modelregel;
@@ -22,6 +23,11 @@ public class ModelFunctions {
         this.fundName = fundName;
     }
     
+    public void handleSimplePFRules(AllTransactions transactions) {
+        pfRules.setRSI(rates, PFData);
+        //setDoubleTopAndBottom(PFData)
+    }
+
     public void handlePFRules(int turningPoint, float stepSize) {
         pfRules.setRSI(rates, PFData);
         //setDoubleTopAndBottom(PFData)

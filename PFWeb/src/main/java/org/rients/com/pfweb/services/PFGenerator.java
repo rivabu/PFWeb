@@ -67,7 +67,7 @@ public class PFGenerator {
             rates = fundData.getFundRates(fundName, dirFull, trans.getStartDate(), trans.getEndDate(), 10);
         }
 
-        PFModel pfModel = handlePF.createPFData(rates, fundName, graphType, dirFull, turningPoint, stepSize);
+        PFModel pfModel = handlePF.createPFData(rates, fundName, turningPoint, stepSize);
         ModelFunctions mf = new ModelFunctions(fundName);
         mf.setPFData(pfModel.getPfModel());
         mf.setRates(rates);

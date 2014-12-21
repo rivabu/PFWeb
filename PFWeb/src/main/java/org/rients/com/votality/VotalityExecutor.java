@@ -168,6 +168,7 @@ public class VotalityExecutor {
         Formula smaShort = null;
         Matrix matrix = new Matrix(fundName, 7, aantalDagenTonen);
         matrix.fillDates(rates);
+        matrix.setRates(rates);
 
         graphCalculator = new HistoricalVotality(DAGENTERUG, avr);
 		smaLong = new SMA(VOORSCHRIJDEND_GEMIDDELDE_LANG, avr);

@@ -88,7 +88,7 @@ public class HighLowImageGenerator {
             // 1, 2);
             // turning point = 2
             // stepsize = 1
-            PFModel pfModel = handlePF.createPFData(rates, files.get(i), graphType, directory, 2, 1);
+            PFModel pfModel = handlePF.createPFData(rates, files.get(i), 2, 1);
             PFRules optimum = new PFRules();
             List<Transaction> transactions = optimum.getOptimalDecisions(pfModel.getPfModel(), files.get(i), false);
 
