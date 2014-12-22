@@ -78,6 +78,8 @@ public class PFFunctions {
         }
         return transactions; 
     }
+    
+    
 
     public ArrayList getHigherTopsActions(String fundName, String directory, String graphType, int turningPoint, float stepSize) {
         ArrayList transactions = new ArrayList();

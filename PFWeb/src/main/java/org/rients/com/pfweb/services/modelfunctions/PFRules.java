@@ -2,12 +2,15 @@ package org.rients.com.pfweb.services.modelfunctions;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import org.rients.com.model.AllTransactions;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.DagkoersStatus;
 import org.rients.com.model.Modelregel;
+import org.rients.com.model.PFModel;
 import org.rients.com.model.Transaction;
 import org.rients.com.model.Type;
 import org.rients.com.utils.FileUtils;
@@ -17,7 +20,119 @@ import org.rients.com.utils.RSI;
 
 public class PFRules {
 
-    public void setTopsAndBottoms(ArrayList<Modelregel> pfData) {
+	/*
+	 * gekocht, tenzij dalende trend
+	 * dalende trend: isPlus & hw < vorige_top && vorigeBodem_1 < vorigeBodem_2
+	 * dalende trend: !isPlus && hw < vorige_bottom && vorigeTop_1 < vorigeTop_2
+	 */
+	public void basicPF(ArrayList<Modelregel> modelRegels, AllTransactions transactions) {
+        Hashtable<String, Modelregel> tops = new Hashtable<String, Modelregel>();
+        Hashtable<String, Modelregel> bottoms = new Hashtable<String, Modelregel>();
+        getTopsAndBottoms(modelRegels, tops, bottoms);
+        //System.out.println("tops size = "+tops.size());
+        Transaction trans = null;
+        boolean bought = false;
+        boolean last = false;
+        boolean dalendeTrend = false;
+        for (int counter = 0; counter < modelRegels.size(); counter++) {
+            Modelregel modelregel = modelRegels.get(counter);
+            Modelregel vorigeTop_1 = null;
+            Modelregel vorigeBodem_1 = null;
+            Modelregel vorigeTop_2 = null;
+            Modelregel vorigeBodem_2 = null;
+            if(counter == modelRegels.size() - 1)
+                last = true;
+            if (modelregel.getKolomnr() < 5)
+                continue;
+            if (modelregel.getSign().equals("+") || modelregel.getSign().equals("-")) {
+            	continue;
+            }
+            if (!isPlus(modelregel)) {
+                vorigeTop_1 = tops.get("" + (modelregel.getKolomnr() - 1));
+                vorigeBodem_1 = bottoms.get("" + (modelregel.getKolomnr() - 2));
+                vorigeTop_2 = tops.get("" + (modelregel.getKolomnr() - 3));
+                vorigeBodem_2 = bottoms.get("" + (modelregel.getKolomnr() - 4));
+            } else {
+                vorigeTop_1 = tops.get("" + (modelregel.getKolomnr() - 2));
+                vorigeBodem_1 =  bottoms.get("" + (modelregel.getKolomnr() - 1));
+                vorigeTop_2 =  tops.get("" + (modelregel.getKolomnr() - 4));
+                vorigeBodem_2 = bottoms.get("" + (modelregel.getKolomnr() - 3));
+            }
+            if ( isPlus(modelregel) && modelregel.getRijnr() < vorigeTop_1.getRijnr() && vorigeBodem_1.getRijnr() <=  vorigeBodem_2.getRijnr()) {
+            	dalendeTrend = true;
+            } else if ( !isPlus(modelregel) && modelregel.getRijnr() < vorigeBodem_1.getRijnr() && vorigeTop_1.getRijnr() <=  vorigeTop_2.getRijnr()) {
+            	dalendeTrend = true;
+            } else {
+            	dalendeTrend = false;
+            }
+//            if(!bought && !dalendeTrend && isPlus(modelregel))
+//            {
+//                // kopen
+//            	trans = new Transaction();
+//                trans.setStartDate(Integer.parseInt(modelregel.getDatum()));
+//                trans.setStartRate(modelregel.getKoers());
+//                bought = true;
+//                continue;
+//            }
+//            if(bought && (dalendeTrend || last)) {
+//            	// verkopen
+//                trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
+//                trans.setEndRate(modelregel.getKoers());
+//                transactions.add(trans);
+//                bought = false;
+//                continue;
+//            }
+            if(!bought && (dalendeTrend || last)) {
+            	// kopen
+            	trans = new Transaction();
+                trans.setStartDate(Integer.parseInt(modelregel.getDatum()));
+                trans.setStartRate(modelregel.getKoers());
+                bought = true;
+                continue;
+            }
+            if(bought && !dalendeTrend && isPlus(modelregel))
+            {
+                // verkopen
+                trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
+                trans.setEndRate(modelregel.getKoers());
+                transactions.add(trans);
+                bought = false;
+                continue;
+
+
+            }
+        }
+        
+    }
+	
+	
+    public boolean isPlus(Modelregel modelregel) {
+        if (modelregel.getSign().equals("+") || modelregel.getSign().equals("x"))
+            return true;
+        else
+            return false;
+    }
+    public void getTopsAndBottoms(ArrayList pfData, Hashtable tops, Hashtable bottoms) {
+        int i = 1;
+        Modelregel modelregel = null;
+        for (int j = 0; j < pfData.size(); j++) {
+            Modelregel modelregel1 = (Modelregel) pfData.get(j);
+            int k = modelregel1.getKolomnr();
+            int _tmp = modelregel1.getRijnr();
+            String s = modelregel1.getSign();
+            if (s.equals("o") && k > i)
+                tops.put("" + i, modelregel);
+            if (s.equals("x") && k > i)
+                bottoms.put("" + i, modelregel);
+            if (!s.equals("-") && !s.equals("+")) {
+                i = k;
+                modelregel = modelregel1;
+            }
+        }
+        //System.out.println("tops size = "+tops.size());
+    }
+	
+	public void setTopsAndBottoms(ArrayList<Modelregel> pfData) {
         int maxTop = -1;
         int maxBottom = Integer.MAX_VALUE;;
         

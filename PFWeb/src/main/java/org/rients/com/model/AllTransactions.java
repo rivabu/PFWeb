@@ -39,7 +39,7 @@ public class AllTransactions {
 			if (t.type == Type.CASH) {
 				continue;
 			}
-			System.out.println("trans: " + t);
+			//System.out.println("trans: " + t);
 			endResult = endResult + t.getScoreAbs();
 			endResultPerc = endResultPerc * ((100 + t.getScorePerc()) / 100);
 			if (t.getScorePerc() >= 0) {

@@ -1,7 +1,5 @@
 package org.rients.com.commodities.pf;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.rients.com.constants.Constants;
@@ -10,25 +8,17 @@ import org.rients.com.matrix.dataholder.Matrix;
 import org.rients.com.model.AllTransactions;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.PFModel;
-import org.rients.com.model.Transaction;
-import org.rients.com.model.Type;
 import org.rients.com.pfweb.services.HandleFundData;
 import org.rients.com.pfweb.services.HandlePF;
 import org.rients.com.pfweb.services.modelfunctions.ModelFunctions;
-import org.rients.com.strengthWeakness.Portfolio;
 import org.rients.com.utils.FileUtils;
-import org.rients.com.utils.Formula;
-import org.rients.com.utils.HistoricalVotality;
-import org.rients.com.utils.HistoricalVotalityAvr;
-import org.rients.com.utils.MathFunctions;
-import org.rients.com.utils.SMA;
 
 
 public class MaisExecutor {
 
-    private int DAGENTERUG = 45;
+	// best: 1, 1.3
     private int TURNING_POINT = 1;
-    private float STEPSIZE = 1.5f;
+    private float STEPSIZE = 1.3f;
     
     private int VAR_KOERS = 0;
 
@@ -38,28 +28,34 @@ public class MaisExecutor {
         String directory = Constants.FAVORITESDIR;
 		List<String> files = FileUtils.getFiles(directory, "csv", false);
         for (int i = 0; i < files.size(); i++) {
-        	if (files.get(i).equals("mais")) {
-        		processFile(files.get(i));
+        	if (files.get(i).equals("gold")) {
+        		for (int tp = 1; tp < 6; tp++) {
+        			for (float sz = 0.1f; sz < 3f; sz = sz + 0.1f) {
+        				processFile(files.get(i), tp, sz);
+        			}
+        		}
+				//processFile(files.get(i), 3, 2.1f);
+        		
         	}
         }
 	}
 	
-	public void processFile(String fundName) {
+	public void processFile(String fundName, int sz, float tp) {
         String pathFull = Constants.FAVORITESDIR;
 		Matrix matrix = fillMatrix(fundName, pathFull, false);
-		AllTransactions transactions = runRuleSet(matrix);
+		AllTransactions transactions = runRuleSet(matrix, sz, tp);
 		matrix.setTransactions(transactions);
         matrix.writeToFile();
         transactions.saveTransactions(fundName);
-        System.out.println("result: " + transactions.getResultData());
+        System.out.println("sz: " + sz + " tp: "+ tp + transactions.getResultData());
 
 	}
 	
-	public AllTransactions runRuleSet(Matrix matrix) {
+	public AllTransactions runRuleSet(Matrix matrix, int sz, float tp) {
 		
 		AllTransactions transactions = new AllTransactions();
 		HandlePF handlePF = new HandlePF();
-        PFModel pfModel = handlePF.createPFData(matrix.getRates(), matrix.getFundname(), TURNING_POINT, STEPSIZE);
+        PFModel pfModel = handlePF.createPFData(matrix.getRates(), matrix.getFundname(), sz, tp);
         ModelFunctions mf = new ModelFunctions(matrix.getFundname());
         mf.setPFData(pfModel.getPfModel());
         mf.setRates(matrix.getRates());

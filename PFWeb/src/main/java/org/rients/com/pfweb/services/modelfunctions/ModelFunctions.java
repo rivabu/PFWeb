@@ -24,7 +24,7 @@ public class ModelFunctions {
     }
     
     public void handleSimplePFRules(AllTransactions transactions) {
-        pfRules.setRSI(rates, PFData);
+        pfRules.basicPF(PFData, transactions);
         //setDoubleTopAndBottom(PFData)
     }
 
