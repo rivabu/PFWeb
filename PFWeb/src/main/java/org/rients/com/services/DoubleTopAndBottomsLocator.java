@@ -7,6 +7,7 @@ import java.util.StringTokenizer;
 
 import org.joda.time.DateTime;
 import org.rients.com.constants.Constants;
+import org.rients.com.model.AllTransactions;
 import org.rients.com.model.Categorie;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.DagkoersStatus;
@@ -90,11 +91,12 @@ public class DoubleTopAndBottomsLocator {
         fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT);
         List<Dagkoers> rates = fundData.getFundRates(fundName, dir);
 
-        PFModel pfModel = handlePF.createPFData(rates, fundName, turningPoint, stepSize);
+        PFModel pfModel = handlePF.createPFData(rates, fundName, stepSize, turningPoint);
         
         ModelFunctions mf = new ModelFunctions(fundName);
         mf.setPFData(pfModel.getPfModel());
-        mf.handlePFRules(turningPoint, stepSize);
+        AllTransactions transactions = new AllTransactions();
+        mf.handleRSIPFRules(transactions);
         int lastColumnTopMatch = -10;
         int lastColumnBottomMatch = -10;
         int lastRowTopMatch = -10;
@@ -134,7 +136,7 @@ public class DoubleTopAndBottomsLocator {
         fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT);
         List<Dagkoers> rates = fundData.getFundRates(fundName, dir);
 
-        PFModel pfModel = handlePF.createPFData(rates, fundName, turningPoint, stepSize);
+        PFModel pfModel = handlePF.createPFData(rates, fundName, stepSize, turningPoint);
         
         ModelFunctions mf = new ModelFunctions(fundName);
         mf.setPFData(pfModel.getPfModel());

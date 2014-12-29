@@ -25,12 +25,11 @@ public class ModelFunctions {
     
     public void handleSimplePFRules(AllTransactions transactions) {
         pfRules.basicPF(PFData, transactions);
-        //setDoubleTopAndBottom(PFData)
     }
 
-    public void handlePFRules(int turningPoint, float stepSize) {
-        pfRules.setRSI(rates, PFData);
-        //setDoubleTopAndBottom(PFData)
+    public void handleRSIPFRules(AllTransactions transactions) {
+        pfRules.setRSI(rates, PFData, transactions);
+        pfRules.overrideWithPF(PFData, transactions);
     }
     
     public void handlePFRules(int turningPoint, float stepSize, Transaction transaction) {

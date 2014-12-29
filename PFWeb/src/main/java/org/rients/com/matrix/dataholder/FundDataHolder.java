@@ -58,6 +58,13 @@ public class FundDataHolder {
         }
         return 0d;
     }
+    
+    public int getValueAsInt(String date) {
+    	if (data.containsKey(date)) {
+            return new Integer(data.get(date).toString()).intValue();
+        }
+        return 0;
+    }
 
     
     

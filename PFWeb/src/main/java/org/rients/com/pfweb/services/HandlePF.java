@@ -30,7 +30,7 @@ public class HandlePF {
 
 
     
-    public PFModel createPFData(List<Dagkoers> rates, String fundName, int turningPoint, float stepSize) {
+    public PFModel createPFData(List<Dagkoers> rates, String fundName, float stepSize, int turningPoint) {
 
 
         Levels levels = Levels.getInstance();

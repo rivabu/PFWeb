@@ -22,7 +22,9 @@ public class Matrix {
 	FundDataHolder[] columns = null;
 	int aantalColumns = 0;
 	int aantalDays = 0;
+	FundDataHolder transactionsPercInverse = null;
 	FundDataHolder transactionsPerc = null;
+	FundDataHolder transactionsAantal = null;
 
 	public Matrix(String fundname, int aantalColumns, int aantalDays) {
 		super();
@@ -92,6 +94,14 @@ public class Matrix {
 						value = transactionsPerc.getValueAsString(date);
 						sb.append(", " + value);
 					}
+					if (transactionsPercInverse != null) {
+						value = transactionsPercInverse.getValueAsString(date);
+						sb.append(", " + value);
+					}
+					if (transactionsAantal != null) {
+						value = transactionsAantal.getValueAsString(date);
+						sb.append(", " + value);
+					}
 					
 				}
 			}
@@ -117,44 +127,102 @@ public class Matrix {
 	public void setTransactions(AllTransactions transactions) {
 		FundDataHolder koersen = this.getColumnByName("Koers");
 		transactionsPerc = new FundDataHolder("transactions", true);
+		transactionsPercInverse = new FundDataHolder("transactions", true);
+		transactionsAantal = new FundDataHolder("transactions", true);
 		int dateCounter = 0;
 		double koers = 0;
 		double koersVorig = 0;
 		Iterator<Transaction> iter = transactions.getAllTransactions().iterator();
 		double currentValue = 100;
+		double vorigeValue = 100;
 		double newValue = 100;
+		double result = 0;
+		while (dateCounter < dates.length) {
+			transactionsPerc.addValue(dates[dateCounter], 100);
+			transactionsPercInverse.addValue(dates[dateCounter], 100);
+			transactionsAantal.addValue(dates[dateCounter], 0);
+			dateCounter++;
+		}
 		while (iter.hasNext()) {
 			Transaction t = iter.next();
-			while (Integer.parseInt(dates[dateCounter]) <= t.startDate ) {
-				koers = koersen.getValueAsDouble(dates[dateCounter]);
-				transactionsPerc.addValue(dates[dateCounter], currentValue);
+			dateCounter = 0;
+			while (Integer.parseInt(dates[dateCounter]) < t.startDate ) {
 				dateCounter++;
 			}
-			if (dateCounter >= dates.length) {
-				break;
-			}
+			
 			while (Integer.parseInt(dates[dateCounter]) <= t.endDate) {
-				koersVorig = koers;
-				koers = koersen.getValueAsDouble(dates[dateCounter]);
-				newValue = currentValue * (1 + MathFunctions.procVerschil(koersVorig, koers) / 100);
-				transactionsPerc.addValue(dates[dateCounter], newValue);
-				currentValue = newValue;
+//				koers = koersen.getValueAsDouble(dates[dateCounter]);
+//				if (Integer.parseInt(dates[dateCounter]) == t.startDate) {
+//					koersVorig = koers;
+//				} else {
+//					currentValue = transactionsPerc.getValueAsDouble(dates[dateCounter]);
+//					result = (1 + MathFunctions.procVerschil(koersVorig, koers) / 100);
+//					newValue = currentValue * result ;
+//					transactionsPerc.addValue(dates[dateCounter], newValue);
+//					koersVorig = koers;
+//					
+//				}
+				int currentAantal = transactionsAantal.getValueAsInt(dates[dateCounter]);
+				transactionsAantal.addValue(dates[dateCounter], currentAantal + 1);
 				dateCounter++;
 				if (dateCounter >= dates.length) {
 					break;
 				}
 			}
+			if (dateCounter >= dates.length) {
+				break;
+			}
+			if (t.endDate < Integer.parseInt(dates[dateCounter])) {
+				continue;
+			}
 				
 		}
-		while (dateCounter < dates.length ) {
-			koersVorig = koers;
+//		while (dateCounter < dates.length ) {
+//			// geen transacties
+//			currentValue = transactionsPerc.getValueAsDouble(dates[dateCounter-1]);
+//			transactionsPerc.addValue(dates[dateCounter], currentValue);
+//			dateCounter++;
+//		}
+		dateCounter = 0;
+		while (dateCounter < dates.length) {
+			int aantal =  transactionsAantal.getValueAsInt(dates[dateCounter]);
+			currentValue = transactionsPerc.getValueAsDouble(dates[dateCounter]);
 			koers = koersen.getValueAsDouble(dates[dateCounter]);
-			if (koersVorig > 0) {
-				newValue = currentValue * (1 + MathFunctions.procVerschil(koersVorig, koers) / 100);
-			} 
-			transactionsPerc.addValue(dates[dateCounter], newValue);
-			currentValue = newValue;
+			if (aantal == 0) {
+				// result blijft gelijk
+				currentValue = vorigeValue;
+				transactionsPerc.addValue(dates[dateCounter], currentValue);
+			} else {
+				//TODO is nog niet af, wordt geen rekening gehouden met aantal!
+				result = (1 + MathFunctions.procVerschil(koersVorig, koers) / 100);
+				currentValue = vorigeValue * result ;
+				transactionsPerc.addValue(dates[dateCounter], currentValue);
+			}
 			dateCounter++;
+			vorigeValue = currentValue;
+			koersVorig = koers;
+		}
+		System.out.println("endresult: " + currentValue);
+		dateCounter = 0;
+		vorigeValue = 100;
+		koersVorig = koersen.getValueAsDouble(dates[0]);
+		while (dateCounter < dates.length) {
+			int aantal =  transactionsAantal.getValueAsInt(dates[dateCounter]);
+			currentValue = transactionsPercInverse.getValueAsDouble(dates[dateCounter]);
+			koers = koersen.getValueAsDouble(dates[dateCounter]);
+			if (aantal == 0) {
+				// result blijft gelijk
+				result = (1 + MathFunctions.procVerschil(koersVorig, koers) / 100);
+				currentValue = vorigeValue * result ;
+				transactionsPercInverse.addValue(dates[dateCounter], currentValue);
+			} else {
+				currentValue = vorigeValue;
+				transactionsPercInverse.addValue(dates[dateCounter], currentValue);
+				//TODO is nog niet af, wordt geen rekening gehouden met aantal!
+			}
+			dateCounter++;
+			vorigeValue = currentValue;
+			koersVorig = koers;
 		}
 	}
 

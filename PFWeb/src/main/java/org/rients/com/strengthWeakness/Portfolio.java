@@ -42,7 +42,7 @@ public class Portfolio {
 			PFModel pfModel = (PFModel) SimpleCache.getInstance().getObject("PFMODEL_" + transaction.getFundName());
 			List<Dagkoers> rates = (List<Dagkoers>) SimpleCache.getInstance().getObject("RATES_" + transaction.getFundName());
 			if (pfModel == null) {
-				pfModel = handlePF.createPFData(rates, transaction.getFundName(), 1, new Float(0.5));
+				pfModel = handlePF.createPFData(rates, transaction.getFundName(), new Float(0.5), 1);
 				SimpleCache.getInstance().addObject("PFMODEL_" + transaction.getFundName(), pfModel);
 			}
 			stopLoss(rates, transaction);

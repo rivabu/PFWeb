@@ -14,6 +14,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.rients.com.constants.Constants;
+import org.rients.com.model.AllTransactions;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.DagkoersStatus;
 import org.rients.com.model.ImageResponse;
@@ -67,12 +68,13 @@ public class PFGenerator {
             rates = fundData.getFundRates(fundName, dirFull, trans.getStartDate(), trans.getEndDate(), 10);
         }
 
-        PFModel pfModel = handlePF.createPFData(rates, fundName, turningPoint, stepSize);
+        PFModel pfModel = handlePF.createPFData(rates, fundName, stepSize, turningPoint);
         ModelFunctions mf = new ModelFunctions(fundName);
         mf.setPFData(pfModel.getPfModel());
         mf.setRates(rates);
         if (type.equals("default")) {
-            mf.handlePFRules(turningPoint, stepSize);
+        	AllTransactions transactions = new AllTransactions();
+            mf.handleRSIPFRules(transactions);
         }
         if (type.equals("trans")) {
             mf.handlePFRules(turningPoint, stepSize, trans);
@@ -130,17 +132,17 @@ public class PFGenerator {
             Modelregel PFRegel = (Modelregel) PFData.get(i);
             int x_pos = (yAxWidth + cellSize * (PFRegel.getKolomnr()));
             int y_pos = 10 + (cellSize * (modelInfo.getHighestModelValue() - PFRegel.getRijnr()));
-            //if (PFRegel.isStijger()) {
-                g.setColor(Color.BLACK);
-            //} //else {
-                //g.setColor(Color.RED);
-            //}
+            g.setColor(Color.BLACK);
             if (PFRegel.getStatus() == DagkoersStatus.POS_RSI) {
-                g.setColor(Color.LIGHT_GRAY);
+                g.setColor(Color.DARK_GRAY);
             }
             if (PFRegel.getStatus() == DagkoersStatus.NEG_RSI) {
-                g.setColor(Color.LIGHT_GRAY);
+                g.setColor(new Color(255,127,80));
             }    
+            if (PFRegel.getStatus() == DagkoersStatus.POS_RSI_VERY_LARGE) {
+            	// http://www.rapidtables.com/web/color/RGB_Color.htm
+                g.setColor(new Color(0,100,0));
+            }
             if (PFRegel.getStatus() == DagkoersStatus.POS_RSI_LARGE) {
                 g.setColor(Color.GREEN);
             }
@@ -148,24 +150,15 @@ public class PFGenerator {
                 g.setColor(Color.RED);
             }    
             if (PFRegel.getStatus() == DagkoersStatus.BIGMOVER_UP) {
-                g.setColor(Color.GREEN);
+                g.setColor(Color.pink);
             }
             if (PFRegel.getStatus() == DagkoersStatus.BIGMOVER_DOWN) {
-                g.setColor(Color.RED);
-            }
-            if (PFRegel.getStatus() == DagkoersStatus.LONG) {
-                g.setColor(Color.GREEN);
+                g.setColor(Color.yellow);
             }
             if (PFRegel.getStatus() == DagkoersStatus.BUY) {
                 g.setColor(Color.ORANGE);
             }
-            if (PFRegel.getStatus() == DagkoersStatus.LATESTDAY) {
-                g.setColor(Color.blue);
-            }
-            if (PFRegel.getStatus() == DagkoersStatus.DOUBLE_TOP) {
-                g.setColor(Color.GREEN);
-            }
-            if (PFRegel.getStatus() == DagkoersStatus.DOUBLE_BOTTOM) {
+            if (PFRegel.getStatus() == DagkoersStatus.SELL) {
                 g.setColor(Color.RED);
             }
             g.drawString(PFRegel.getSign(), x_pos, y_pos);

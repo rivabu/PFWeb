@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
 
 import org.rients.com.model.AllTransactions;
 import org.rients.com.model.Dagkoers;
@@ -112,13 +113,13 @@ public class PFRules {
         else
             return false;
     }
-    public void getTopsAndBottoms(ArrayList pfData, Hashtable tops, Hashtable bottoms) {
+    public void getTopsAndBottoms(ArrayList<Modelregel> pfData, Hashtable tops, Hashtable bottoms) {
         int i = 1;
         Modelregel modelregel = null;
         for (int j = 0; j < pfData.size(); j++) {
-            Modelregel modelregel1 = (Modelregel) pfData.get(j);
+            Modelregel modelregel1 = pfData.get(j);
             int k = modelregel1.getKolomnr();
-            int _tmp = modelregel1.getRijnr();
+            //int _tmp = modelregel1.getRijnr();
             String s = modelregel1.getSign();
             if (s.equals("o") && k > i)
                 tops.put("" + i, modelregel);
@@ -200,8 +201,8 @@ public class PFRules {
         }
     }
     
-    public void setRSI(List<Dagkoers> rates, ArrayList<Modelregel> pfData) {
-        int DAGENTERUG = 25;
+    public void setRSI(List<Dagkoers> rates, ArrayList<Modelregel> pfData, AllTransactions transactions) {
+        int DAGENTERUG = 40;
         Formula rsiCalculator = new RSI(DAGENTERUG);
         int days = rates.size();
         for (int j = 0; j < days; j++) {
@@ -210,28 +211,28 @@ public class PFRules {
                 setModelRegelRSI(pfData, rates.get(j).datum, rsi.intValue());
             }
         }
-        boolean red = false;
+        DagkoersStatus vorigeWaarde = null;
         for (int j = 0; j < pfData.size(); j++) {
             Modelregel modelregel1 = (Modelregel) pfData.get(j);
             if (modelregel1.getStatus() != DagkoersStatus.BIGMOVER_UP && modelregel1.getStatus() != DagkoersStatus.BIGMOVER_DOWN) {
-                if (modelregel1.getRSI() >= 60) {
+            	if (vorigeWaarde == DagkoersStatus.NEG_RSI_LARGE && modelregel1.getRSI() >= 45) {
+            		modelregel1.setStatus(DagkoersStatus.BUY);
+            		if (modelregel1.getSign().equals("+")) {
+            			continue;
+            		}
+            	}
+            	else if (modelregel1.getRSI() >= 75) {
+                    modelregel1.setStatus(DagkoersStatus.POS_RSI_VERY_LARGE);
+                } else if (modelregel1.getRSI() >= 55) {
                     modelregel1.setStatus(DagkoersStatus.POS_RSI_LARGE);
-            		red = false;
-                } else if ((modelregel1.getRSI() < 60) && (modelregel1.getRSI() >= 50))  {
-                    modelregel1.setStatus(DagkoersStatus.POS_RSI);
-            		red = false;
-                } else if ((modelregel1.getRSI() < 50) && (modelregel1.getRSI() >= 40))  {
-                	if (red) {
-                		modelregel1.setStatus(DagkoersStatus.BUY);
-                		red = false;
-                	} else {
-                        modelregel1.setStatus(DagkoersStatus.NEG_RSI);
-                		red = false;
-                	}
+                } else if ((modelregel1.getRSI() < 55) && (modelregel1.getRSI() >= 45))  {
+                        modelregel1.setStatus(DagkoersStatus.POS_RSI);
+               // } else if ((modelregel1.getRSI() < 45) && (modelregel1.getRSI() >= 40))  {
+               //         modelregel1.setStatus(DagkoersStatus.NEG_RSI);
                 } else if (modelregel1.getRSI() > 0){
-                    modelregel1.setStatus(DagkoersStatus.NEG_RSI_LARGE);
-                    red = true;
+                    modelregel1.setStatus(DagkoersStatus.NEG_RSI_LARGE); //red
                 }
+                vorigeWaarde = modelregel1.getStatus();
             }
             
         }
@@ -355,5 +356,122 @@ public class PFRules {
         System.out.println(fileName + ": " + totalScore);
         return transactions;
     }
+
+
+	public void overrideWithPF(ArrayList<Modelregel> modelRegels, AllTransactions transactions) {
+		Hashtable<String, Modelregel> tops = new Hashtable<String, Modelregel>();
+        Hashtable<String, Modelregel> bottoms = new Hashtable<String, Modelregel>();
+        getTopsAndBottoms(modelRegels, tops, bottoms);
+       
+        //Transaction trans = null;
+        //boolean bought = false;
+        boolean last = false;
+        boolean dalendeTrend = false;
+        Stack<Transaction> portefeuille = new Stack<Transaction>();
+        for (int counter = 0; counter < modelRegels.size(); counter++) {
+            Modelregel modelregel = modelRegels.get(counter);
+            Modelregel vorigeTop_1 = null;
+            Modelregel vorigeBodem_1 = null;
+            Modelregel vorigeTop_2 = null;
+            Modelregel vorigeBodem_2 = null;
+            if(counter == modelRegels.size() - 1)
+                last = true;
+            if (modelregel.getKolomnr() < 5)
+                continue;
+            if (modelregel.getSign().equals("+") || modelregel.getSign().equals("-")) {
+            	// maak deze achteraf dezelfde kleur!
+            	continue;
+            }
+            if (!isPlus(modelregel)) {
+                vorigeTop_1 = tops.get("" + (modelregel.getKolomnr() - 1));
+                vorigeBodem_1 = bottoms.get("" + (modelregel.getKolomnr() - 2));
+                vorigeTop_2 = tops.get("" + (modelregel.getKolomnr() - 3));
+                vorigeBodem_2 = bottoms.get("" + (modelregel.getKolomnr() - 4));
+            } else {
+                vorigeTop_1 = tops.get("" + (modelregel.getKolomnr() - 2));
+                vorigeBodem_1 =  bottoms.get("" + (modelregel.getKolomnr() - 1));
+                vorigeTop_2 =  tops.get("" + (modelregel.getKolomnr() - 4));
+                vorigeBodem_2 = bottoms.get("" + (modelregel.getKolomnr() - 3));
+            }
+//            if ( isPlus(modelregel) && modelregel.getRijnr() >= vorigeTop_1.getRijnr() && vorigeBodem_1.getRijnr() >=  vorigeBodem_2.getRijnr()) {
+//            	modelregel.setStatus(DagkoersStatus.BUY);
+//            }	
+//            if ( isPlus(modelregel) &&  vorigeTop_1.getRijnr() >= vorigeTop_2.getRijnr() && vorigeBodem_1.getRijnr() >=  vorigeBodem_2.getRijnr()) {
+//            	modelregel.setStatus(DagkoersStatus.BUY);
+//            }	
+//            if ( !isPlus(modelregel) && modelregel.getRijnr() < vorigeTop_1.getRijnr() && vorigeBodem_1.getRijnr() <  vorigeBodem_2.getRijnr()) {
+//            	modelregel.setStatus(DagkoersStatus.SELL);
+//            }	
+//            if ( !isPlus(modelregel) &&  vorigeTop_1.getRijnr() < vorigeTop_2.getRijnr() && vorigeBodem_1.getRijnr() <  vorigeBodem_2.getRijnr()) {
+//            	modelregel.setStatus(DagkoersStatus.SELL);
+//            }	
+//            if ( !isPlus(modelregel) && modelregel.getRijnr() >= vorigeBodem_1.getRijnr() && vorigeTop_1.getRijnr() >=  vorigeTop_2.getRijnr()) {
+//            	modelregel.setStatus(DagkoersStatus.BUY);
+//            }
+
+            if( (modelregel.getStatus() == DagkoersStatus.BUY && portefeuille.size() < 3)) {
+            	// kopen
+            	Transaction trans = new Transaction();
+                trans.setStartDate(Integer.parseInt(modelregel.getDatum()));
+                trans.setStartRate(modelregel.getKoers());
+                trans.setPieces(1d);
+                portefeuille.push(trans);
+                continue;
+            }
+//            if(modelregel.getStatus() == DagkoersStatus.BUY && portefeuille.size() < 3 ) {
+//            	// bijkopen
+//            	Transaction trans = new Transaction();
+//                trans.setStartDate(Integer.parseInt(modelregel.getDatum()));
+//                trans.setStartRate(modelregel.getKoers());
+//                trans.setPieces(1d);
+//                portefeuille.add(trans);
+//                continue;
+//            }
+            if (!portefeuille.isEmpty() && (modelregel.getStatus() == DagkoersStatus.POS_RSI_LARGE && !isPlus(modelregel)) || last)
+            {
+                // verkopen op groen rondje
+            	if (!last) {
+            		Transaction trans = portefeuille.pop();
+                	trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
+                    trans.setEndRate(modelregel.getKoers());
+                    transactions.add(trans);
+            	} else {
+            		while (!portefeuille.isEmpty()) {
+                		Transaction trans = portefeuille.pop();
+                    	trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
+                        trans.setEndRate(modelregel.getKoers());
+                        transactions.add(trans);
+            		}
+            	}
+                
+//                if (!portefeuille.isEmpty()) {
+//                	trans = portefeuille.pop();
+//                	trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
+//                	trans.setEndRate(modelregel.getKoers());
+//                  transactions.add(trans);
+//              }
+                continue;
+            }
+//            if(bought && modelregel.getStatus() == DagkoersStatus.POS_RSI_LARGE && !isPlus(modelregel) && (trans2 != null))
+//            {
+//                // verkopen op groen rondje
+//                trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
+//                trans.setEndRate(modelregel.getKoers());
+//                transactions.add(trans);
+//                if (trans2 != null) {
+//                	trans2.setEndDate(Integer.parseInt(modelregel.getDatum()));
+//                	trans2.setEndRate(modelregel.getKoers());
+//                    transactions.add(trans2);
+//                    trans2 = null;
+//                }
+//                bought = false;
+//                continue;
+//
+//
+//            }
+            
+        }
+		
+	}
 
 }

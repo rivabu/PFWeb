@@ -25,7 +25,7 @@ public class PFFunctions {
     
     public ArrayList getHigherTopActions(String fundName, String directory, String graphType, int turningPoint, float stepSize) {
         ArrayList transactions = new ArrayList();
-        PFModel pfModel = pfHandler.createPFData(rates, fundName, turningPoint, stepSize);
+        PFModel pfModel = pfHandler.createPFData(rates, fundName, stepSize, turningPoint);
         Hashtable tops = new Hashtable();
         Hashtable bottoms = new Hashtable();
         getTopsAndBottoms(pfModel.getPfModel(), tops, bottoms);
@@ -83,7 +83,7 @@ public class PFFunctions {
 
     public ArrayList getHigherTopsActions(String fundName, String directory, String graphType, int turningPoint, float stepSize) {
         ArrayList transactions = new ArrayList();
-        PFModel pfModel = pfHandler.createPFData(rates, fundName, turningPoint, stepSize);
+        PFModel pfModel = pfHandler.createPFData(rates, fundName, stepSize, turningPoint);
         Hashtable tops = new Hashtable();
         Hashtable bottoms = new Hashtable();
         getTopsAndBottoms(pfModel.getPfModel(), tops, bottoms);
@@ -133,7 +133,7 @@ public class PFFunctions {
 
     public ArrayList getLowerBottomsActions(String fundName, String directory, String graphType, int turningPoint, float stepSize) {
         ArrayList transactions = new ArrayList();
-        PFModel pfModel = pfHandler.createPFData(rates, fundName, turningPoint, stepSize);
+        PFModel pfModel = pfHandler.createPFData(rates, fundName, stepSize, turningPoint);
         Hashtable tops = new Hashtable();
         Hashtable bottoms = new Hashtable();
         getTopsAndBottoms(pfModel.getPfModel(), tops, bottoms);

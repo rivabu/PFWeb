@@ -1,4 +1,4 @@
-package org.rients.com.commodities.pf;
+package org.rients.com.rsi;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import org.rients.com.pfweb.services.modelfunctions.ModelFunctions;
 import org.rients.com.utils.FileUtils;
 
 
-public class MaisExecutor {
+public class RSIExecutor {
 
 	// best: 1, 1.3
     private int TURNING_POINT = 1;
@@ -24,22 +24,25 @@ public class MaisExecutor {
 
     HandleFundData fundData = new HandleFundData();
 	public void process() {
-
+// http://localhost:8080/PFWeb/PFImage?type=default&fund=aex-index&dir=aaa&turningPoint=1&stepSize=0.75&row=1
         String directory = Constants.FAVORITESDIR;
 		List<String> files = FileUtils.getFiles(directory, "csv", false);
         for (int i = 0; i < files.size(); i++) {
-        	if (files.get(i).equals("gold")) {
-        		for (int tp = 1; tp < 6; tp++) {
+        	if (files.get(i).equals("dax.xetra")) {
+        	//if (files.get(i).equals("s.p.500")) {
+        		for (int tp = 1; tp < 4; tp++) {
         			for (float sz = 0.1f; sz < 3f; sz = sz + 0.1f) {
-        				processFile(files.get(i), sz, tp);
+        				//processFile(files.get(i), sz, tp);
         			}
         		}
-				//processFile(files.get(i), 3, 2.1f);
+				processFile(files.get(i), 0.2f, 2);
         		
         	}
         }
 	}
 	
+	// http://localhost:8080/PFWeb/PFImage?type=default&fund=s.p.500&dir=aaa&turningPoint=1&stepSize=0.5&row=1
+	// http://localhost:8080/PFWeb/PFImage?type=default&fund=s.p.500&dir=aaa&turningPoint=1&stepSize=0.75&row=1
 	public void processFile(String fundName, float sz, int tp) {
         String pathFull = Constants.FAVORITESDIR;
 		Matrix matrix = fillMatrix(fundName, pathFull, false);
@@ -59,7 +62,7 @@ public class MaisExecutor {
         ModelFunctions mf = new ModelFunctions(matrix.getFundname());
         mf.setPFData(pfModel.getPfModel());
         mf.setRates(matrix.getRates());
-        mf.handleSimplePFRules(transactions);
+        mf.handleRSIPFRules(transactions);
 		
 		return transactions;
 		
@@ -101,7 +104,7 @@ public class MaisExecutor {
 
 
 	public static void main(String[] args) {
-		new MaisExecutor().process();
+		new RSIExecutor().process();
 
 	}
 
