@@ -8,11 +8,20 @@ import org.rients.com.constants.Constants;
 import org.rients.com.utils.FileUtils;
 
 public class AllTransactions {
+	private String fundName;
+	private int id = 0;
 
 	private List<Transaction> allTransactions = new ArrayList<Transaction>();
 
 	
 	public void add(Transaction transaction) {
+		if (transaction.getFundName() == null) {
+			transaction.setFundName(fundName);
+		}
+		if (transaction.getBuyId() == 0) {
+			id ++;
+			transaction.setBuyId(id);
+		}
 		allTransactions.add(transaction);
 	}
 	
@@ -83,6 +92,16 @@ public class AllTransactions {
 
 	public List<Transaction> getAllTransactions() {
 		return allTransactions;
+	}
+
+
+	public String getFundName() {
+		return fundName;
+	}
+
+
+	public void setFundName(String fundName) {
+		this.fundName = fundName;
 	}
 	
 

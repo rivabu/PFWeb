@@ -28,14 +28,15 @@ public class RSIExecutor {
         String directory = Constants.FAVORITESDIR;
 		List<String> files = FileUtils.getFiles(directory, "csv", false);
         for (int i = 0; i < files.size(); i++) {
-        	if (files.get(i).equals("dax.xetra")) {
+        	//if (files.get(i).equals("dax.xetra")) {
+        	if (files.get(i).equals("dj-indust")) {
         	//if (files.get(i).equals("s.p.500")) {
         		for (int tp = 1; tp < 4; tp++) {
         			for (float sz = 0.1f; sz < 3f; sz = sz + 0.1f) {
-        				//processFile(files.get(i), sz, tp);
+        				processFile(files.get(i), sz, tp);
         			}
         		}
-				processFile(files.get(i), 0.2f, 2);
+				//processFile(files.get(i), 0.2f, 2);
         		
         	}
         }
@@ -57,6 +58,7 @@ public class RSIExecutor {
 	public AllTransactions runRuleSet(Matrix matrix, float sz, int tp) {
 		
 		AllTransactions transactions = new AllTransactions();
+		transactions.setFundName(matrix.getFundname());
 		HandlePF handlePF = new HandlePF();
         PFModel pfModel = handlePF.createPFData(matrix.getRates(), matrix.getFundname(), sz, tp);
         ModelFunctions mf = new ModelFunctions(matrix.getFundname());

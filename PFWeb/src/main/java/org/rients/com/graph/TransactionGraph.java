@@ -6,12 +6,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
@@ -26,11 +22,8 @@ import org.rients.com.constants.Constants;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.ImageResponse;
 import org.rients.com.model.Transaction;
-import org.rients.com.model.Type;
 import org.rients.com.pfweb.services.HandleFundData;
 import org.rients.com.services.FileIOServiceImpl;
-import org.rients.com.strengthWeakness.StrengthWeaknessConstants;
-import org.rients.com.utils.FileUtils;
 import org.rients.com.utils.Formula;
 import org.rients.com.utils.SMA;
 
@@ -47,105 +40,89 @@ public class TransactionGraph {
     public TimeSeries createTransactionTimeSeries(TimeSeriesCollection dataset) {
 
         final TimeSeries t1 = new TimeSeries("");
-        final TimeSeries t2 = new TimeSeries("");
+        //final TimeSeries t2 = new TimeSeries("");
         try {
             FileIOServiceImpl fileIOService = new FileIOServiceImpl(null, null);
 
             List<Transaction> list = fileIOService.readFromTransactiesFile(Constants.TRANSACTIONDIR, Constants.ALL_TRANSACTIONS, null);
-            float totalScore1 = StrengthWeaknessConstants.sellAfterDays * 1000;
-            float totalScore2 = StrengthWeaknessConstants.sellAfterDays * 1000;
-            float totalScore3 = StrengthWeaknessConstants.sellAfterDays * 1000;
-            Map<Integer, Float> data = new TreeMap<Integer, Float>();
-            Map<Integer, Float> data2 = new TreeMap<Integer, Float>();
+            //float totalScore1 = StrengthWeaknessConstants.sellAfterDays * 1000;
+            //float totalScore2 = StrengthWeaknessConstants.sellAfterDays * 1000;
+            //float totalScore3 = StrengthWeaknessConstants.sellAfterDays * 1000;
+//            Map<Integer, Float> data = new TreeMap<Integer, Float>();
+//            Map<Integer, Float> data2 = new TreeMap<Integer, Float>();
             
             Iterator<Transaction> iter = list.iterator();
+            float totalScore = 100;
             while(iter.hasNext()) {
                 Transaction trans = iter.next();
-                Integer date = new Integer(trans.getEndDate());
-                if (trans.getEndRate() > 0) {
-                    if (data.containsKey(date)) {
-                        Float value = data.get(date);
-                        //if (trans.getType() == Type.WAIT) {
-                        //    value = value + new Float(trans.getScoreAbs() * -1);
-                        //} else {
-                            value = value + new Float(trans.getScoreAbs());
-                        //}
-                        data.put(date, value);
-                        if (trans.getType() != Type.SHORT) {
-                            data2.put(date, value);
-                        }
-                    } else {
-                    	data.put(date, new Float(trans.getScoreAbs()));
-                        if (trans.getType() != Type.SHORT) {
-                        	 data2.put(date, new Float(trans.getScoreAbs()));
-                             
-//                         } else {
-//                           data.put(date, new Float(trans.getScoreAbs() * -1));
-                        }
-                    }
-                }
+                System.out.println(trans);
+                Integer date = new Integer(trans.getStartDate());
+                String startDate = "" + date;
+                int year = Integer.parseInt(startDate.substring(0, 4));
+                int month = Integer.parseInt(startDate.substring(4, 6));
+                int day = Integer.parseInt(startDate.substring(6));
+                totalScore = totalScore * (1 + trans.getScorePerc() / 100);
+                System.out.println(totalScore);
+                t1.add(new Day(day, month, year), new Float(totalScore - 100));
             }
-            Iterator<Integer> iter2 = data.keySet().iterator();
-            while(iter2.hasNext()) {
-                Integer date = iter2.next();
-                Float value = data.get(date);
-                totalScore1 = totalScore1 + value;
-                String endDate = "" + date;
-                int year = Integer.parseInt(endDate.substring(0, 4));
-                int month = Integer.parseInt(endDate.substring(4, 6));
-                int day = Integer.parseInt(endDate.substring(6));
-                t1.add(new Day(day, month, year), new Float(totalScore1));
-            }
-            Iterator<Integer> iter3 = data2.keySet().iterator();
-            while(iter3.hasNext()) {
-                Integer date = iter3.next();
-                Float value = data2.get(date);
-                totalScore2 = totalScore2 + value;
-                String endDate = "" + date;
-                int year = Integer.parseInt(endDate.substring(0, 4));
-                int month = Integer.parseInt(endDate.substring(4, 6));
-                int day = Integer.parseInt(endDate.substring(6));
-                t2.add(new Day(day, month, year), new Float(totalScore2));
-            }
-            System.out.println("totalScore1: " + totalScore1);
-            System.out.println("totalScore2: " + totalScore2);
+//            Iterator<Integer> iter2 = data.keySet().iterator();
+//            while(iter2.hasNext()) {
+//                Integer date = iter2.next();
+//                Float value = data.get(date);
+//                totalScore1 = totalScore1 + value;
+//                String endDate = "" + date;
+//               
+//            }
+//            Iterator<Integer> iter3 = data2.keySet().iterator();
+//            while(iter3.hasNext()) {
+//                Integer date = iter3.next();
+//                Float value = data2.get(date);
+//                totalScore2 = totalScore2 + value;
+//                String endDate = "" + date;
+//                int year = Integer.parseInt(endDate.substring(0, 4));
+//                int month = Integer.parseInt(endDate.substring(4, 6));
+//                int day = Integer.parseInt(endDate.substring(6));
+//                t2.add(new Day(day, month, year), new Float(totalScore2));
+//            }
+//            System.out.println("totalScore1: " + totalScore1);
+//            System.out.println("totalScore2: " + totalScore2);
             
         }
         catch (Exception e) {
             e.printStackTrace();
         }
         dataset.addSeries(t1);
-        dataset.addSeries(t2);
+        //dataset.addSeries(t2);
 
         return t1;
     }
 
     
-    public TimeSeries createWaardePortefeuilleTimeSeries(TimeSeriesCollection dataset) {
-
-        final TimeSeries t2 = new TimeSeries("");
-        final TimeSeries t3 = new TimeSeries("");
-        HandleFundData dataService = new  HandleFundData();
-        List<Dagkoers> data =  dataService.getFundRates("result", Constants.TRANSACTIONDIR);
-        Formula sma = new SMA(10, 0);
-        for (int i = 0; i < data.size(); i++) {
-        	Dagkoers k = data.get(i);
-            int year = Integer.parseInt(k.getDatum().substring(0, 4));
-            int month = Integer.parseInt(k.getDatum().substring(4, 6));
-            int day = Integer.parseInt(k.getDatum().substring(6));
-            t3.add(new Day(day, month, year), k.getClosekoers());
-            t2.add(new Day(day, month, year), sma.compute(new BigDecimal(k.getClosekoers())));
-        }
-        dataset.addSeries(t2);
-        dataset.addSeries(t3);
-        return t2;
-    }
+//    public TimeSeries createWaardePortefeuilleTimeSeries(TimeSeriesCollection dataset) {
+//
+//        final TimeSeries t2 = new TimeSeries("");
+//        final TimeSeries t3 = new TimeSeries("");
+//        HandleFundData dataService = new  HandleFundData();
+//        List<Dagkoers> data =  dataService.getFundRates("result", Constants.TRANSACTIONDIR);
+//        Formula sma = new SMA(10, 0);
+//        for (int i = 0; i < data.size(); i++) {
+//        	Dagkoers k = data.get(i);
+//            int year = Integer.parseInt(k.getDatum().substring(0, 4));
+//            int month = Integer.parseInt(k.getDatum().substring(4, 6));
+//            int day = Integer.parseInt(k.getDatum().substring(6));
+//            t3.add(new Day(day, month, year), k.getClosekoers());
+//            t2.add(new Day(day, month, year), sma.compute(new BigDecimal(k.getClosekoers())));
+//        }
+//        dataset.addSeries(t2);
+//        dataset.addSeries(t3);
+//        return t2;
+//    }
 
     public XYDataset createDataset() {
 
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         final TimeSeries transactionsSeries = createTransactionTimeSeries(dataset);
-        final TimeSeries waardePortSeries = createWaardePortefeuilleTimeSeries(dataset);
+        //final TimeSeries waardePortSeries = createWaardePortefeuilleTimeSeries(dataset);
 
         // ****************************************************************************
         // * JFREECHART DEVELOPER GUIDE                                               *
@@ -158,7 +135,7 @@ public class TransactionGraph {
         // * support us so that we can continue developing free software.             *
         // ****************************************************************************
 
-        dataset.addSeries(waardePortSeries);
+        //dataset.addSeries(waardePortSeries);
         return dataset;
 
     }

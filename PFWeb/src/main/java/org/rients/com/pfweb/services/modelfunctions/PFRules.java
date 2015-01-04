@@ -434,6 +434,7 @@ public class PFRules {
             		Transaction trans = portefeuille.pop();
                 	trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
                     trans.setEndRate(modelregel.getKoers());
+                    trans.setType(Type.LONG);
                     transactions.add(trans);
             	} else {
             		while (!portefeuille.isEmpty()) {
