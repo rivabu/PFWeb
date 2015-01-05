@@ -16,6 +16,7 @@ import org.rients.com.model.Transaction;
 import org.rients.com.model.Type;
 import org.rients.com.utils.FileUtils;
 import org.rients.com.utils.Formula;
+import org.rients.com.utils.MathFunctions;
 import org.rients.com.utils.RSI;
 
 
@@ -368,6 +369,9 @@ public class PFRules {
         boolean last = false;
         boolean dalendeTrend = false;
         Stack<Transaction> portefeuille = new Stack<Transaction>();
+        boolean wait = false;
+        float lowestValue = 0f;
+        float avrKoopKoers = 0f;
         for (int counter = 0; counter < modelRegels.size(); counter++) {
             Modelregel modelregel = modelRegels.get(counter);
             Modelregel vorigeTop_1 = null;
@@ -410,14 +414,26 @@ public class PFRules {
 //            }
 
             if( (modelregel.getStatus() == DagkoersStatus.BUY && portefeuille.size() < 3)) {
+            	// kopen wait
+            	wait = true;
+                continue;
+            }
+            if( wait && isPlus(modelregel)) {
             	// kopen
             	Transaction trans = new Transaction();
                 trans.setStartDate(Integer.parseInt(modelregel.getDatum()));
                 trans.setStartRate(modelregel.getKoers());
                 trans.setPieces(1d);
                 portefeuille.push(trans);
+                lowestValue = modelregel.getKoers();
+                avrKoopKoers = getAvrKoopKoers(portefeuille);
+
+                wait = false;
                 continue;
             }
+//            if( wait && !isPlus(modelregel)) {
+//                wait = false;
+//            }
 //            if(modelregel.getStatus() == DagkoersStatus.BUY && portefeuille.size() < 3 ) {
 //            	// bijkopen
 //            	Transaction trans = new Transaction();
@@ -427,6 +443,15 @@ public class PFRules {
 //                portefeuille.add(trans);
 //                continue;
 //            }
+            if (!portefeuille.isEmpty() ) {
+            	if (modelregel.getKoers() < lowestValue) {
+            		lowestValue = modelregel.getKoers();
+            	}
+        		// STOPLOSS
+            	if (MathFunctions.procVerschil(lowestValue, avrKoopKoers) > 5) {
+            		sellAll(transactions, portefeuille, modelregel);
+            	}
+            }
             if (!portefeuille.isEmpty() && (modelregel.getStatus() == DagkoersStatus.POS_RSI_LARGE && !isPlus(modelregel)) || last)
             {
                 // verkopen op groen rondje
@@ -436,43 +461,44 @@ public class PFRules {
                     trans.setEndRate(modelregel.getKoers());
                     trans.setType(Type.LONG);
                     transactions.add(trans);
+                    avrKoopKoers = getAvrKoopKoers(portefeuille);
             	} else {
-            		while (!portefeuille.isEmpty()) {
-                		Transaction trans = portefeuille.pop();
-                    	trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
-                        trans.setEndRate(modelregel.getKoers());
-                        transactions.add(trans);
-            		}
+            		sellAll(transactions, portefeuille, modelregel);
+            		lowestValue = 0;
             	}
                 
-//                if (!portefeuille.isEmpty()) {
-//                	trans = portefeuille.pop();
-//                	trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
-//                	trans.setEndRate(modelregel.getKoers());
-//                  transactions.add(trans);
-//              }
+
                 continue;
             }
-//            if(bought && modelregel.getStatus() == DagkoersStatus.POS_RSI_LARGE && !isPlus(modelregel) && (trans2 != null))
-//            {
-//                // verkopen op groen rondje
-//                trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
-//                trans.setEndRate(modelregel.getKoers());
-//                transactions.add(trans);
-//                if (trans2 != null) {
-//                	trans2.setEndDate(Integer.parseInt(modelregel.getDatum()));
-//                	trans2.setEndRate(modelregel.getKoers());
-//                    transactions.add(trans2);
-//                    trans2 = null;
-//                }
-//                bought = false;
-//                continue;
-//
-//
-//            }
+
             
         }
 		
+	}
+
+
+	private void sellAll(AllTransactions transactions, Stack<Transaction> portefeuille, Modelregel modelregel) {
+		while (!portefeuille.isEmpty()) {
+			Transaction trans = portefeuille.pop();
+			trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
+		    trans.setEndRate(modelregel.getKoers());
+		    trans.setType(Type.LONG);
+		    transactions.add(trans);
+		}
+	}
+
+
+	private float getAvrKoopKoers(Stack<Transaction> portefeuille) {
+		float avrKoopKoers;
+		Iterator<Transaction> i = portefeuille.iterator();
+		float sumKoopKoers = 0;
+		while (i.hasNext()) {
+			Transaction t = i.next();
+			sumKoopKoers = sumKoopKoers + t.getStartRate();
+			
+		}
+		avrKoopKoers = sumKoopKoers / portefeuille.size();
+		return avrKoopKoers;
 	}
 
 }

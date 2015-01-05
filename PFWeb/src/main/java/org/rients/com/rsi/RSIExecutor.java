@@ -28,15 +28,22 @@ public class RSIExecutor {
         String directory = Constants.FAVORITESDIR;
 		List<String> files = FileUtils.getFiles(directory, "csv", false);
         for (int i = 0; i < files.size(); i++) {
+        	//if (files.get(i).equals("dax.xetra") || files.get(i).equals("dj-indust") || files.get(i).equals("aex-index")) {
         	//if (files.get(i).equals("dax.xetra")) {
-        	if (files.get(i).equals("dj-indust")) {
+        	//if (files.get(i).equals("dj-indust")) {
         	//if (files.get(i).equals("s.p.500")) {
-        		for (int tp = 1; tp < 4; tp++) {
+        	//if (files.get(i).equals("aex-index")) {
+        	if (files.get(i).equals("aalberts")) {
+        		for (int tp = 1; tp < 3; tp++) {
         			for (float sz = 0.1f; sz < 3f; sz = sz + 0.1f) {
-        				processFile(files.get(i), sz, tp);
+        					//processFile(files.get(i), sz, tp);
         			}
         		}
-				//processFile(files.get(i), 0.2f, 2);
+				//processFile(files.get(i), 0.1f, 2); // S&p
+        		processFile(files.get(i), 2.4f, 1); // S&p
+				//processFile(files.get(i), 1.5f, 1); // AEX
+        		//processFile(files.get(i), 0.5f, 1); // dj
+        		//processFile(files.get(i), 1.1f, 1); // DAX
         		
         	}
         }
