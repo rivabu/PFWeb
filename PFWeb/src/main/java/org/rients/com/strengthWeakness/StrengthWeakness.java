@@ -7,6 +7,11 @@ public class StrengthWeakness {
 		this.koers = koers;
 		this.strength = strength;
 	}
+
+	String datum;
+	float koers;
+	double strength;
+	
 	public String getDatum() {
 		return datum;
 	}
@@ -30,12 +35,8 @@ public class StrengthWeakness {
 	public void setStrength(double strength) {
 		this.strength = strength;
 	}
-	String datum;
-	float koers;
-	double strength;
 	
-	@Override
-	public String toString() {
+	public String printToString() {
 		return ""+koers+","+strength;
 	}
 	

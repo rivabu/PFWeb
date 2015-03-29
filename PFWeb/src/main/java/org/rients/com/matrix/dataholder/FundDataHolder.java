@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.rients.com.strengthWeakness.StrengthWeakness;
 import org.rients.com.utils.MathFunctions;
 
 public class FundDataHolder {
@@ -41,9 +42,14 @@ public class FundDataHolder {
         if (data.containsKey(date)) {
         	if (!isKoers || firstValue == null) {
         		try {
-               		returnValue = MathFunctions.round(new Double(data.get(date).toString()).doubleValue(), 2) + "";
+        			Object value = data.get(date);
+        			double koers = 0d;
+        			if (value instanceof StrengthWeakness) {
+        				koers = ((StrengthWeakness) value).getKoers();
+        			}
+               		returnValue = MathFunctions.round(new Double(koers).doubleValue(), 2) + "";
         		} catch (NumberFormatException nfe) {
-        			System.out.println("columnName: " + columnName + " date: " + date + " value: " + data.get(date));
+        			System.out.println("columnName: " + columnName + " date: " + date + " value: " + ((StrengthWeakness) data.get(date)).printToString());
         		}
         	} else {
         		returnValue = data.get(date).toString() + ", " + MathFunctions.round(100 * MathFunctions.procVerschil(firstValue.toString(), data.get(date).toString()), 2);
@@ -52,11 +58,22 @@ public class FundDataHolder {
         return returnValue;
     }
 
-    public double getValueAsDouble(String date) {
+    public double getValueAsDouble(String date, String fundname) {
+    	Double d = 0d;
     	if (data.containsKey(date)) {
-            return new Double(data.get(date).toString()).doubleValue();
+    		try {
+    			Object value = data.get(date);
+    			double koers = 0d;
+    			if (value instanceof StrengthWeakness) {
+    				koers = ((StrengthWeakness) value).getKoers();
+    			}
+    			d = new Double(koers).doubleValue();
+    		}
+            catch (NumberFormatException nfe)  {
+            	System.out.println("NFE: " + fundname + " " + date + " " + ((StrengthWeakness) data.get(date)).printToString());
+            }
         }
-        return 0d;
+        return d;
     }
     
     public int getValueAsInt(String date) {
