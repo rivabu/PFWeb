@@ -30,20 +30,24 @@ public class RSIExecutor {
         for (int i = 0; i < files.size(); i++) {
         	//if (files.get(i).equals("dax.xetra") || files.get(i).equals("dj-indust") || files.get(i).equals("aex-index")) {
         	//if (files.get(i).equals("dax.xetra")) {
-        	//if (files.get(i).equals("dj-indust")) {
+        	if (files.get(i).equals("dj-indust")) {
         	//if (files.get(i).equals("s.p.500")) {
         	//if (files.get(i).equals("aex-index")) {
-        	if (files.get(i).equals("aalberts")) {
+        	//if (files.get(i).equals("natural.gas")) {
         		for (int tp = 1; tp < 3; tp++) {
-        			for (float sz = 0.1f; sz < 3f; sz = sz + 0.1f) {
-        					//processFile(files.get(i), sz, tp);
+        			for (float sz = 0.1f; sz < 2f; sz = sz + 0.1f) {
+        				//processFile(files.get(i), sz, tp);
+        					
         			}
         		}
-				//processFile(files.get(i), 0.1f, 2); // S&p
-        		processFile(files.get(i), 2.4f, 1); // S&p
-				//processFile(files.get(i), 1.5f, 1); // AEX
-        		//processFile(files.get(i), 0.5f, 1); // dj
+				//processFile(files.get(i), 0.4f, 1); // S&p
+        		//processFile(files.get(i), 2.4f, 1); // S&p
+				//processFile(files.get(i), 1.7f, 1); // AEX
+        		processFile(files.get(i), 1.7f, 1); // dj
         		//processFile(files.get(i), 1.1f, 1); // DAX
+        		//processFile(files.get(i), 1.2f, 1); // natural-gas
+        		//processFile(files.get(i), 1.2f, 1); // natural-gas
+        		//processFile(files.get(i), 1.3f, 1); // natural-gas
         		
         	}
         }
@@ -58,7 +62,10 @@ public class RSIExecutor {
 		matrix.setTransactions(transactions);
         matrix.writeToFile();
         transactions.saveTransactions(fundName);
+		System.out.println("endresult: " + matrix.getEndResult());
+
         System.out.println("sz: " + sz + " tp: "+ tp + transactions.getResultData());
+        System.out.println("--------------");
 
 	}
 	

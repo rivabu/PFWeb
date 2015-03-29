@@ -372,6 +372,7 @@ public class PFRules {
         boolean wait = false;
         float lowestValue = 0f;
         float avrKoopKoers = 0f;
+        float koopKoers = 0f;
         for (int counter = 0; counter < modelRegels.size(); counter++) {
             Modelregel modelregel = modelRegels.get(counter);
             Modelregel vorigeTop_1 = null;
@@ -415,10 +416,7 @@ public class PFRules {
 
             if( (modelregel.getStatus() == DagkoersStatus.BUY && portefeuille.size() < 3)) {
             	// kopen wait
-            	wait = true;
-                continue;
-            }
-            if( wait && isPlus(modelregel)) {
+            	koopKoers = modelregel.getKoers();
             	// kopen
             	Transaction trans = new Transaction();
                 trans.setStartDate(Integer.parseInt(modelregel.getDatum()));
@@ -428,12 +426,33 @@ public class PFRules {
                 lowestValue = modelregel.getKoers();
                 avrKoopKoers = getAvrKoopKoers(portefeuille);
 
+            	wait = true;
+                continue;
+            }
+            if( wait && isPlus(modelregel)) {
+            	// kopen
+//            	Transaction trans = new Transaction();
+//                trans.setStartDate(Integer.parseInt(modelregel.getDatum()));
+//                trans.setStartRate(modelregel.getKoers());
+//                trans.setPieces(1d);
+//                portefeuille.push(trans);
+//                lowestValue = modelregel.getKoers();
+//                avrKoopKoers = getAvrKoopKoers(portefeuille);
+
                 wait = false;
                 continue;
             }
-//            if( wait && !isPlus(modelregel)) {
-//                wait = false;
-//            }
+            if( wait && !isPlus(modelregel)) {
+                wait = false;
+                double verschil = MathFunctions.procVerschil(koopKoers, modelregel.getKoers());
+                System.out.println(verschil);
+                Transaction trans = portefeuille.pop();
+            	trans.setEndDate(Integer.parseInt(modelregel.getDatum()));
+                trans.setEndRate(modelregel.getKoers());
+                trans.setType(Type.LONG);
+                transactions.add(trans);
+                avrKoopKoers = getAvrKoopKoers(portefeuille);
+            }
 //            if(modelregel.getStatus() == DagkoersStatus.BUY && portefeuille.size() < 3 ) {
 //            	// bijkopen
 //            	Transaction trans = new Transaction();

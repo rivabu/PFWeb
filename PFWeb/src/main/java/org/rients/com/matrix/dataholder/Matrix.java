@@ -110,6 +110,14 @@ public class Matrix {
 		}
 		FileUtils.writeToFile(filename, lines);
 	}
+	
+	public String getEndResult() {
+		String returnValue = "0";
+		if (transactionsPerc != null) {
+			returnValue = transactionsPerc.getValueAsString(dates[dates.length - 1]);
+		}
+		return returnValue;
+	}
 
 	public void setColumn(FundDataHolder data, int number) {
 		columns[number] = data;
@@ -146,22 +154,12 @@ public class Matrix {
 		while (iter.hasNext()) {
 			Transaction t = iter.next();
 			dateCounter = 0;
-			while (Integer.parseInt(dates[dateCounter]) < t.startDate ) {
+			while (Integer.parseInt(dates[dateCounter]) <= t.startDate ) {
 				dateCounter++;
 			}
 			
 			while (Integer.parseInt(dates[dateCounter]) <= t.endDate) {
-//				koers = koersen.getValueAsDouble(dates[dateCounter]);
-//				if (Integer.parseInt(dates[dateCounter]) == t.startDate) {
-//					koersVorig = koers;
-//				} else {
-//					currentValue = transactionsPerc.getValueAsDouble(dates[dateCounter]);
-//					result = (1 + MathFunctions.procVerschil(koersVorig, koers) / 100);
-//					newValue = currentValue * result ;
-//					transactionsPerc.addValue(dates[dateCounter], newValue);
-//					koersVorig = koers;
-//					
-//				}
+
 				int currentAantal = transactionsAantal.getValueAsInt(dates[dateCounter]);
 				transactionsAantal.addValue(dates[dateCounter], currentAantal + 1);
 				dateCounter++;
@@ -177,12 +175,7 @@ public class Matrix {
 			}
 				
 		}
-//		while (dateCounter < dates.length ) {
-//			// geen transacties
-//			currentValue = transactionsPerc.getValueAsDouble(dates[dateCounter-1]);
-//			transactionsPerc.addValue(dates[dateCounter], currentValue);
-//			dateCounter++;
-//		}
+
 		dateCounter = 0;
 		while (dateCounter < dates.length) {
 			int aantal =  transactionsAantal.getValueAsInt(dates[dateCounter]);
@@ -202,7 +195,6 @@ public class Matrix {
 			vorigeValue = currentValue;
 			koersVorig = koers;
 		}
-		System.out.println("endresult: " + currentValue);
 		dateCounter = 0;
 		vorigeValue = 100;
 		koersVorig = koersen.getValueAsDouble(dates[0]);
