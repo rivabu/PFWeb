@@ -49,7 +49,7 @@ public class FundDataHolder {
         			}
                		returnValue = MathFunctions.round(new Double(koers).doubleValue(), 2) + "";
         		} catch (NumberFormatException nfe) {
-        			System.out.println("columnName: " + columnName + " date: " + date + " value: " + ((StrengthWeakness) data.get(date)).printToString());
+        			System.out.println("columnName: " + columnName + " date: " + date + " value: " + ((StrengthWeakness) data.get(date)).toString());
         		}
         	} else {
         		returnValue = data.get(date).toString() + ", " + MathFunctions.round(100 * MathFunctions.procVerschil(firstValue.toString(), data.get(date).toString()), 2);
@@ -70,7 +70,7 @@ public class FundDataHolder {
     			d = new Double(koers).doubleValue();
     		}
             catch (NumberFormatException nfe)  {
-            	System.out.println("NFE: " + fundname + " " + date + " " + ((StrengthWeakness) data.get(date)).printToString());
+            	System.out.println("NFE: " + fundname + " " + date + " " + ((StrengthWeakness) data.get(date)).toString());
             }
         }
         return d;

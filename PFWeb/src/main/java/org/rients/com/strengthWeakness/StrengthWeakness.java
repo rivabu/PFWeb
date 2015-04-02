@@ -36,7 +36,7 @@ public class StrengthWeakness {
 		this.strength = strength;
 	}
 	
-	public String printToString() {
+	public String toString() {
 		return ""+koers+","+strength;
 	}
 	
