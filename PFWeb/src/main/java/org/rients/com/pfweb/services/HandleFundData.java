@@ -153,7 +153,7 @@ public class HandleFundData {
         }
         if (!directory.contains("intraday")) {
             //String fileName = Constants.FUND_PROPERTIESDIR + fundName + Constants.PROPERTIES;
-            prop = PropertiesUtils.getPropertiesFromClasspath(fundName + Constants.PROPERTIES);
+            prop = PropertiesUtils.getPropertiesFromPropertiesDir(fundName + Constants.PROPERTIES);
         }
 		// boolean old = false;
 		List<Dagkoers> records = new ArrayList<Dagkoers>();

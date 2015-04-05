@@ -1,15 +1,19 @@
 package org.rients.com.utils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
+import org.rients.com.constants.Constants;
 
 public class PropertiesUtils {
 
@@ -80,6 +84,24 @@ public class PropertiesUtils {
             	properties.setProperty("path", path);
             }
         } catch (IOException e) {
+            System.err.println("Unable to load " + filename + ".");
+        }
+        return properties;
+    }
+    
+    /** Constructor. */
+    public static Properties getPropertiesFromPropertiesDir(String filename) {
+    	InputStream is = null;
+        Properties properties = new Properties();
+        try {
+            
+            String path = Constants.FUND_PROPERTIESDIR + "/" + filename;
+            File f = new File(path);
+            is = new FileInputStream( f );
+            properties.load(is);
+            properties.setProperty("path", path);
+        } catch (Exception e) {
+        	is = null;
             System.err.println("Unable to load " + filename + ".");
         }
         return properties;

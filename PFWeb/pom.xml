@@ -9,6 +9,9 @@
 	<properties>
 		<spring.version>3.0.5.RELEASE</spring.version>
 		<jetty.plugin.version>7.3.0.v20110203</jetty.plugin.version>
+		<maven-war-plugin.version>2.3</maven-war-plugin.version>
+		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
+
 	</properties>
 	<scm>
 		<connection>scm:git:http://github.com/rivabu/PFWeb.git</connection>
@@ -25,50 +28,104 @@
 				<wtp.default.server>Apache Tomcat v5.5</wtp.default.server>
 			</properties>
 		</profile>
-		<profile>
-			<id>jetty</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.mortbay.jetty</groupId>
-						<artifactId>jetty-maven-plugin</artifactId>
-						<version>${jetty.plugin.version}</version>
-						<executions>
-							<execution>
-								<id>start-jetty</id>
-								<phase>install</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
+        <profile>
+            <id>cargo</id>
+            <properties>
+                <environment>local</environment>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+						<version>${maven-war-plugin.version}</version>
+                        <configuration>
+							<webXml>WebContent\WEB-INF\web.xml</webXml>   
+                           
+                            <warSourceDirectory>WebContent</warSourceDirectory>
+                            <packagingIncludes>WEB-INF/*,WEB-INF/classes/**,WEB-INF/lib/*.jar,*.jsp,*.html,WEB-INF/tags/**,WEB-INF/tld/**,static/**</packagingIncludes>
+                            <!--webResources>
+                                <resource>
+                                    <directory>${project.build.directory}/data/properties</directory>
+                                    <targetPath>WEB-INF/classes</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/data/fund_properties</directory>
+                                    <targetPath>WEB-INF/classes</targetPath>
+                                </resource>
+                            </webResources-->
+                            <archive>
+                                <manifest>
+                                    <addClasspath>true</addClasspath>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </plugin>
+					
+				<!--<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<warSourceDirectory>WebContent</warSourceDirectory>
+					<warSourceExcludes>
+						**/*.htm,**/*.html,**/*.html,**/*.gif,**/*.js,**/*.css,**/*.gif,**/*.jpg,**/*.png,**/*.exe,**/*.wsdl,**/*.xsd
+					</warSourceExcludes>
+					<warSourceIncludes>
+						*,WEB-INF/*,WEB-INF/classes/**,WEB-INF/jsp/**,WEB-INF/includes/**,WEB-INF/tlds/**,WEB-INF/tags/**
+					</warSourceIncludes>
 
-						<configuration>
-							<webAppSourceDirectory>${basedir}/WebContent</webAppSourceDirectory>
-							<connectors>
-								<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-									<port>8080</port>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>-->
 
-									<maxIdleTime>60000</maxIdleTime>
-								</connector>
-							</connectors>
-
-							<webAppConfig>
-								<contextPath>/PFWeb</contextPath>
-
-								<!-- <descriptor>${basedir}/src/deploy/resources/jetty-web.xml</descriptor> 
-									<jettyEnvXml>${basedir}/src/deploy/resources/jetty-env.xml</jettyEnvXml> -->
-								<extraClasspath>
-									D:/PFDataJetty/fund_properties
-								</extraClasspath>
-
-							</webAppConfig>
-						</configuration>
-
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
+                    <plugin>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven2-plugin</artifactId>
+                        <version>1.4.4</version>
+                        <configuration>
+                            <container>
+                                <containerId>tomcat7x</containerId>
+                                <home>${mya.tomcat.home}</home>
+                                <output>${project.build.directory}/tomcat7x/container.log</output>
+                            </container>
+                            <configuration>
+                                <home>${project.build.directory}/tomcat7x</home>
+                                <properties>
+                                    <cargo.logging>low</cargo.logging>
+                                    <cargo.servlet.port>9070</cargo.servlet.port>
+                                    <cargo.tomcat.httpSecure>false</cargo.tomcat.httpSecure>
+                                    <cargo.jvmargs>
+                                        -Xdebug
+                                        -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000
+                                        -Xnoagent
+                                        -Djava.compiler=NONE
+                                    </cargo.jvmargs>
+                                </properties>
+                            </configuration>
+                            <deployables>
+                                <deployable>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                    <type>war</type>
+                                    <properties>
+                                        <context>PFWeb</context>
+                                    </properties>
+                                </deployable>
+                            </deployables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <!--dependencies>
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>jstl</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies-->
+        </profile>
 	</profiles>
 
 	<dependencies>
@@ -257,59 +314,7 @@
 			</plugin>
 
 
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<warSourceDirectory>WebContent</warSourceDirectory>
-					<warSourceExcludes>
-						**/*.htm,**/*.html,**/*.html,**/*.gif,**/*.js,**/*.css,**/*.gif,**/*.jpg,**/*.png,**/*.exe,**/*.wsdl,**/*.xsd
-					</warSourceExcludes>
-					<warSourceIncludes>
-						*,WEB-INF/*,WEB-INF/classes/**,WEB-INF/jsp/**,WEB-INF/includes/**,WEB-INF/tlds/**,WEB-INF/tags/**
-					</warSourceIncludes>
 
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-antrun-plugin
-										</artifactId>
-										<versionRange>
-											[1.3,)
-										</versionRange>
-										<goals>
-											<goal>run</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 </project>

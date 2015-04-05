@@ -32,7 +32,10 @@ public class Constants {
 	
     public static String REAL_TRANSACTIONDIR = props().getProperty("REAL_TRANSACTIONDIR");;
     public static String INTRADAY_KOERSENDIR = props().getProperty("INTRADAY_KOERSENDIR");
-    public static String TEMPDIR = props().getProperty("TEMPDIR");;
+    public static String TEMPDIR = props().getProperty("TEMPDIR");
+    
+    public static String FUND_PROPERTIESDIR = props().getProperty("FUND_PROPERTIESDIR");
+    
 
 	//behr
     public static String URL_PREFIX = props().getProperty("URL_PREFIX");;

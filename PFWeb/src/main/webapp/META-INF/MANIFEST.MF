@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Class-Path: activation-1.1.jar ant-1.7.0.jar ant-launcher-1.7.0.jar ao
+ palliance-1.0.jar asm-3.3.1.jar bcmail-jdk14-138.jar bcprov-jdk14-138
+ .jar cglib-2.2.2.jar commons-beanutils-1.7.0.jar commons-codec-1.2.ja
+ r commons-collections-3.1.jar commons-fileupload-1.2.jar commons-http
+ client-3.1.jar commons-io-1.1.jar commons-lang-2.1.jar commons-loggin
+ g-1.0.4.jar commons-math3-3.0.jar core-renderer-R8.jar displaytag-1.2
+ .jar htmlcleaner-2.2.jar itext-2.0.8.jar itextpdf-5.3.4.jar jcommon-1
+ .0.15.jar jdom-1.1.jar jfreechart-1.0.12.jar joda-time-1.6.jar jstl-1
+ .1.2.jar jta-1.1.jar log4j-1.2.8.jar mail-1.4.jar poi-3.9.jar quartz-
+ 1.8.5.jar slf4j-api-1.6.0.jar spring-aop-3.0.5.RELEASE.jar spring-asm
+ -3.0.5.RELEASE.jar spring-beans-3.0.5.RELEASE.jar spring-context-3.0.
+ 5.RELEASE.jar spring-context-support-3.0.5.RELEASE.jar spring-core-3.
+ 0.5.RELEASE.jar spring-expression-3.0.5.RELEASE.jar spring-tx-3.0.5.R
+ ELEASE.jar spring-web-3.0.5.RELEASE.jar spring-webmvc-3.0.5.RELEASE.j
+ ar standard-1.1.2.jar
+
