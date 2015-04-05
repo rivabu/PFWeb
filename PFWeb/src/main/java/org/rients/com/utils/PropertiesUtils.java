@@ -34,7 +34,7 @@ public class PropertiesUtils {
     
     public static void saveExistingProperties(String file, Map<String, String> fundProperties) {
         // load first the existing, then add the new values
-        Properties properties = getPropertiesFromClasspath(file);
+        Properties properties = getPropertiesFromPropertiesDir(file);
         Set<String> set = fundProperties.keySet();
         Iterator<String> itr = set.iterator();
         while (itr.hasNext()) {
