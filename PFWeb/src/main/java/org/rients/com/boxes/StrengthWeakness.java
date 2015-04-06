@@ -1,4 +1,4 @@
-package org.rients.com.strengthWeakness;
+package org.rients.com.boxes;
 
 public class StrengthWeakness {
 	public StrengthWeakness(String datum, float koers, double strength) {
@@ -9,8 +9,8 @@ public class StrengthWeakness {
 	}
 
 	String datum;
-	float koers;
-	double strength;
+	public float koers;
+	public double strength;
 	
 	public String getDatum() {
 		return datum;

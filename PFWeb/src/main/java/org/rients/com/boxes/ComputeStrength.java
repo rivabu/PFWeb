@@ -1,4 +1,4 @@
-package org.rients.com.strengthWeakness;
+package org.rients.com.boxes;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

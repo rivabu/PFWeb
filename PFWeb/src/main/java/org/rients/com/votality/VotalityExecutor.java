@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.rients.com.boxes.Portfolio;
 import org.rients.com.constants.Constants;
 import org.rients.com.matrix.dataholder.FundDataHolder;
 import org.rients.com.matrix.dataholder.Matrix;
@@ -12,7 +13,6 @@ import org.rients.com.model.Dagkoers;
 import org.rients.com.model.Transaction;
 import org.rients.com.model.Type;
 import org.rients.com.pfweb.services.HandleFundData;
-import org.rients.com.strengthWeakness.Portfolio;
 import org.rients.com.utils.FileUtils;
 import org.rients.com.utils.Formula;
 import org.rients.com.utils.HistoricalVotality;

@@ -76,6 +76,7 @@ public final class FileUtils
 			} catch (IOException e)
 				{
 				System.err.println("Exception opening file " + fileName + ": " + e);
+				e.printStackTrace();
 			}
 		}
 	}

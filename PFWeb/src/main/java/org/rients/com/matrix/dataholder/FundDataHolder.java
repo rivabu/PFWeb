@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.rients.com.strengthWeakness.StrengthWeakness;
+import org.rients.com.boxes.StrengthWeakness;
 import org.rients.com.utils.MathFunctions;
 
 public class FundDataHolder {
