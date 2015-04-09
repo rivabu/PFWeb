@@ -35,7 +35,6 @@ public class BeatIndexExecutor {
     
     //private int totalDAYS;
     private int strengthOverDays;
-    private int sellAfterDays;
     private int numberOfBoxes;
 
     
@@ -43,28 +42,19 @@ public class BeatIndexExecutor {
     
 	public void process() {
 
-//        boolean save = false;
-//        for (int i=15; i<20; i++) {
-//			for (int j=35; j<50; j++) {
-//				fillKoersMatrix(i, j, save);
-//				
-//			}
-//		}
-//		fillKoersMatrix(19, 40, true);
 		boolean save = true;
-		Matrix matrix = fillKoersMatrix(BeatIndexConstants.strengthOverDays, BeatIndexConstants.sellAfterDays);
+		Matrix matrix = fillKoersMatrix(BeatIndexConstants.strengthOverDays);
         Portfolio portfolio = handleMatrixForStrength(matrix, true);
         if (save) {
         	portfolio.saveTransactions();
         }
-        System.out.println("strengthOverDays: "+ strengthOverDays + " sellAfterDays: " + sellAfterDays + portfolio.getResultData());
+        System.out.println("strengthOverDays: "+ strengthOverDays + portfolio.getResultData());
 
 	}
 	
-	public Matrix fillKoersMatrix(int strengthOverDays, int sellAfterDays) {
+	public Matrix fillKoersMatrix(int strengthOverDays) {
 		
         this.strengthOverDays = strengthOverDays;
-        this.sellAfterDays = sellAfterDays;
         // voor iedere box 1 dag
         this.numberOfBoxes = BeatIndexConstants.numberOfBoxes;
 //        List<Transaction> transactions = handleMatrixForStrength(matrix, true);
@@ -100,6 +90,7 @@ public class BeatIndexExecutor {
 
 
 	private Portfolio handleMatrixForStrength(Matrix matrix, boolean strong) {
+		int transactionId = 1;
 		double startBedrag = BeatIndexConstants.startBedrag;
 		Portfolio portfolio = new Portfolio();
 		String[] dates = matrix.getDates();
@@ -116,10 +107,11 @@ public class BeatIndexExecutor {
 
 			String currentDate = dates[dagTeller];
 			TreeMap<String, Double> sorted_map = findStrongStocks(matrix, dagTeller);
-			System.out.println(sorted_map);
+			//System.out.println(sorted_map);
 			// bepaal welke aandelen in portefeuille moeten komen
 			Set<String> StocksToBuy = getStocksToBuy(boxes, sorted_map);
-			System.out.println("toBuy: " + StocksToBuy);
+
+			//System.out.println("toBuy: " + StocksToBuy);
 			
 			Iterator<String> bepaalVerkopen = StocksInPortefeuille.iterator();
 			while(bepaalVerkopen.hasNext()) {
@@ -152,7 +144,8 @@ public class BeatIndexExecutor {
 					// buy this stock
 					double koersVandaag = matrix.getFundData(fundNameToBuy).getValueAsDouble(currentDate);
 					int pieces = bepaalAantalToBuy(cash, emptyBoxes, koersVandaag);
-					Transaction trans = new Transaction(fundNameToBuy, new Integer(currentDate).intValue(), 0, new Double(koersVandaag).floatValue(), pieces, Type.LONG);
+					Transaction trans = new Transaction(fundNameToBuy, new Integer(currentDate).intValue(), transactionId, new Double(koersVandaag).floatValue(), pieces, Type.LONG);
+					transactionId++;
 					emptyBoxes --;
 					cash = cash - (pieces * koersVandaag);
 					int emptyBoxId = getFistEmptyBox(boxes);
@@ -175,12 +168,11 @@ public class BeatIndexExecutor {
 			}
 			
 		}
-		System.out.println("profit: " + MathFunctions.round(portfolio.getProfit(), 2));
-		System.out.println("cash : " + cash);
-		double totalAmount = cash;
+
 		// finished, empty boxes, nodig?
 		for (int i = 0; i < boxes.length; i++) {
 			Transaction trans = boxes[i].getTrans();
+			trans.setType(Type.UNFINISHED);
 			String currentDate = dates[dates.length - 1];
 			double koersVandaag = matrix.getFundData(trans.getFundName()).getValueAsDouble(currentDate);
 			trans.addSellInfo(new Integer(currentDate).intValue(), 0, new Double(koersVandaag).floatValue());
@@ -191,7 +183,7 @@ public class BeatIndexExecutor {
 
 		FileUtils.writeToFile(filename, new ArrayList<Dagkoers>(Arrays.asList(waarde)));
 
-		System.out.println("PROFIT (incl cash): " + MathFunctions.round(totalAmount - (BeatIndexConstants.numberOfBoxes * startBedrag), 2));
+		//System.out.println("PROFIT (incl cash): " + MathFunctions.round(totalAmount - (BeatIndexConstants.numberOfBoxes * startBedrag), 2));
 		return portfolio;
 	}
 	
@@ -235,6 +227,9 @@ public class BeatIndexExecutor {
 				if (strength != null && isFundDataAvailable) {
 					// bepaal welke aandelen relatief sterk zijn
 					map.put(matrix.getColumn(fundCounter).getColumnName(), strength.getStrength());
+					if (currentDate.equals("20141015")) {
+						System.out.println("stock: " + matrix.getColumn(fundCounter).getColumnName() + " strength: " + strength.getStrength());
+					}
 				}
 			}
 		}
@@ -254,7 +249,7 @@ public class BeatIndexExecutor {
 	
 	private boolean isFundDataAvailable(FundDataHolder dataHolder, int  dagTeller, String[] dates) {
 		boolean returnValue = false;
-		int verkoopDatumTeller = dagTeller + sellAfterDays;
+		int verkoopDatumTeller = dagTeller;
 		if (verkoopDatumTeller < dates.length) {
 			if (dataHolder.getValue(dates[verkoopDatumTeller]) instanceof StrengthWeakness)
 			returnValue = true;
@@ -263,6 +258,9 @@ public class BeatIndexExecutor {
 			if (dataHolder.getValue(laatsteDatum) instanceof StrengthWeakness) {
 				returnValue = true;
 			}
+		}
+		if (returnValue == false) {
+			System.out.println("not available: " + dataHolder.getColumnName());
 		}
 		return returnValue;
 	}

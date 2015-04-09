@@ -264,7 +264,7 @@ public class PFRules {
         public void setTransaction(ArrayList<Modelregel> pfData, Transaction trans) {
         for (int j = 0; j < pfData.size(); j++) {
             Modelregel modelregel = (Modelregel) pfData.get(j);
-            if (modelregel.getDatumInt() >= trans.getStartDate() && modelregel.getDatumInt() <= trans.getEndDate()) {
+            if (modelregel.getDatumInt() > trans.getStartDate() && modelregel.getDatumInt() <= trans.getEndDate()) {
                 if (trans.getScoreAbs() > 0) {
                     modelregel.setStatus(DagkoersStatus.BIGMOVER_UP);
                 } else {

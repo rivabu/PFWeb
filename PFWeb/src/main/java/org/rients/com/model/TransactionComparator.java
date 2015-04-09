@@ -18,8 +18,10 @@ public class TransactionComparator implements Comparator<Object>, Serializable {
 
         if (date1 > date2) {
             return 1;
-        } else {
+        } else if (date1 < date2) {
             return -1;
+        } else {
+        	return 0;
         }
     }
 

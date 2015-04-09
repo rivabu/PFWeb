@@ -125,7 +125,7 @@ public class Transaction {
         String sep = ",";
 
         String string =
-            startDate + sep + endDate + sep + MathFunctions.round(pieces, 2) + sep + fundName +  sep + buyId + sep + startRate + sep + endRate +  sep + type + sep + getScorePercStr() + sep + getScoreAbsStr();
+            startDate + sep + endDate + sep + pieces + sep + fundName +  sep + buyId + sep + startRate + sep + endRate +  sep + type + sep + getScorePercStr() + sep + getScoreAbsStr();
 
         return string;
     }

@@ -150,10 +150,10 @@ public class PFGenerator {
                 g.setColor(Color.RED);
             }    
             if (PFRegel.getStatus() == DagkoersStatus.BIGMOVER_UP) {
-                g.setColor(Color.pink);
+                g.setColor(Color.GREEN);
             }
             if (PFRegel.getStatus() == DagkoersStatus.BIGMOVER_DOWN) {
-                g.setColor(Color.yellow);
+                g.setColor(Color.RED);
             }
             if (PFRegel.getStatus() == DagkoersStatus.BUY) {
                 g.setColor(Color.ORANGE);
