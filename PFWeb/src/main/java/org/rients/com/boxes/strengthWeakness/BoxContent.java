@@ -1,4 +1,4 @@
-package org.rients.com.boxes;
+package org.rients.com.boxes.strengthWeakness;
 
 public class BoxContent {
 	private String fundName;
@@ -69,3 +69,4 @@ public class BoxContent {
 
 
 }
+

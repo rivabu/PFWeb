@@ -421,7 +421,7 @@ public class PFRules {
             	Transaction trans = new Transaction();
                 trans.setStartDate(Integer.parseInt(modelregel.getDatum()));
                 trans.setStartRate(modelregel.getKoers());
-                trans.setPieces(1d);
+                trans.setPieces(1);
                 portefeuille.push(trans);
                 lowestValue = modelregel.getKoers();
                 avrKoopKoers = getAvrKoopKoers(portefeuille);

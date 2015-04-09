@@ -58,7 +58,7 @@ public class FundDataHolder {
         return returnValue;
     }
 
-    public double getValueAsDouble(String date, String fundname) {
+    public double getValueAsDouble(String date) {
     	Double d = 0d;
     	if (data.containsKey(date)) {
     		try {
@@ -70,7 +70,7 @@ public class FundDataHolder {
     			d = new Double(koers).doubleValue();
     		}
             catch (NumberFormatException nfe)  {
-            	System.out.println("NFE: " + fundname + " " + date + " " + ((StrengthWeakness) data.get(date)).toString());
+            	System.out.println("NFE: " + this.columnName + " " + date + " " + ((StrengthWeakness) data.get(date)).toString());
             }
         }
         return d;

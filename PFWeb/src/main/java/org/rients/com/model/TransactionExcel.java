@@ -2,7 +2,7 @@ package org.rients.com.model;
 
 public class TransactionExcel {
     private int number;
-    private double pieces;
+    private int pieces;
     private BuySell buySell;
     private String fundName;
     private int datum;
@@ -23,13 +23,13 @@ public class TransactionExcel {
     /**
      * @return the pieces
      */
-    public double getPieces() {
+    public int getPieces() {
         return pieces;
     }
     /**
      * @param pieces the pieces to set
      */
-    public void setPieces(double pieces) {
+    public void setPieces(int pieces) {
         this.pieces = pieces;
     }
     /**

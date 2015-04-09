@@ -30,14 +30,14 @@ public class Transaction {
     public float endRate;
     public int numberOfDays;
     public Type type; // LONG, SHORT
-    public double pieces;
+    public int pieces;
     
     
     public Transaction() {
         super();
     }
     
-    public Transaction(String fundName, int startDate, int buyId, float startRate, double pieces, Type type) {
+    public Transaction(String fundName, int startDate, int buyId, float startRate, int pieces, Type type) {
         super();
         this.fundName = fundName;
         this.startDate = startDate;
@@ -213,7 +213,7 @@ public class Transaction {
     /**
      * @return the pieces
      */
-    public double getPieces() {
+    public int getPieces() {
         return pieces;
     }
 
@@ -221,7 +221,7 @@ public class Transaction {
     /**
      * @param pieces the pieces to set
      */
-    public void setPieces(double pieces) {
+    public void setPieces(int pieces) {
         this.pieces = pieces;
     }
 

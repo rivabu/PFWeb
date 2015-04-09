@@ -179,8 +179,8 @@ public class Matrix {
 		dateCounter = 0;
 		while (dateCounter < dates.length) {
 			int aantal =  transactionsAantal.getValueAsInt(dates[dateCounter]);
-			currentValue = transactionsPerc.getValueAsDouble(dates[dateCounter], fundname);
-			koers = koersen.getValueAsDouble(dates[dateCounter], fundname);
+			currentValue = transactionsPerc.getValueAsDouble(dates[dateCounter]);
+			koers = koersen.getValueAsDouble(dates[dateCounter]);
 			if (aantal == 0) {
 				// result blijft gelijk
 				currentValue = vorigeValue;
@@ -197,11 +197,11 @@ public class Matrix {
 		}
 		dateCounter = 0;
 		vorigeValue = 100;
-		koersVorig = koersen.getValueAsDouble(dates[0], fundname);
+		koersVorig = koersen.getValueAsDouble(dates[0]);
 		while (dateCounter < dates.length) {
 			int aantal =  transactionsAantal.getValueAsInt(dates[dateCounter]);
-			currentValue = transactionsPercInverse.getValueAsDouble(dates[dateCounter], fundname);
-			koers = koersen.getValueAsDouble(dates[dateCounter], fundname);
+			currentValue = transactionsPercInverse.getValueAsDouble(dates[dateCounter]);
+			koers = koersen.getValueAsDouble(dates[dateCounter]);
 			if (aantal == 0) {
 				// result blijft gelijk
 				result = (1 + MathFunctions.procVerschil(koersVorig, koers) / 100);

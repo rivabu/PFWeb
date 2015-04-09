@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.rients.com.boxes.BoxContent;
 import org.rients.com.boxes.ComputeStrength;
 import org.rients.com.boxes.Portfolio;
 import org.rients.com.boxes.StrengthWeakness;
@@ -165,8 +164,8 @@ public class StrengthVersusWeaknessExecutor {
 				for (int i = 0; i < boxes.length; i++) {
 					if (boxes[i].inVoorraad(Integer.parseInt(currentDate))) {
 						String fundname = boxes[i].getFundName();
-						double koersGisteren = matrix.getFundData(fundname).getValueAsDouble(yesterday,  fundname);
-						double koersVandaag = matrix.getFundData(fundname).getValueAsDouble(currentDate, fundname);
+						double koersGisteren = matrix.getFundData(fundname).getValueAsDouble(yesterday);
+						double koersVandaag = matrix.getFundData(fundname).getValueAsDouble(currentDate);
 						double opbrengst = (koersVandaag - koersGisteren) * boxes[i].getNumberOfStocks();
 						vandaag.setClosekoers((float) (huidigeWaarde + opbrengst));
 						huidigeWaarde = huidigeWaarde + opbrengst;
