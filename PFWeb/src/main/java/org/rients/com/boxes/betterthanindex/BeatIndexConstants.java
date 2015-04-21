@@ -1,8 +1,8 @@
 package org.rients.com.boxes.betterthanindex;
 
 public class BeatIndexConstants {
-	static int startDate = 20100101;
-	static int endDate = -1;
+	static int startDate = 20140101;
+	static int endDate = 20150101;
 	static int strengthOverDays =20;
 	static int numberOfBoxes = 10;
 	static double stoploss = -12d;

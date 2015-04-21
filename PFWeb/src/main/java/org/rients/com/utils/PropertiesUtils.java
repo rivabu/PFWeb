@@ -42,16 +42,23 @@ public class PropertiesUtils {
             String value = fundProperties.get(key);
             properties.setProperty(key, value);
         }
-        try {
-            String path = properties.get("path").toString();
-            properties.remove("path");
-            properties.store(new FileOutputStream(path), "Java properties test");
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        if (properties != null) {
+            try {
+            	String path = Constants.FUND_PROPERTIESDIR;
+            	if (properties.get("path") != null) {
+                    path = properties.get("path").toString();
+                    properties.remove("path");
+            	}
+                properties.store(new FileOutputStream(path), "Java properties test");
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+        	saveProperties(file, properties);
         }
     }
 
