@@ -48,6 +48,9 @@ public class PropertiesUtils {
             	if (properties.get("path") != null) {
                     path = properties.get("path").toString();
                     properties.remove("path");
+            	} else {
+            		properties.put("FUNDNAME", file.replaceFirst(".properties", ""));
+            		path = path + file;
             	}
                 properties.store(new FileOutputStream(path), "Java properties test");
             } catch (FileNotFoundException e) {

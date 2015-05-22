@@ -11,6 +11,7 @@
 		<jetty.plugin.version>7.3.0.v20110203</jetty.plugin.version>
 		<maven-war-plugin.version>2.3</maven-war-plugin.version>
 		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
+		
 
 	</properties>
 	<scm>
@@ -32,6 +33,7 @@
             <id>cargo</id>
             <properties>
                 <environment>local</environment>
+				
             </properties>
             <build>
                 <plugins>
@@ -43,16 +45,6 @@
                            
                             <warSourceDirectory>WebContent</warSourceDirectory>
                             <packagingIncludes>WEB-INF/*,WEB-INF/classes/**,WEB-INF/lib/*.jar,*.jsp,*.html,WEB-INF/tags/**,WEB-INF/tld/**,static/**</packagingIncludes>
-                            <!--webResources>
-                                <resource>
-                                    <directory>${project.build.directory}/data/properties</directory>
-                                    <targetPath>WEB-INF/classes</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.directory}/data/fund_properties</directory>
-                                    <targetPath>WEB-INF/classes</targetPath>
-                                </resource>
-                            </webResources-->
                             <archive>
                                 <manifest>
                                     <addClasspath>true</addClasspath>
@@ -60,25 +52,6 @@
                             </archive>
                         </configuration>
                     </plugin>
-					
-				<!--<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<warSourceDirectory>WebContent</warSourceDirectory>
-					<warSourceExcludes>
-						**/*.htm,**/*.html,**/*.html,**/*.gif,**/*.js,**/*.css,**/*.gif,**/*.jpg,**/*.png,**/*.exe,**/*.wsdl,**/*.xsd
-					</warSourceExcludes>
-					<warSourceIncludes>
-						*,WEB-INF/*,WEB-INF/classes/**,WEB-INF/jsp/**,WEB-INF/includes/**,WEB-INF/tlds/**,WEB-INF/tags/**
-					</warSourceIncludes>
-
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>-->
 
                     <plugin>
                         <groupId>org.codehaus.cargo</groupId>
@@ -95,6 +68,7 @@
                                 <properties>
                                     <cargo.logging>low</cargo.logging>
                                     <cargo.servlet.port>9070</cargo.servlet.port>
+									
                                     <cargo.tomcat.httpSecure>false</cargo.tomcat.httpSecure>
                                     <cargo.jvmargs>
                                         -Xdebug
@@ -118,13 +92,6 @@
                     </plugin>
                 </plugins>
             </build>
-            <!--dependencies>
-                <dependency>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>jstl</artifactId>
-                    <scope>runtime</scope>
-                </dependency>
-            </dependencies-->
         </profile>
 	</profiles>
 
