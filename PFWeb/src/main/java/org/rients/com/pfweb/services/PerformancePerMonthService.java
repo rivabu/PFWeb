@@ -14,6 +14,7 @@ import java.util.TreeMap;
 import org.rients.com.boxes.Portfolio;
 import org.rients.com.constants.Constants;
 import org.rients.com.model.Dagkoers;
+import org.rients.com.model.DayResult;
 import org.rients.com.model.PFModel;
 import org.rients.com.model.StrategyResult;
 import org.rients.com.model.Transaction;
@@ -37,15 +38,17 @@ public class PerformancePerMonthService {
         PFModel pfModel = pfHandler.createPFData(koersen, fundName, 2.5f, 2);
         //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 2.5f, 2); midkap 1100000
         
-        Dagkoers[] waarde = new Dagkoers[koersen.size()];
+        DayResult[] waarde = new DayResult[koersen.size()];
         double startBedrag = 100000;
+        double waardeBenchmark = 100000;
         int counter = 0;
         Dagkoers dagKoers = koersen.get(0);
+        double benchMarkfactor = 100000 / dagKoers.closekoers;
         Portfolio portfolio = new Portfolio();
-        boolean winter = false;
+        boolean longPeriod = false;
         Type typeAankoop = Type.LONG;
-        if (isWinter(dagKoers)) {
-            winter = true;
+        if (isLongPeriod(dagKoers)) {
+            longPeriod = true;
         } else {
             typeAankoop = Type.SHORT;
         }
@@ -69,11 +72,11 @@ public class PerformancePerMonthService {
                     trans = null;
                 }
             }
-            if (winter && isWinter(koers)) {
+            if (longPeriod && isLongPeriod(koers)) {
                 // donothing
                 value = (aantal * koers.closekoers) + cash;
             }
-            else if (!winter && !isWinter(koers)) {
+            else if (!longPeriod && !isLongPeriod(koers)) {
                 // donothing
                 if (trans != null) {
                     value = (aantal * (trans.startRate + (trans.startRate - koers.closekoers))) + cash;
@@ -81,7 +84,7 @@ public class PerformancePerMonthService {
                     value = cash;
                 }
             }
-            else if (winter && !isWinter(koers)) {
+            else if (longPeriod && !isLongPeriod(koers)) {
                 value = (aantal * koers.closekoers) + cash;
                 if (!pfModel.isPlusOnDate(dateInt)) {
                     
@@ -95,10 +98,10 @@ public class PerformancePerMonthService {
                     cash = value - (aantal * koers.closekoers);
                     transId++;
                     trans = new Transaction(fundName, dateInt, transId, new Double(koers.closekoers).floatValue(), aantal, Type.SHORT);
-                    winter = false;
+                    longPeriod = false;
                 } 
             }
-            else if (!winter && isWinter(koers)) {
+            else if (!longPeriod && isLongPeriod(koers)) {
                 if (trans != null) {
                     value = (aantal * (trans.startRate + (trans.startRate - koers.closekoers))) + cash;
                 } else {
@@ -115,11 +118,11 @@ public class PerformancePerMonthService {
                     cash = value - (aantal * koers.closekoers);
                     transId++;
                     trans = new Transaction(fundName, dateInt, transId, new Double(koers.closekoers).floatValue(), aantal, Type.LONG);
-                    winter = true;
+                    longPeriod = true;
                 }
                 
             }
-            waarde[counter] = new Dagkoers(koers.datum, (float) value);
+            waarde[counter] = new DayResult(koers.datum, (float) benchMarkfactor * koers.closekoers, (float) value);
             counter ++;
             
         }
@@ -133,16 +136,13 @@ public class PerformancePerMonthService {
         //System.out.println(result);
         
         String filename = Constants.TRANSACTIONDIR + Constants.SEP + "result_" + fundName + ".csv";
-        FileUtils.writeToFile(filename, new ArrayList<Dagkoers>(Arrays.asList(waarde)));
-        return waarde[counter - 1].closekoers;
+        FileUtils.writeToFile(filename, new ArrayList<DayResult>(Arrays.asList(waarde)));
+        return waarde[counter - 1].getKoers();
         
     }
-    
-    private void calculateMaxLoss(Transaction trans, float startRate) {
-        
-    }
+
 	
-    private boolean isWinter(Dagkoers dagKoers) {
+    private boolean isLongPeriod(Dagkoers dagKoers) {
         int currentMonth =  Integer.parseInt(dagKoers.datum.substring(4, 6)) ;
         int day = Integer.parseInt(dagKoers.datum.substring(6));
         boolean returnValue = true;
