@@ -236,7 +236,6 @@ public class StrengthVersusWeaknessExecutor {
 			System.out.println("i = " + i + " :" + MathFunctions.round(boxes[i].getValue(), 2));
 		}
         String filename = Constants.TRANSACTIONDIR + Constants.SEP + "result.csv";
-
 		FileUtils.writeToFile(filename, new ArrayList<Dagkoers>(Arrays.asList(waarde)));
 
 		System.out.println("PROFIT (incl cash): " + MathFunctions.round(totalAmount - (StrengthWeaknessConstants.numberOfBoxes * startBedrag), 2));

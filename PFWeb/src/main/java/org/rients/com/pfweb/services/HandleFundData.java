@@ -76,7 +76,7 @@ public class HandleFundData {
             int beginDateIndex = findIndex(beginDate, records);
             if (beginDateIndex == -1) {
                 //System.out.println("date: " + beginDate + " not found in " + fundName);
-                int i =0;
+                int i = 0;
                 while ( i < 10) {
                 	beginDate =  beginDate + 1;
                 	beginDateIndex = findIndex(beginDate, records);

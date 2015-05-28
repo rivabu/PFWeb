@@ -31,8 +31,35 @@ public class Transaction {
     public int numberOfDays;
     public Type type; // LONG, SHORT
     public int pieces;
+    public float maxLossPerc;
     
-    
+    public float determineMaxLoss(float currentKoers) {
+        double procVerschil = MathFunctions.procVerschil(startRate, currentKoers);
+        if (type == Type.SHORT) {
+            procVerschil = procVerschil * -1;
+        }
+        if (type == Type.LONG && procVerschil < maxLossPerc) {
+            maxLossPerc = (float) procVerschil;
+        }
+        if (type == Type.SHORT && procVerschil < maxLossPerc) {
+            maxLossPerc = (float) procVerschil;
+        }
+        return maxLossPerc;
+    }
+    /**
+     * @return the maxLossPerc
+     */
+    public float getMaxLossPerc() {
+        return maxLossPerc;
+    }
+
+    /**
+     * @param maxLossPerc the maxLossPerc to set
+     */
+    public void setMaxLossPerc(float maxLossPerc) {
+        this.maxLossPerc = maxLossPerc;
+    }
+
     public Transaction() {
         super();
     }
@@ -125,7 +152,7 @@ public class Transaction {
         String sep = ",";
 
         String string =
-            startDate + sep + endDate + sep + pieces + sep + fundName +  sep + buyId + sep + startRate + sep + endRate +  sep + type + sep + getScorePercStr() + sep + getScoreAbsStr();
+            startDate + sep + endDate + sep + pieces + sep + fundName +  sep + buyId + sep + startRate + sep + endRate +  sep + type + sep + getScorePercStr() + sep + getScoreAbsStr() + sep + getMaxLossPerc();
 
         return string;
     }

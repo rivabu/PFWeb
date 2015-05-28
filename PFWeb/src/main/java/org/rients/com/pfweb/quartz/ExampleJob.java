@@ -34,7 +34,7 @@ public class ExampleJob extends QuartzJobBean {
         LOG.debug("Current Date: " + ft.format(dNow));
         try {
             BehrDownloadExecutor executor = new BehrDownloadExecutor();
-            //executor.testDownloadFavourites();
+            executor.testDownloadFavourites();
 
             PdfRendererService pdfRendererService = new PdfRendererService();
             pdfRendererService.process();

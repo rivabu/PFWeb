@@ -68,7 +68,8 @@
                                 <properties>
                                     <cargo.logging>low</cargo.logging>
                                     <cargo.servlet.port>9070</cargo.servlet.port>
-									
+                                    <cargo.rmi.port>8210</cargo.rmi.port>
+                                    <cargo.tomcat.ajp.port>8009</cargo.tomcat.ajp.port>
                                     <cargo.tomcat.httpSecure>false</cargo.tomcat.httpSecure>
                                     <cargo.jvmargs>
                                         -Xdebug

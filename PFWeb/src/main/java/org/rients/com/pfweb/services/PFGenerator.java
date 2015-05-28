@@ -64,8 +64,8 @@ public class PFGenerator {
             rates = fundData.getFundRates(fundName, dirFull);
         }
         if (type.equals("trans")) {
-            fundData.setNumberOfDays(numberOfDays / 4);
-            rates = fundData.getFundRates(fundName, dirFull, trans.getStartDate(), trans.getEndDate(), 10);
+            fundData.setNumberOfDays(100);
+            rates = fundData.getFundRates(fundName, dirFull, trans.getStartDate(), trans.getEndDate(), 100);
         }
 
         PFModel pfModel = handlePF.createPFData(rates, fundName, stepSize, turningPoint);

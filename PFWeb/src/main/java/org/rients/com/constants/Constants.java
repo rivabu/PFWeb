@@ -59,6 +59,7 @@ public class Constants {
     public static String LASTRATE = "LASTRATE";
     public static String FUNDNAME = "FUNDNAME";
     public static String INDEXDIR = "Indexen";
+    public static String HOOFDFONDSEN = "Hoofdfondsen";
     public static String AEX_INDEX = "aex-index";
     public static String RANDOMDIR = "Random";
     public static String OPTIMALTRANSDIR = "optimalTransactions";
