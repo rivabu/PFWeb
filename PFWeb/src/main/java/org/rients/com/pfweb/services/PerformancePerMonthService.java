@@ -16,7 +16,6 @@ import org.rients.com.constants.Constants;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.DayResult;
 import org.rients.com.model.PFModel;
-import org.rients.com.model.StrategyResult;
 import org.rients.com.model.Transaction;
 import org.rients.com.model.Type;
 import org.rients.com.utils.FileUtils;
@@ -31,6 +30,7 @@ public class PerformancePerMonthService {
     HandlePF pfHandler = new HandlePF();
     
     
+    
 
     public float createTransactions(String fundName, String directory) {
         List<Dagkoers> koersen = getKoersen(fundName, directory);
@@ -40,7 +40,6 @@ public class PerformancePerMonthService {
         
         DayResult[] waarde = new DayResult[koersen.size()];
         double startBedrag = 100000;
-        double waardeBenchmark = 100000;
         int counter = 0;
         Dagkoers dagKoers = koersen.get(0);
         double benchMarkfactor = 100000 / dagKoers.closekoers;
@@ -56,8 +55,6 @@ public class PerformancePerMonthService {
         int aantal = (int) Math.floor(startBedrag / dagKoers.closekoers);
         Transaction trans = new Transaction(fundName, new Integer(dagKoers.datum).intValue(), transId, new Double(dagKoers.closekoers).floatValue(), aantal, typeAankoop);
         double cash = startBedrag - (aantal * dagKoers.closekoers);
-        //waarde[counter] = new Dagkoers(dagKoers.datum, (float) startBedrag);
-        //counter ++;
         double value = 0d;
         for (Dagkoers koers: koersen) {
             int dateInt = new Integer(koers.datum).intValue();
@@ -137,6 +134,8 @@ public class PerformancePerMonthService {
         
         String filename = Constants.TRANSACTIONDIR + Constants.SEP + "result_" + fundName + ".csv";
         FileUtils.writeToFile(filename, new ArrayList<DayResult>(Arrays.asList(waarde)));
+        
+        createMonthScore(fundName, waarde);
         return waarde[counter - 1].getKoers();
         
     }
@@ -152,51 +151,55 @@ public class PerformancePerMonthService {
         return returnValue;
     }
 
-
-    public TreeMap<Integer, String> createMonthScore(String fundName, String directory) {
-        List<Dagkoers> koersen = getKoersen(fundName, directory);
-        TreeMap<Integer, ArrayList<Float>> map1 = new TreeMap<Integer, ArrayList<Float>>();
-        for (int i = 0; i < 12; i++) {
-            map1.put(i, new ArrayList<Float>());
-        }
-        float totalScore = 0;
-        int totalMonths = 0;
-        
-        Dagkoers dagKoers = koersen.get(0);
-        int currentMonth =  Integer.parseInt(dagKoers.datum.substring(4, 6)) - 1;
-        float currentKoers = dagKoers.closekoers;
-        
-        for (Dagkoers koers: koersen) {
-            int newMonth =  Integer.parseInt(koers.datum.substring(4, 6)) - 1;
-            if (currentMonth != newMonth) {
-                float score = (float) MathFunctions.procVerschil(currentKoers, koers.closekoers);
-                //System.out.println("month: " + currentMonth + " score: " + score);
-                ArrayList<Float> data = map1.get(currentMonth);
-                data.add(score);
-                currentMonth = newMonth;
-                currentKoers = koers.closekoers;
-                totalScore = totalScore + score;
-                totalMonths ++;
-            }
-        }
-        
-        double avrPerMonth = MathFunctions.divide(totalScore, totalMonths);
-        //System.out.println("avr per month: " + avrPerMonth);
-
-        TreeMap<Integer, String> map2 = new TreeMap<Integer, String>();
-
-        for (int i = 0; i < 12; i++) {
-            ArrayList<Float> data = map1.get(i);
-            float sum = 0;
-            for (float score : data) {
-                sum = sum + score;
-            }
-            float score = sum / data.size();
-            map2.put(i, MathFunctions.round(score));
-        }
-        
-        return map2;
+    public static String theMonth(int month){
+        String[] monthNames = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        return monthNames[month];
     }
+    
+    public void createMonthScore(String fundName, DayResult[] waarde) {
+        List<DayResult> scorePerMaand = new ArrayList<DayResult>();
+        DayResult[] _12Months = new DayResult[12];
+
+        for (int counter = 0; counter < 12; counter++) {
+            DayResult month = new DayResult(0, 0);
+            month.setMonth(theMonth(counter));
+            _12Months[counter] = month;
+        }
+        
+        DayResult dagKoers = waarde[0];
+        int currentMonth =  Integer.parseInt(dagKoers.getDate().substring(4, 6)) - 1;
+        float benchmarkKoers = dagKoers.getBenchMark();
+        float myKoers = dagKoers.getKoers();
+        
+        for (DayResult koers: waarde) {
+            int newMonth =  Integer.parseInt(koers.getDate().substring(4, 6)) - 1;
+            if (currentMonth != newMonth) {
+                float scoreBenchmark = (float) MathFunctions.procVerschil(benchmarkKoers, koers.getBenchMark());
+                float scoreMyKoers = (float) MathFunctions.procVerschil(myKoers, koers.getKoers());
+                
+                //System.out.println("month: " + currentMonth + " score: " + score);
+                DayResult monthResult = new DayResult(koers.getDate(), MathFunctions.round(scoreBenchmark, 2), MathFunctions.round(scoreMyKoers, 2));
+                scorePerMaand.add(monthResult);
+                currentMonth = newMonth;
+                benchmarkKoers = koers.getBenchMark();
+                myKoers = koers.getKoers();
+                
+                DayResult theMonth = _12Months[newMonth];
+                theMonth.setBenchMark(MathFunctions.round(theMonth.getBenchMark() + scoreBenchmark, 2));
+                theMonth.setKoers(MathFunctions.round(theMonth.getKoers() + scoreMyKoers, 2));
+            }
+        }
+        
+        
+        
+        String filename = Constants.TRANSACTIONDIR + Constants.SEP + "maandscore" + fundName + ".csv";
+        FileUtils.writeToFile(filename, scorePerMaand);
+        filename = Constants.TRANSACTIONDIR + Constants.SEP + "12_maanden" + fundName + ".csv";
+        FileUtils.writeToFile(filename, new ArrayList<DayResult>(Arrays.asList(_12Months)));
+
+    }
+    
+    
 
 
     private List<Dagkoers> getKoersen(String fundName, String directory) {

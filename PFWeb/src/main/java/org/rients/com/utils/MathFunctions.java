@@ -95,6 +95,12 @@ public class MathFunctions {
         bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
         return bd.doubleValue();
     }
+    
+    public static float round(float d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Double.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.floatValue();
+    }
 
     public static String divide(String koers1, String koers2) {
         return divide(new Double(koers1).doubleValue(), new Double(koers2).doubleValue());
