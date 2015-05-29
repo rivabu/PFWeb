@@ -132,7 +132,7 @@ public class PerformancePerMonthService {
         //StrategyResult result = portfolio.getResultData();
         //System.out.println(result);
         
-        String filename = Constants.TRANSACTIONDIR + Constants.SEP + "result_" + fundName + ".csv";
+        String filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_result.csv";
         FileUtils.writeToFile(filename, new ArrayList<DayResult>(Arrays.asList(waarde)));
         
         createMonthScore(fundName, waarde);
@@ -192,9 +192,9 @@ public class PerformancePerMonthService {
         
         
         
-        String filename = Constants.TRANSACTIONDIR + Constants.SEP + "maandscore" + fundName + ".csv";
+        String filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_maandscore.csv";
         FileUtils.writeToFile(filename, scorePerMaand);
-        filename = Constants.TRANSACTIONDIR + Constants.SEP + "12_maanden" + fundName + ".csv";
+        filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_12_maanden.csv";
         FileUtils.writeToFile(filename, new ArrayList<DayResult>(Arrays.asList(_12Months)));
 
     }
