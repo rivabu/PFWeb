@@ -29,13 +29,17 @@ public class PerformancePerMonthService {
     HandleFundData handleFundData = new HandleFundData();
     HandlePF pfHandler = new HandlePF();
     
-    
-    
+    //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 2.5f, 2); 1048
+    //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 2f, 2); 1048
+    //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 1.2f, 2); 1116
+    //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 1.4f, 2); 1160
+    //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 1.3f, 2); 1190
+    //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 1.2f, 1); 1181
 
     public float createTransactions(String fundName, String directory) {
         List<Dagkoers> koersen = getKoersen(fundName, directory);
         
-        PFModel pfModel = pfHandler.createPFData(koersen, fundName, 2.5f, 2);
+        PFModel pfModel = pfHandler.createPFData(koersen, fundName, 1.3f, 2);
         //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 2.5f, 2); midkap 1100000
         
         DayResult[] waarde = new DayResult[koersen.size()];
@@ -129,14 +133,12 @@ public class PerformancePerMonthService {
             portfolio.add(trans);
         }
         portfolio.saveTransactions();
-        //StrategyResult result = portfolio.getResultData();
-        //System.out.println(result);
         
         String filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_result.csv";
         FileUtils.writeToFile(filename, new ArrayList<DayResult>(Arrays.asList(waarde)));
         
-        createMonthScore(fundName, waarde);
-        return waarde[counter - 1].getKoers();
+        float result = createMonthScore(fundName, waarde);
+        return result;
         
     }
 
@@ -156,7 +158,7 @@ public class PerformancePerMonthService {
         return monthNames[month];
     }
     
-    public void createMonthScore(String fundName, DayResult[] waarde) {
+    public float createMonthScore(String fundName, DayResult[] waarde) {
         List<DayResult> scorePerMaand = new ArrayList<DayResult>();
         DayResult[] _12Months = new DayResult[12];
 
@@ -165,6 +167,7 @@ public class PerformancePerMonthService {
             month.setMonth(theMonth(counter));
             _12Months[counter] = month;
         }
+        float sumMonths = 0;
         
         DayResult dagKoers = waarde[0];
         int currentMonth =  Integer.parseInt(dagKoers.getDate().substring(4, 6)) - 1;
@@ -180,6 +183,7 @@ public class PerformancePerMonthService {
                 //System.out.println("month: " + currentMonth + " score: " + score);
                 DayResult monthResult = new DayResult(koers.getDate(), MathFunctions.round(scoreBenchmark, 2), MathFunctions.round(scoreMyKoers, 2));
                 scorePerMaand.add(monthResult);
+                sumMonths = sumMonths + (MathFunctions.round(scoreMyKoers, 2) - MathFunctions.round(scoreBenchmark, 2));
                 currentMonth = newMonth;
                 benchmarkKoers = koers.getBenchMark();
                 myKoers = koers.getKoers();
@@ -196,7 +200,8 @@ public class PerformancePerMonthService {
         FileUtils.writeToFile(filename, scorePerMaand);
         filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_12_maanden.csv";
         FileUtils.writeToFile(filename, new ArrayList<DayResult>(Arrays.asList(_12Months)));
-
+        
+        return sumMonths;
     }
     
     

@@ -31,13 +31,17 @@ s.p.500.csv
 
     private void process() {
         List<String> files = FileUtils.getFiles( Constants.KOERSENDIR + Constants.INDEXDIR, "csv", false);
+        float sum = 0;
         for (String filename: files) {
+            
        // String filename = "midkap-ind";
             System.out.println("--- " + filename + " ---");
             float endResult = service.createTransactions(filename, Constants.KOERSENDIR + Constants.INDEXDIR);
+            sum = sum + endResult;
             System.out.println("result: " + endResult);
             
         }
+        System.out.println("SUM: " + sum);
     }
     public static void main(String[] args) {
         new PerformancePerMonthExecutor().process();
