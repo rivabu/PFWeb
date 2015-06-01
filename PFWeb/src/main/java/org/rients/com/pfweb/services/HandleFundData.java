@@ -145,7 +145,7 @@ public class HandleFundData {
         return returnValue;
         
     }
-
+    
     public List<Dagkoers> getAllFundRates(String fundName, String directory) {
         Properties prop = null;
         if (!directory.endsWith(Constants.SEP)) {

@@ -4,12 +4,11 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package org.rients.com.pfweb.services;
+package org.rients.com.pfweb.performancepermonth;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.TreeMap;
 
 import org.rients.com.boxes.Portfolio;
 import org.rients.com.constants.Constants;
@@ -18,16 +17,22 @@ import org.rients.com.model.DayResult;
 import org.rients.com.model.PFModel;
 import org.rients.com.model.Transaction;
 import org.rients.com.model.Type;
+import org.rients.com.pfweb.services.HandleFundData;
+import org.rients.com.pfweb.services.HandlePF;
 import org.rients.com.utils.FileUtils;
-import org.rients.com.utils.MathFunctions;
 import org.springframework.stereotype.Service;
 
 
 
 @Service
-public class PerformancePerMonthService {
+public class PerformancePerMonthModel implements ModelInterface {
     HandleFundData handleFundData = new HandleFundData();
     HandlePF pfHandler = new HandlePF();
+    Reporting reporting = new Reporting();
+    List<Integer> longMonths;
+    
+    
+    
     
     //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 2.5f, 2); 1048
     //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 2f, 2); 1048
@@ -36,11 +41,13 @@ public class PerformancePerMonthService {
     //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 1.3f, 2); 1190
     //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 1.2f, 1); 1181
 
-    public float createTransactions(String fundName, String directory) {
-        List<Dagkoers> koersen = getKoersen(fundName, directory);
+
+    public float process(String directory, String fundName, InputParameters input) {
+        longMonths = input.getLongMonths();
+        List<Dagkoers> koersen = handleFundData.getAllFundRates(fundName, directory);
         
-        PFModel pfModel = pfHandler.createPFData(koersen, fundName, 1.3f, 2);
-        //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 2.5f, 2); midkap 1100000
+        
+        PFModel pfModel = pfHandler.createPFData(koersen, fundName, input.getStepSize(), input.getTurningPoint());
         
         DayResult[] waarde = new DayResult[koersen.size()];
         double startBedrag = 100000;
@@ -64,7 +71,7 @@ public class PerformancePerMonthService {
             int dateInt = new Integer(koers.datum).intValue();
             if (trans != null) {
                 float maxLoss = trans.determineMaxLoss(koers.closekoers);
-                if (maxLoss < -10) {
+                if (maxLoss < input.getStopLoss()) {
                     // sell and wait
                     trans.addSellInfo(dateInt, 0, new Double(koers.closekoers).floatValue());
                     portfolio.add(trans);
@@ -137,7 +144,7 @@ public class PerformancePerMonthService {
         String filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_result.csv";
         FileUtils.writeToFile(filename, new ArrayList<DayResult>(Arrays.asList(waarde)));
         
-        float result = createMonthScore(fundName, waarde);
+        float result = reporting.createMonthScore(fundName, waarde);
         return result;
         
     }
@@ -147,72 +154,13 @@ public class PerformancePerMonthService {
         int currentMonth =  Integer.parseInt(dagKoers.datum.substring(4, 6)) ;
         int day = Integer.parseInt(dagKoers.datum.substring(6));
         boolean returnValue = true;
+        if (longMonths.contains(currentMonth))
         if (currentMonth == 1 || currentMonth == 5 || currentMonth == 6 || currentMonth == 7 || currentMonth == 8 || currentMonth == 9) { // jan +  mei - sept
             returnValue = false;
         }
         return returnValue;
     }
 
-    public static String theMonth(int month){
-        String[] monthNames = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-        return monthNames[month];
-    }
-    
-    public float createMonthScore(String fundName, DayResult[] waarde) {
-        List<DayResult> scorePerMaand = new ArrayList<DayResult>();
-        DayResult[] _12Months = new DayResult[12];
-
-        for (int counter = 0; counter < 12; counter++) {
-            DayResult month = new DayResult(0, 0);
-            month.setMonth(theMonth(counter));
-            _12Months[counter] = month;
-        }
-        float sumMonths = 0;
-        
-        DayResult dagKoers = waarde[0];
-        int currentMonth =  Integer.parseInt(dagKoers.getDate().substring(4, 6)) - 1;
-        float benchmarkKoers = dagKoers.getBenchMark();
-        float myKoers = dagKoers.getKoers();
-        
-        for (DayResult koers: waarde) {
-            int newMonth =  Integer.parseInt(koers.getDate().substring(4, 6)) - 1;
-            if (currentMonth != newMonth) {
-                float scoreBenchmark = (float) MathFunctions.procVerschil(benchmarkKoers, koers.getBenchMark());
-                float scoreMyKoers = (float) MathFunctions.procVerschil(myKoers, koers.getKoers());
-                
-                //System.out.println("month: " + currentMonth + " score: " + score);
-                DayResult monthResult = new DayResult(koers.getDate(), MathFunctions.round(scoreBenchmark, 2), MathFunctions.round(scoreMyKoers, 2));
-                scorePerMaand.add(monthResult);
-                sumMonths = sumMonths + (MathFunctions.round(scoreMyKoers, 2) - MathFunctions.round(scoreBenchmark, 2));
-                currentMonth = newMonth;
-                benchmarkKoers = koers.getBenchMark();
-                myKoers = koers.getKoers();
-                
-                DayResult theMonth = _12Months[newMonth];
-                theMonth.setBenchMark(MathFunctions.round(theMonth.getBenchMark() + scoreBenchmark, 2));
-                theMonth.setKoers(MathFunctions.round(theMonth.getKoers() + scoreMyKoers, 2));
-            }
-        }
-        
-        
-        
-        String filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_maandscore.csv";
-        FileUtils.writeToFile(filename, scorePerMaand);
-        filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_12_maanden.csv";
-        FileUtils.writeToFile(filename, new ArrayList<DayResult>(Arrays.asList(_12Months)));
-        
-        return sumMonths;
-    }
-    
-    
-
-
-    private List<Dagkoers> getKoersen(String fundName, String directory) {
-        handleFundData.setNumberOfDays(-1); // all
-        List<Dagkoers> koersen = handleFundData.getFundRates(fundName, directory);
-        //System.out.println("aantal: " + koersen.size());
-        return koersen;
-    }
 
 
 }

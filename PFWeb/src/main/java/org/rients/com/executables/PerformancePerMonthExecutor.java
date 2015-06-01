@@ -1,48 +1,50 @@
 package org.rients.com.executables;
 
 import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.rients.com.constants.Constants;
-import org.rients.com.pfweb.services.PerformancePerMonthService;
+import org.rients.com.pfweb.performancepermonth.InputParameterFiller;
+import org.rients.com.pfweb.performancepermonth.InputParameters;
+import org.rients.com.pfweb.performancepermonth.Optimizer;
+import org.rients.com.pfweb.performancepermonth.PerformancePerMonthModel;
 import org.rients.com.utils.FileUtils;
 
 public class PerformancePerMonthExecutor {
     
     /*
      * 
-     * aex-index.csv
-dax.xetra.csv
-dj-indust.csv
-ftse.100.csv
-midkap-ind.csv
-nasdaqcomp.csv
-nikkei.csv
-out.dat
-s.p.500.csv
+     *  aex-index.csv
+        dax.xetra.csv
+        dj-indust.csv
+        ftse.100.csv
+        midkap-ind.csv
+        nasdaqcomp.csv
+        nikkei.csv
+        s.p.500.csv
 
      */
     
-    PerformancePerMonthService service = new PerformancePerMonthService();
-    
+    Optimizer optimizer = new Optimizer();
+    InputParameterFiller inputParameterFiller = new InputParameterFiller();
     
 
     private void process() {
-        List<String> files = FileUtils.getFiles( Constants.KOERSENDIR + Constants.INDEXDIR, "csv", false);
+        optimizer.setClassToOptimize(new PerformancePerMonthModel());
+        List<InputParameters> inputParams = inputParameterFiller.fillIterations();
+        String directory = Constants.KOERSENDIR + Constants.INDEXDIR;
+        List<String> files = FileUtils.getFiles(directory, "csv", false);
         float sum = 0;
         for (String filename: files) {
-            
-       // String filename = "midkap-ind";
-            System.out.println("--- " + filename + " ---");
-            float endResult = service.createTransactions(filename, Constants.KOERSENDIR + Constants.INDEXDIR);
-            sum = sum + endResult;
-            System.out.println("result: " + endResult);
-            
+            // String filename = "midkap-ind";
+
+            float result = optimizer.optimize(directory, filename, inputParams);
+            sum = sum + result;
+
         }
+        
         System.out.println("SUM: " + sum);
     }
+
     public static void main(String[] args) {
         new PerformancePerMonthExecutor().process();
 

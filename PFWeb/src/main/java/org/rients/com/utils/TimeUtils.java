@@ -20,6 +20,11 @@ public class TimeUtils {
     private static final String DATE_FORMAT = "yyMMdd";
     private static final SimpleDateFormat DF = new SimpleDateFormat(DATE_FORMAT, Locale.UK);
 
+    public static String theMonth(int month){
+        String[] monthNames = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        return monthNames[month];
+    }
+    
     /**
      * @param dateString
      * @return
