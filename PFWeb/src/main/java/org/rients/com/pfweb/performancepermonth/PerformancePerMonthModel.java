@@ -9,6 +9,7 @@ package org.rients.com.pfweb.performancepermonth;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.rients.com.boxes.Portfolio;
 import org.rients.com.constants.Constants;
@@ -42,12 +43,13 @@ public class PerformancePerMonthModel implements ModelInterface {
     //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 1.2f, 1); 1181
 
 
-    public float process(String directory, String fundName, InputParameters input) {
-        longMonths = input.getLongMonths();
+    @SuppressWarnings("unchecked")
+    public float process(String directory, String fundName, Map<String, Object> input, boolean save) {
+        longMonths = (List<Integer>) input.get("LongMonths");
         List<Dagkoers> koersen = handleFundData.getAllFundRates(fundName, directory);
         
         
-        PFModel pfModel = pfHandler.createPFData(koersen, fundName, input.getStepSize(), input.getTurningPoint());
+        PFModel pfModel = pfHandler.createPFData(koersen, fundName, (Float) input.get("StepSize"), (Integer) input.get("TurningPoint"));
         
         DayResult[] waarde = new DayResult[koersen.size()];
         double startBedrag = 100000;
@@ -67,11 +69,12 @@ public class PerformancePerMonthModel implements ModelInterface {
         Transaction trans = new Transaction(fundName, new Integer(dagKoers.datum).intValue(), transId, new Double(dagKoers.closekoers).floatValue(), aantal, typeAankoop);
         double cash = startBedrag - (aantal * dagKoers.closekoers);
         double value = 0d;
+        int stopLoss = (Integer) input.get("StopLoss");
         for (Dagkoers koers: koersen) {
             int dateInt = new Integer(koers.datum).intValue();
             if (trans != null) {
                 float maxLoss = trans.determineMaxLoss(koers.closekoers);
-                if (maxLoss < input.getStopLoss()) {
+                if (maxLoss < stopLoss) {
                     // sell and wait
                     trans.addSellInfo(dateInt, 0, new Double(koers.closekoers).floatValue());
                     portfolio.add(trans);
@@ -139,12 +142,16 @@ public class PerformancePerMonthModel implements ModelInterface {
             trans.addSellInfo(new Integer(dagKoers.datum).intValue(), 0, new Double(dagKoers.closekoers).floatValue());
             portfolio.add(trans);
         }
-        portfolio.saveTransactions();
-        
-        String filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_result.csv";
-        FileUtils.writeToFile(filename, new ArrayList<DayResult>(Arrays.asList(waarde)));
-        
-        float result = reporting.createMonthScore(fundName, waarde);
+        if (save) {
+            String filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_trans.csv";
+            portfolio.saveTransactions(filename);
+            
+            filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_result.csv";
+            FileUtils.writeToFile(filename, new ArrayList<DayResult>(Arrays.asList(waarde)));
+            
+        }
+        float result = reporting.createMonthScore(fundName, waarde, save);            
+
         return result;
         
     }

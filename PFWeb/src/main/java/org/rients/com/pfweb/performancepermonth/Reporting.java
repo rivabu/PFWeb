@@ -12,7 +12,7 @@ import org.rients.com.utils.TimeUtils;
 
 public class Reporting {
 
-    public float createMonthScore(String fundName, DayResult[] waarde) {
+    public float createMonthScore(String fundName, DayResult[] waarde, boolean save) {
         List<DayResult> scorePerMaand = new ArrayList<DayResult>();
         DayResult[] _12Months = new DayResult[12];
 
@@ -48,12 +48,13 @@ public class Reporting {
             }
         }
         
+        if (save) {
+            String filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_maandscore.csv";
+            FileUtils.writeToFile(filename, scorePerMaand);
+            filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_12_maanden.csv";
+            FileUtils.writeToFile(filename, new ArrayList<DayResult>(Arrays.asList(_12Months)));
+        }
         
-        
-        String filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_maandscore.csv";
-        FileUtils.writeToFile(filename, scorePerMaand);
-        filename = Constants.TRANSACTIONDIR + Constants.SEP + fundName + "_12_maanden.csv";
-        FileUtils.writeToFile(filename, new ArrayList<DayResult>(Arrays.asList(_12Months)));
         
         return sumMonths;
     }

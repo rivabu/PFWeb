@@ -34,7 +34,7 @@ public class PropertiesUtils {
     
     public static void saveExistingProperties(String file, Map<String, String> fundProperties) {
         // load first the existing, then add the new values
-        Properties properties = getPropertiesFromPropertiesDir(file);
+        Properties properties = getPropertiesFromDir(Constants.FUND_PROPERTIESDIR, file);
         Set<String> set = fundProperties.keySet();
         Iterator<String> itr = set.iterator();
         while (itr.hasNext()) {
@@ -100,12 +100,12 @@ public class PropertiesUtils {
     }
     
     /** Constructor. */
-    public static Properties getPropertiesFromPropertiesDir(String filename) {
+    public static Properties getPropertiesFromDir(String dir, String filename) {
     	InputStream is = null;
         Properties properties = new Properties();
         try {
             
-            String path = Constants.FUND_PROPERTIESDIR + "/" + filename;
+            String path = dir + "/" + filename;
             File f = new File(path);
             is = new FileInputStream( f );
             properties.load(is);

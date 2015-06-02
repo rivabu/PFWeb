@@ -86,7 +86,8 @@ public class StrengthVersusWeaknessExecutor {
 		}
         Portfolio portfolio = handleMatrixForStrength(matrix, true);
         if (save) {
-        	portfolio.saveTransactions();
+            String filename = Constants.TRANSACTIONDIR + Constants.SEP + Constants.ALL_TRANSACTIONS;
+        	portfolio.saveTransactions(filename);
         }
         System.out.println("strengthOverDays: "+ strengthOverDays + " sellAfterDays: " + sellAfterDays + portfolio.getResultData());
 	}

@@ -85,8 +85,7 @@ public class Portfolio {
 		return returnValue;
 	}
 	
-	public void saveTransactions() {
-        String filename = Constants.TRANSACTIONDIR + Constants.SEP + Constants.ALL_TRANSACTIONS;
+	public void saveTransactions(String filename) {
         FileUtils.writeToFile(filename, allTransactions);
 	}
 	
