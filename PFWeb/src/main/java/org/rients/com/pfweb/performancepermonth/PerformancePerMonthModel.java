@@ -78,7 +78,11 @@ public class PerformancePerMonthModel implements ModelInterface {
                     // sell and wait
                     trans.addSellInfo(dateInt, 0, new Double(koers.closekoers).floatValue());
                     portfolio.add(trans);
-                    cash = cash + aantal * koers.closekoers;
+                    if (trans.getType() == Type.LONG) {
+                        cash = cash + aantal * koers.closekoers;
+                    } else {
+                        cash = cash + (aantal * (trans.getStartRate() + trans.getStartRate() - koers.closekoers));
+                    }
                     aantal = 0;
                     trans = null;
                 }

@@ -26,7 +26,7 @@ public class InputParameterFiller {
         for (Integer stopLoss: stopLosses) {
             Map<String, Object> inputData = new HashMap<String, Object>();
             inputData.put("LongMonths", longMonths2);
-            inputData.put("StepSize", 1.3f);
+            inputData.put("StepSize", 1.6f);
             inputData.put("TurningPoint", 2);
             inputData.put("StopLoss", stopLoss);
             elements.add(inputData);
