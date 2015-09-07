@@ -55,6 +55,9 @@ public class HistoricalVotalityAvr extends HistoricalVotality {
 	}
 
 	public BigDecimal getAvr() {
+	    if (count != 0) {
+	        return BigDecimal.ZERO;
+	    }
 		return sum.divide(new BigDecimal(count), 2, RoundingMode.HALF_UP);
 	}
 

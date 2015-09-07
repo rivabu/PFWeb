@@ -86,6 +86,18 @@ public class Optimizer {
                 Integer value = new Integer(p.get(key).toString());
                 inputData.put("StopLoss", value);
             }
+            if (keyString.equals("rsiValueShort")) {
+                Integer value = new Integer(p.get(key).toString());
+                inputData.put("rsiValueShort", value);
+            }
+            if (keyString.equals("rsiValueMiddle")) {
+                Integer value = new Integer(p.get(key).toString());
+                inputData.put("rsiValueMiddle", value);
+            }
+            if (keyString.equals("rsiLength")) {
+                Integer value = new Integer(p.get(key).toString());
+                inputData.put("rsiLength", value);
+            }
         }
         return inputData;
     }

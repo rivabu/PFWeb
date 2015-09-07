@@ -31,10 +31,6 @@ public class PerformancePerMonthModel implements ModelInterface {
     HandlePF pfHandler = new HandlePF();
     Reporting reporting = new Reporting();
     List<Integer> longMonths;
-    
-    
-    
-    
     //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 2.5f, 2); 1048
     //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 2f, 2); 1048
     //PFModel pfModel = pfHandler.createPFData(koersen, fundName, 1.2f, 2); 1116
@@ -137,7 +133,7 @@ public class PerformancePerMonthModel implements ModelInterface {
                 }
                 
             }
-            waarde[counter] = new DayResult(koers.datum, (float) benchMarkfactor * koers.closekoers, (float) value);
+            waarde[counter] = new DayResult(koers.datum, (float) benchMarkfactor * koers.closekoers, (float) value, 0, 0);
             counter ++;
             
         }

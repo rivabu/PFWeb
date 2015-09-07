@@ -17,7 +17,7 @@ import org.rients.com.model.ImageResponse;
 
 public class RSILineGraph {
 
-    public ImageResponse generateRSIGraph(Matrix matrix, String type, int DAYS) {
+    public ImageResponse generateRSIGraph(Matrix matrix, String type, int DAYS, int DAGENTERUG) {
         ImageResponse imageResponse = new ImageResponse();
         XYSeriesCollection dataset = new XYSeriesCollection();
         int aantalColumns = matrix.getAantalColumns();
@@ -29,13 +29,23 @@ public class RSILineGraph {
 	            Iterator<Object> iter = matrix.getColumn(counter).getValues().iterator();
 	            int size = matrix.getColumn(counter).getValues().size();
 	            int xas = 0;
+	            boolean skip = false;
 	            if (size < DAYS) {
 	                for (int teller = size; teller < DAYS; teller++) {
 	                    xas ++;
 	                }
+	            } else {
+	                skip = true;
 	            }
+	            int skipCounter = 0;
 	            while (iter.hasNext()) {
-	                points.add(xas, (Double) iter.next());
+	                double d = (Double) iter.next();
+	                if ((skipCounter < DAGENTERUG) && skip) {
+	                    
+	                } else {
+	                    points.add(xas, d);
+	                }
+	                skipCounter ++;
 	                xas ++;
 	            }
 	            dataset.addSeries(points);
@@ -55,9 +65,9 @@ public class RSILineGraph {
                 false // Configure chart to generate URLs?
                 );
         
-//        NumberAxis axis=new NumberAxis();
-//        axis.setTickLabelsVisible(false);
-//        //VerticalTickLabels(false);
+        NumberAxis axis=new NumberAxis();
+        //axis.setTickLabelsVisible(false);
+        //VerticalTickLabels(false);
 //        axis.setAutoRange(true);
 //        axis.setAutoRangeIncludesZero(false);
 //        axis.setLowerMargin(0.0);
@@ -70,7 +80,7 @@ public class RSILineGraph {
         //rangeAxis.setVisible(false);
         //rangeAxis.setLabelPaint(Color.BLUE);
         //rangeAxis.setRange(0, 3);
-        rangeAxis.setTickLabelsVisible(false);
+        rangeAxis.setTickLabelsVisible(true);
         
         chart.getPlot().setBackgroundPaint(Color.BLACK);
 
@@ -78,7 +88,7 @@ public class RSILineGraph {
         try {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             if (type.equals("small")) {
-                ChartUtilities.writeChartAsPNG(buffer, chart, 900, 200);
+                ChartUtilities.writeChartAsPNG(buffer, chart, 325, 200);
             } else if (type.equals("normaal")) {
                 ChartUtilities.writeChartAsPNG(buffer, chart, 1250, 300);
             } else if (type.equals("groot")) {

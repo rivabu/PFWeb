@@ -57,7 +57,7 @@ public class PFGenerator {
         }
         List<Dagkoers> rates = null;
         if (numberOfDays == -1) {
-        	numberOfDays = Constants.NUMBEROFDAYSTOPRINT;
+        	numberOfDays = Constants.NUMBEROFDAYSTOPRINT_PF;
         }
         if (type.equals("default")) {
             fundData.setNumberOfDays(numberOfDays);

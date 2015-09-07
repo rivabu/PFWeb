@@ -66,7 +66,7 @@ $( function () {
 			<td valign="top">&nbsp;</td>
 		</tr>
 		<tr>
-			<td valign="top"><img alt="" src="RSIImage?fund=aex-index&dir=aaa&type=RSI"></td>
+			<td valign="top"><img alt="" src="RSIImage?fund=aex-index&dir=aaa&type=RSI&size=groot"></td>
 		</tr>
 	</table>
 	

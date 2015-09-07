@@ -17,6 +17,7 @@ public class Constants {
     }
 
     public static int NUMBEROFDAYSTOPRINT = Integer.parseInt(props().getProperty("lookbackperiod")); // -1 = all
+    public static int NUMBEROFDAYSTOPRINT_PF = Integer.parseInt(props().getProperty("lookbackperiod_pf")); // -1 = all
 
     public static String CSV = ".csv";
 	public static String PNG = ".png";

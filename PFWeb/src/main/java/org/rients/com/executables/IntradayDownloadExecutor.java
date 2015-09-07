@@ -2,133 +2,174 @@ package org.rients.com.executables;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
-import java.util.TreeMap;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
-
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.rients.com.constants.Constants;
 import org.rients.com.model.Categories;
 import org.rients.com.services.FileDownloadService;
 import org.rients.com.services.FileDownloadServiceImpl;
 import org.rients.com.utils.FileUtils;
 import org.rients.com.utils.PropertiesUtils;
-import org.rients.com.utils.TimeUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
 public class IntradayDownloadExecutor {
 
-	FileDownloadService downloader = new FileDownloadServiceImpl();
+    FileDownloadService downloader = new FileDownloadServiceImpl();
+    private DateTime dateTime = new DateTime();
 
-	public static void main(String[] args) {
-		IntradayDownloadExecutor demo = new IntradayDownloadExecutor();
-					demo.process(false);
-	}
+    public static void main(String[] args) {
+        IntradayDownloadExecutor demo = new IntradayDownloadExecutor();
+        demo.process(true);
 
-	public Properties process(boolean download)  {
-		Properties koersen = new Properties();
-		String nowString = TimeUtils.getNowString();
-		String filenaam = Constants.KOERSENDIR + Categories.INTRADAY + "/20" + nowString + ".properties";
-		if (download) {
-			String directory = Constants.KOERSENDIR + Categories.HOOFDFONDEN;
-			List<String> files = FileUtils.getFiles(directory, "csv", false);
-			for (String fondsNaam : files) {
-			
-				String intradayFile = Constants.INTRADAY_KOERSENDIR + "20" + nowString + "_" + fondsNaam + ".csv";
-	
-				if (FileUtils.fileExists(intradayFile)) {
-					FileUtils.removeFile(intradayFile);
-				}
-				String koers = handleOneFile(fondsNaam, nowString, intradayFile);
-				if (koers != null) {
-					koersen.put(fondsNaam, koers);
-				}
-				FileUtils.removeFile(Constants.INTRADAY_TEMPFILE);
-			}
-			PropertiesUtils.saveProperties(filenaam, koersen);
-		} else {
-			koersen = PropertiesUtils.getProperties(filenaam);
-			System.out.println("intradays file found, aantal properties: " + koersen.size());
-		}
-		return koersen;
-	}
+    }
 
-	private String handleOneFile(String fondsNaam, String nowString, String intradayFile)  {
-		String firstmatch = "<table class=\"shares \" cellpadding=\"0\" cellspacing=\"0\">";
-		String lastmatch = "</table>";
+    private String getLaatsteKoersenDag() {
+        // woensdag = 3
+        int weekday = dateTime.getDayOfWeek();
 
-		System.out.println("downloading: http://www.behr.nl/koersen/intradays/" + fondsNaam + "?dag=" + nowString);
+        int back = 0;
+        if (weekday == 6) {
+            back = 1;
+        }
+        if (weekday == 7) {
+            back = 2;
+        }
+        dateTime = dateTime.minusDays(back);
+        weekday = dateTime.getDayOfWeek();
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("YYMMdd");
+        String date = fmt.print(dateTime);
+        return date;
+    }
 
-		String content = null;
-		try {
-			content = downloader.downloadFile("http://www.behr.nl/koersen/intradays/" + fondsNaam + "?dag=" + nowString);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			return null;
-		}
-		int indexFirst = content.indexOf(firstmatch);
-		if (indexFirst == -1) {
-			return null;
-		}
-		String table = content.substring(indexFirst, content.indexOf(lastmatch, indexFirst) + lastmatch.length());
-		table = table.replaceAll("&nbsp;", "");
-		FileUtils.writeToFile(Constants.INTRADAY_TEMPFILE, table);
-		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-		domFactory.setNamespaceAware(true);
-		DocumentBuilder builder;
-		Object result = null;
-		TreeMap<String, String> tm = new TreeMap<String, String>();
-		try {
-			builder = domFactory.newDocumentBuilder();
-			Document doc = builder.parse(Constants.INTRADAY_TEMPFILE);
-			XPath xpath = XPathFactory.newInstance().newXPath();
-			// XPath Query for showing all nodes value
-			XPathExpression expr = xpath.compile("//td/text()");
+    private String getNextDay() {
+        // woensdag = 3
+        // zondag = 7
+        int weekday = dateTime.getDayOfWeek();
 
-			result = expr.evaluate(doc, XPathConstants.NODESET);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-		NodeList nodes = (NodeList) result;
-		String time = "";
-		String koers = "";
-		for (int i = 0; i < nodes.getLength(); i++) {
-			String value = nodes.item(i).getNodeValue();
-			if (value.indexOf(":") > 0) {
-				time = value;
-				koers = "";
-			} else {
-				koers = value;
-				tm.put(time, koers);
-			}
-		}
-		Set<Entry<String, String>> set = tm.entrySet();
-		// Get an iterator
-		Iterator<Entry<String, String>> i = set.iterator();
-		// Display elements
-		ArrayList<String> lines = new ArrayList<String>();
-		String closeKoersNew = "";
-		while (i.hasNext()) {
-			Map.Entry<String, String> me = i.next();
-			closeKoersNew = (String) me.getValue();
-			lines.add(me.getKey() + "," + closeKoersNew);
+        int plus = 1;
+        if (weekday == 6) {
+            plus = 2;
+        }
+        if (weekday == 5) {
+            plus = 3;
+        }
+        dateTime = dateTime.plusDays(plus);
+        weekday = dateTime.getDayOfWeek();
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("YYMMdd");
+        String date = fmt.print(dateTime);
+        return date;
+    }
 
-		}
-		FileUtils.writeToFile(intradayFile, lines);
-		return koers;
-	}
+    // http://www.behr.nl/charts/dagkoers/sbm.offshor?dag=150828
+    // http://www.behr.nl/koersen/intradays/vopak?dag=150828
+    /*
+     * start met de datum uit de download properties, als deze op unfinised
+     * staat als deze op finished staat
+     */
+
+    public void process(boolean download) {
+        boolean first = true;
+        // Properties koersen = new Properties();
+        Properties data = new Properties();
+        String intradayDownloadProps = Constants.KOERSENDIR + Categories.INTRADAY + "/download.properties";
+        data = PropertiesUtils.getProperties(intradayDownloadProps);
+        String lastImportDate = data.getProperty("downloadDate");
+        String lastImportResult = data.getProperty("downloadResult");
+        data.put("downloadResult", "finished");
+        String laatsteKoersenDag = getLaatsteKoersenDag();
+        while (true) {
+            String nowString = "";
+            if (first && lastImportResult.equals("unfinished")) {
+                nowString = lastImportDate;
+            } else {
+                nowString = getNextDay();
+                if ((Integer.parseInt(nowString) > Integer.parseInt(laatsteKoersenDag) || lastImportResult.equals("unfinished"))) {
+                    System.out.println("lastImportResult: " + lastImportResult + " laatsteKoersenDag: " + laatsteKoersenDag + " nowString: " + nowString);
+                    break;
+                }
+            }
+
+            if (first) {
+                data.put("downloadDate", nowString);
+            }
+            String FondsenDirectory = Constants.KOERSENDIR + Categories.HOOFDFONDEN;
+            List<String> files = FileUtils.getFiles(FondsenDirectory, "csv", false);
+            for (String fondsNaam : files) {
+                String directory = Constants.INTRADAY_KOERSENDIR + Constants.SEP + fondsNaam;
+                String intradayFile = directory + Constants.SEP + "20" + nowString + ".csv";
+                FileUtils.createIfNonExisting(directory);
+                if (FileUtils.fileExists(intradayFile)) {
+                    FileUtils.removeFile(intradayFile);
+                }
+
+                ReturnData returnData = handleOneFile(fondsNaam, nowString, intradayFile);
+                if (first) {
+                    data.put("downloadResult", returnData.result);
+                    lastImportResult = returnData.result;
+                }
+            }
+            PropertiesUtils.saveProperties(intradayDownloadProps, data);
+
+            first = false;
+
+        }
+        ;
+    }
+
+    private ReturnData handleOneFile(String fondsNaam, String nowString, String intradayFile) {
+        String firstMatch = "<data>";
+        String lastMatch = "</data>";
+        ReturnData returnData = new ReturnData();
+        returnData.result = "finished";
+
+        System.out.println("downloading: http://www.behr.nl/charts/dagkoers/" + fondsNaam + "?dag=" + nowString);
+
+        String content = null;
+        try {
+            content = downloader.downloadFile("http://www.behr.nl/charts/dagkoers/" + fondsNaam + "?dag=" + nowString);
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            return null;
+        }
+        int indexFirst = content.indexOf(firstMatch);
+        if (indexFirst == -1) {
+            return null;
+        }
+        String data = content.substring(indexFirst + firstMatch.length(), content.indexOf(lastMatch, indexFirst));
+        String[] lines = data.split("\n");
+        ArrayList<String> outputLines = new ArrayList<String>();
+        boolean topFound = false;
+        String koers = "";
+        for (String line : lines) {
+            if (line.startsWith("09")) {
+                topFound = true;
+            }
+            if (topFound) {
+                String result[] = line.split(",");
+                if (result.length == 3) {
+                    String time = result[0];
+                    koers = result[1].trim();
+                    if (!StringUtils.isBlank(koers)) {
+                        String outputLine = time + "," + koers;
+                        outputLines.add(outputLine);
+                    } else {
+                        returnData.result = "unfinished";
+                    }
+                }
+            }
+        }
+        FileUtils.writeToFile(intradayFile, outputLines);
+        returnData.koers = koers;
+        return returnData;
+    }
+
+    public class ReturnData {
+        String koers;
+        String result;
+    }
 }

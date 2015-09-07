@@ -4,9 +4,10 @@
 package org.rients.com.pfweb.controllers;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
+import java.util.TreeMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,9 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.rients.com.constants.Constants;
+import org.rients.com.model.Categories;
 import org.rients.com.utils.FileUtils;
+import org.rients.com.utils.PropertiesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,11 +48,20 @@ public class IntradayOverviewController  {
             // we gaan max 3 weken terug
             
             // 1 = maandag, 5 = vrijdag
-            List<String> files = FileUtils.getFiles(Constants.INTRADAY_KOERSENDIR, "csv", false);
+            String intradayDownloadProps = Constants.KOERSENDIR + Categories.INTRADAY + "/download.properties";
+            Properties data = PropertiesUtils.getProperties(intradayDownloadProps);
+            String lastImport = data.getProperty("downloadDate");
+            String FondsenDirectory = Constants.KOERSENDIR + Categories.HOOFDFONDEN;
+            List<String> fondsen = FileUtils.getFiles(FondsenDirectory, "csv", false);
+            List<String> files = new ArrayList<String>();
+            for (String fondsNaam : fondsen) {
+                files.add(Constants.INTRADAY_KOERSENDIR + "/" + fondsNaam + "/" + lastImport + ".csv");
+            }
+            
             int days = files.size();
 
             DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd");
-            Map<Integer, Map<Integer, String>> matrix = handIntradayData(files, formatter, days);
+            TreeMap<Integer, TreeMap<Integer, String>> matrix = handIntradayData(files, formatter, days);
             request.setAttribute("matrix", matrix);
             request.setAttribute("dir", "intraday");
         } catch (Exception ex) {
@@ -60,10 +72,10 @@ public class IntradayOverviewController  {
 
 
 
-    private Map<Integer, Map<Integer, String>> handIntradayData(List<String> files, DateTimeFormatter formatter, int days) {
-        Map<Integer, Map<Integer, String>> matrix = new HashMap<Integer, Map<Integer, String>>();
+    private TreeMap<Integer, TreeMap<Integer, String>> handIntradayData(List<String> files, DateTimeFormatter formatter, int days) {
+        TreeMap<Integer, TreeMap<Integer, String>> matrix = new TreeMap<Integer, TreeMap<Integer, String>>();
         int weekNumberOld = 0;
-        Map<Integer, String> week = null;
+        TreeMap<Integer, String> week = null;
         int weekNumber = 0;
         if (days < numberOfDays) {
             numberOfDays = days;
@@ -77,7 +89,7 @@ public class IntradayOverviewController  {
                     matrix.put(-weekNumberOld, week);
                 }
                 weekNumberOld = weekNumber;
-                week = new HashMap<Integer, String>();
+                week = new TreeMap<Integer, String>();
                 week.put(1, "");
                 week.put(2, "");
                 week.put(3, "");

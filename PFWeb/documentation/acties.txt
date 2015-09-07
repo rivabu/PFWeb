@@ -1,0 +1,1 @@
+- bepaal de score als de blauwe onder/boven de gele is.

@@ -18,11 +18,11 @@
 	<table border="1">
 		<tbody>
 			<tr>
-				<td>MAANDAG</td>
-				<td>DINSDAG</td>
-				<td>WOENSDAG</td>
-				<td>DONDERDAG</td>
-				<td>VRIJDAG</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
 			</tr>
 			<c:forEach items="${matrix}" var="week">
 				<c:forEach items="${week.value}" var="dag">
@@ -31,8 +31,9 @@
 					</c:if>
 					<td width="300" valign="top">
 						<c:if test="${not empty dag.value}">
-		 					${dag.value}
-		 					<img alt="" src="PFImage?fund=${dag.value}&dir=${dir}&turningPoint=1&stepSize=0.025">
+		 					
+		 					
+		 					<img src="RSIImage?fund=${dag.value}&dir=Intraday\ing&size=small">
 		 				</c:if>
 						</td>
 					<c:if test="${dag.key eq 5}">

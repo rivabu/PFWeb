@@ -202,7 +202,7 @@ public class HandleFundData {
 						dagkoers.prevRate = prevRate;
 						records.add(dagkoers);
 					} else {
-						System.err.println("Koersbestand.leesFile aantal tokens != 6 error in file: " + fundName);
+						System.err.println("Koersbestand.leesFile aantal tokens != 2 error in file: " + fundName);
 						System.err.println("regel: " + regel);
 						// TODO throw technical exception here!!
 						return null;

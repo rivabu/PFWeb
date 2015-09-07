@@ -52,7 +52,7 @@ public class RSIGenerator {
             }
         }
 
-        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "large",  Constants.NUMBEROFDAYSTOPRINT);
+        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "large",  Constants.NUMBEROFDAYSTOPRINT, DAGENTERUG);
         return imageResponse;
     }
 
@@ -60,11 +60,12 @@ public class RSIGenerator {
      * DAYS is 225
      * DAGENTERUG = 25
      */
-    public ImageResponse getImage(String dir, String fundName) {
+    public ImageResponse getImage(String dir, String fundName, String size) {
         RSILineGraph rsiImage = new RSILineGraph();
         
         
         String pathFull = Constants.KOERSENDIR + dir + Constants.SEP;
+        fundData.setNumberOfDays(Constants.NUMBEROFDAYSTOPRINT);
         List<Dagkoers> rates = fundData.getFundRates(fundName, pathFull);
         
         //double avr = 0;
@@ -102,7 +103,7 @@ public class RSIGenerator {
         for (int j = 0; j < records; j++) {
                 matrix.getColumn(0).addValue(rates.get(j).datum, new Double(rates.get(j).relativeKoers).doubleValue());
         }
-        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "groot", aantalDagenTonen);
+        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, size, aantalDagenTonen, DAGENTERUG);
         return imageResponse;
     }
     

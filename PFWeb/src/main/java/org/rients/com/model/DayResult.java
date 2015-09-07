@@ -5,6 +5,8 @@ public class DayResult {
     private String date;
     private float benchMark;
     private float koers;
+    private float cummKoers;
+    private float cummRel;
 
     public DayResult(float benchMark, float koers) {
         super();
@@ -12,11 +14,13 @@ public class DayResult {
         this.koers = koers;
     }
     
-    public DayResult(String date, float benchMark, float koers) {
+    public DayResult(String date, float benchMark, float koers, float cummKoers, float cummRel) {
         super();
         this.date = date;
         this.benchMark = benchMark;
         this.koers = koers;
+        this.cummKoers = cummKoers;
+        this.setCummRel(cummRel);
     }
 
     private String month;
@@ -49,10 +53,10 @@ public class DayResult {
     public String toString() {
         String returnValue = "";
         if (date != null) {
-            returnValue = this.date + separator + this.benchMark + separator + this.koers; 
+            returnValue = this.date + separator + this.benchMark + separator + this.koers + separator + this.cummKoers + separator + this.cummRel; 
         }
         if (month != null) {
-            returnValue = this.month + separator + this.benchMark + separator + this.koers; 
+            returnValue = this.month + separator + this.benchMark + separator + this.koers + separator + this.cummKoers + separator + this.cummRel; 
         }
         return returnValue;
     }
@@ -104,6 +108,34 @@ public class DayResult {
      */
     public void setKoers(float koers) {
         this.koers = koers;
+    }
+
+    /**
+     * @return the cummKoers
+     */
+    public float getCummKoers() {
+        return cummKoers;
+    }
+
+    /**
+     * @param cummKoers the cummKoers to set
+     */
+    public void setCummKoers(float cummKoers) {
+        this.cummKoers = cummKoers;
+    }
+
+    /**
+     * @return the cummRel
+     */
+    public float getCummRel() {
+        return cummRel;
+    }
+
+    /**
+     * @param cummRel the cummRel to set
+     */
+    public void setCummRel(float cummRel) {
+        this.cummRel = cummRel;
     }
     
 }

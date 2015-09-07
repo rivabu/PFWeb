@@ -29,13 +29,14 @@ public class RSIImageController  {
     	
     	
         String dir = request.getParameter("dir");
-        String fundName = request.getParameter("fund");
+        String fundName = request.getParameter("fund") ;
+        String size = request.getParameter("size") ;
 
         ImageResponse imageResponse = null;
         if (fundName == null) {
             imageResponse = rSIGenerator.getImage(dir);
         } else {
-            imageResponse = rSIGenerator.getImage(dir, fundName);
+            imageResponse = rSIGenerator.getImage(dir, fundName, size);
             
         }
         response.setContentType("image/png");

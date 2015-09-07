@@ -35,6 +35,7 @@ public class ModelExecutor {
         for (String filename: files) {
             // String filename = "midkap-ind";
             Map<String, Object> inputParams = optimizer.mergePropertiesToInput(filename + ".properties");
+            System.out.println(inputParams);
             boolean save = true;
             float result = model.process(directory, filename, inputParams, save);
             System.out.println(filename + ": " + result);

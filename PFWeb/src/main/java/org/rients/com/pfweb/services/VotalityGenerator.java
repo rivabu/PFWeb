@@ -53,7 +53,7 @@ public class VotalityGenerator {
             }
         }
 
-        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "large",  Constants.NUMBEROFDAYSTOPRINT);
+        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "large",  Constants.NUMBEROFDAYSTOPRINT, DAGENTERUG);
         return imageResponse;
     }
 
@@ -68,7 +68,7 @@ public class VotalityGenerator {
         
         Matrix matrix = votalityExecutor.fillMatrix(fundName, pathFull, true);
     
-        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "groot",  matrix.getAantalDays());
+        ImageResponse imageResponse = rsiImage.generateRSIGraph(matrix, "groot",  matrix.getAantalDays(), DAGENTERUG);
         return imageResponse;
     }
     

@@ -33,4 +33,22 @@ public class InputParameterFiller {
         }
         return elements;
     }
+    
+
+    public List<Map<String, Object>>  fillRSIIterations() {
+        List<Integer> rsiLengths = new ArrayList<Integer>(Arrays.asList(5, 10, 30, 40, 50)); 
+        List<Integer> rsiValues = new ArrayList<Integer>(Arrays.asList(10, 20, 30, 40, 50, 60, 70, 80, 90)); 
+        List<Map<String, Object>> elements = new ArrayList<Map<String, Object>>();
+        for (int rsiShort = 3; rsiShort < 20; rsiShort++) {
+            for (int rsiMiddle = 4; rsiMiddle < 40; rsiMiddle++) {
+                if (rsiShort < rsiMiddle) {
+                    Map<String, Object> inputData = new HashMap<String, Object>();
+                    inputData.put("rsiValueShort", rsiShort);
+                    inputData.put("rsiValueMiddle", rsiMiddle);
+                    elements.add(inputData);
+                }
+            }
+        }
+        return elements;
+    }
 }

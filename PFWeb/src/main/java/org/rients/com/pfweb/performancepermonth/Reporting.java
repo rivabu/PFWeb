@@ -27,15 +27,18 @@ public class Reporting {
         int currentMonth =  Integer.parseInt(dagKoers.getDate().substring(4, 6)) - 1;
         float benchmarkKoers = dagKoers.getBenchMark();
         float myKoers = dagKoers.getKoers();
+        float cummKoers = 0;
+        float cummRel = 0;
         
         for (DayResult koers: waarde) {
             int newMonth =  Integer.parseInt(koers.getDate().substring(4, 6)) - 1;
             if (currentMonth != newMonth) {
                 float scoreBenchmark = (float) MathFunctions.procVerschil(benchmarkKoers, koers.getBenchMark());
                 float scoreMyKoers = (float) MathFunctions.procVerschil(myKoers, koers.getKoers());
-                
+                cummKoers = cummKoers + scoreMyKoers;
+                cummRel = cummRel + (scoreMyKoers - scoreBenchmark);
                 //System.out.println("month: " + currentMonth + " score: " + score);
-                DayResult monthResult = new DayResult(koers.getDate(), MathFunctions.round(scoreBenchmark, 2), MathFunctions.round(scoreMyKoers, 2));
+                DayResult monthResult = new DayResult(koers.getDate(), MathFunctions.round(scoreBenchmark, 2), MathFunctions.round(scoreMyKoers, 2), cummKoers, cummRel);
                 scorePerMaand.add(monthResult);
                 sumMonths = sumMonths + (MathFunctions.round(scoreMyKoers, 2) - MathFunctions.round(scoreBenchmark, 2));
                 currentMonth = newMonth;
