@@ -21,27 +21,35 @@ public class IntradayDownloadExecutor {
     FileDownloadService downloader = new FileDownloadServiceImpl();
     private DateTime dateTime = new DateTime();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         IntradayDownloadExecutor demo = new IntradayDownloadExecutor();
         demo.process(true);
 
     }
 
-    private String getLaatsteKoersenDag() {
+    private String getLaatsteKoersenDag(int minus) {
         // woensdag = 3
         int weekday = dateTime.getDayOfWeek();
 
-        int back = 0;
+        int back = minus;
         if (weekday == 6) {
-            back = 1;
+            back = back + 1;
         }
         if (weekday == 7) {
-            back = 2;
+            back = back + 2;
         }
         dateTime = dateTime.minusDays(back);
         weekday = dateTime.getDayOfWeek();
         DateTimeFormatter fmt = DateTimeFormat.forPattern("YYMMdd");
         String date = fmt.print(dateTime);
+        return date;
+    }
+    
+    private String getToday() {
+        // woensdag = 3
+        DateTime now = new DateTime();
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("YYMMdd");
+        String date = fmt.print(now);
         return date;
     }
 
@@ -70,24 +78,52 @@ public class IntradayDownloadExecutor {
      * start met de datum uit de download properties, als deze op unfinised
      * staat als deze op finished staat
      */
+    
+    private boolean nuLaterDan(int tijd) {
+        DateTime nu = new DateTime();
+        boolean returnValue = false;
+        if (nu.getHourOfDay() > tijd) {
+            returnValue = true;
+        }
+        return returnValue;
+    }
 
-    public void process(boolean download) {
+    public void process(boolean download) throws Exception {
+        String today = getToday();
         boolean first = true;
-        // Properties koersen = new Properties();
         Properties data = new Properties();
         String intradayDownloadProps = Constants.KOERSENDIR + Categories.INTRADAY + "/download.properties";
         data = PropertiesUtils.getProperties(intradayDownloadProps);
         String lastImportDate = data.getProperty("downloadDate");
         String lastImportResult = data.getProperty("downloadResult");
+        String slotKoersenDownloaded = data.getProperty("slotkoersenDownloaded");
+        
+        String laatsteKoersenDag = getLaatsteKoersenDag(0);
+        //String voorLaatsteKoersenDag = getLaatsteKoersenDag(1);
+        // laatste nog niet gedownload
+        if (Integer.parseInt(slotKoersenDownloaded) < Integer.parseInt(laatsteKoersenDag) || nuLaterDan(19)) {
+            data.put("slotkoersenDownloaded", laatsteKoersenDag);
+            BehrDownloadExecutor executor = new BehrDownloadExecutor();
+            executor.testDownloadFavourites();
+            PropertiesUtils.saveProperties(intradayDownloadProps, data);
+        }
+
+        
+        int year = Integer.parseInt(lastImportDate.substring(0, 2)) + 2000;
+        int month = Integer.parseInt(lastImportDate.substring(2, 4));
+        int day = Integer.parseInt(lastImportDate.substring(4));
+        
+        dateTime = new DateTime(year, month, day, 12, 0, 0, 0);
+        
         data.put("downloadResult", "finished");
-        String laatsteKoersenDag = getLaatsteKoersenDag();
         while (true) {
             String nowString = "";
             if (first && lastImportResult.equals("unfinished")) {
                 nowString = lastImportDate;
             } else {
                 nowString = getNextDay();
-                if ((Integer.parseInt(nowString) > Integer.parseInt(laatsteKoersenDag) || lastImportResult.equals("unfinished"))) {
+                // uitstappen als nowString in de toekomst ligt, of status unfinished is
+                if ((Integer.parseInt(nowString) > Integer.parseInt(today) || lastImportResult.equals("unfinished"))) {
                     System.out.println("lastImportResult: " + lastImportResult + " laatsteKoersenDag: " + laatsteKoersenDag + " nowString: " + nowString);
                     break;
                 }
@@ -126,7 +162,6 @@ public class IntradayDownloadExecutor {
         ReturnData returnData = new ReturnData();
         returnData.result = "finished";
 
-        System.out.println("downloading: http://www.behr.nl/charts/dagkoers/" + fondsNaam + "?dag=" + nowString);
 
         String content = null;
         try {
@@ -145,6 +180,7 @@ public class IntradayDownloadExecutor {
         ArrayList<String> outputLines = new ArrayList<String>();
         boolean topFound = false;
         String koers = "";
+        String lastKoers = "";
         for (String line : lines) {
             if (line.startsWith("09")) {
                 topFound = true;
@@ -156,6 +192,7 @@ public class IntradayDownloadExecutor {
                     koers = result[1].trim();
                     if (!StringUtils.isBlank(koers)) {
                         String outputLine = time + "," + koers;
+                        lastKoers = koers;
                         outputLines.add(outputLine);
                     } else {
                         returnData.result = "unfinished";
@@ -163,6 +200,7 @@ public class IntradayDownloadExecutor {
                 }
             }
         }
+        System.out.println(StringUtils.rightPad(fondsNaam, 20)  + " : " + lastKoers);
         FileUtils.writeToFile(intradayFile, outputLines);
         returnData.koers = koers;
         return returnData;

@@ -73,19 +73,19 @@ public class BeatIndexExecutor {
         int totalDAYS = aexRates.size();
         Matrix matrix = null;
 
-		if (TimeUtils.isBetween(9, 18) && (BeatIndexConstants.downloadIntradays || BeatIndexConstants.useIntradays)) {
-			// download de intradays
-			IntradayDownloadExecutor demo = new IntradayDownloadExecutor();
-			Properties intradays = demo.process(BeatIndexConstants.downloadIntradays);
-			aexRates.add(new Dagkoers(nowString+"", 0));
-			totalDAYS = totalDAYS + 1;
-			matrix = createMatrix(aexRates, files, totalDAYS);
-	        fillMatrixWithData(matrix, directory, files, intradays, totalDAYS);
-		}
-		else {
+//		if (TimeUtils.isBetween(9, 18) && (BeatIndexConstants.downloadIntradays || BeatIndexConstants.useIntradays)) {
+//			// download de intradays
+//			IntradayDownloadExecutor demo = new IntradayDownloadExecutor();
+//			Properties intradays = demo.process(BeatIndexConstants.downloadIntradays);
+//			aexRates.add(new Dagkoers(nowString+"", 0));
+//			totalDAYS = totalDAYS + 1;
+//			matrix = createMatrix(aexRates, files, totalDAYS);
+//	        fillMatrixWithData(matrix, directory, files, intradays, totalDAYS);
+//		}
+//		else {
 			matrix = createMatrix(aexRates, files, totalDAYS);
 	        fillMatrixWithData(matrix, directory, files, null, totalDAYS);
-		}
+		//}
 		return matrix;
 	}
 	

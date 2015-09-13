@@ -71,19 +71,19 @@ public class StrengthVersusWeaknessExecutor {
         totalDAYS = aexRates.size();
         Matrix matrix = null;
 
-		if (TimeUtils.isBetween(9, 18) && (StrengthWeaknessConstants.downloadIntradays || StrengthWeaknessConstants.useIntradays)) {
-			// download de intradays
-			IntradayDownloadExecutor demo = new IntradayDownloadExecutor();
-			Properties intradays = demo.process(StrengthWeaknessConstants.downloadIntradays);
-			aexRates.add(new Dagkoers(nowString+"", 0));
-			totalDAYS = totalDAYS + 1;
-			matrix = createMatrix(aexRates, files);
-	        fillMatrixWithData(matrix, directory, files, intradays);
-		}
-		else {
+//		if (TimeUtils.isBetween(9, 18) && (StrengthWeaknessConstants.downloadIntradays || StrengthWeaknessConstants.useIntradays)) {
+//			// download de intradays
+//			IntradayDownloadExecutor demo = new IntradayDownloadExecutor();
+//			Properties intradays = demo.process(StrengthWeaknessConstants.downloadIntradays);
+//			aexRates.add(new Dagkoers(nowString+"", 0));
+//			totalDAYS = totalDAYS + 1;
+//			matrix = createMatrix(aexRates, files);
+//	        fillMatrixWithData(matrix, directory, files, intradays);
+//		}
+//		else {
 			matrix = createMatrix(aexRates, files);
 	        fillMatrixWithData(matrix, directory, files, null);
-		}
+//		}
         Portfolio portfolio = handleMatrixForStrength(matrix, true);
         if (save) {
             String filename = Constants.TRANSACTIONDIR + Constants.SEP + Constants.ALL_TRANSACTIONS;
