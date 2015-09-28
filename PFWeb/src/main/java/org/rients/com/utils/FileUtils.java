@@ -136,7 +136,7 @@ public final class FileUtils {
             String as[] = file.list();
             for (int i = 0; i < as.length; i++) {
                 File file1 = new File(dir + "\\" + as[i]);
-                if (file1.isFile() && file1.getName().endsWith("." + extension)) {
+                if (file1.isFile() && file1.getName().endsWith(extension)) {
                     String filename = file1.getName();
                     if (!withExtension) {
                         filename = filename.substring(0, filename.lastIndexOf("."));

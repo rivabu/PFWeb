@@ -24,6 +24,8 @@ public class IntradayDownloadExecutor {
     public static void main(String[] args) throws Exception {
         IntradayDownloadExecutor demo = new IntradayDownloadExecutor();
         demo.process(true);
+        WinnersAndLosersExecutor winnersAndLosers = new WinnersAndLosersExecutor();
+        winnersAndLosers.process();
 
     }
 
@@ -114,8 +116,9 @@ public class IntradayDownloadExecutor {
         int day = Integer.parseInt(lastImportDate.substring(4));
         
         dateTime = new DateTime(year, month, day, 12, 0, 0, 0);
-        
+
         data.put("downloadResult", "finished");
+        Properties koersen = new Properties();
         while (true) {
             String nowString = "";
             if (first && lastImportResult.equals("unfinished")) {
@@ -128,10 +131,9 @@ public class IntradayDownloadExecutor {
                     break;
                 }
             }
+            String filenaam = Constants.KOERSENDIR + Categories.INTRADAY + "/_properties/20" + nowString + ".properties";
 
-            if (first) {
-                data.put("downloadDate", nowString);
-            }
+            data.put("downloadDate", nowString);
             String FondsenDirectory = Constants.KOERSENDIR + Categories.HOOFDFONDEN;
             List<String> files = FileUtils.getFiles(FondsenDirectory, "csv", false);
             for (String fondsNaam : files) {
@@ -147,13 +149,16 @@ public class IntradayDownloadExecutor {
                     data.put("downloadResult", returnData.result);
                     lastImportResult = returnData.result;
                 }
+                if (returnData.koers != null) {
+                    koersen.put(fondsNaam, returnData.koers);
+                }
             }
             PropertiesUtils.saveProperties(intradayDownloadProps, data);
 
             first = false;
 
+            PropertiesUtils.saveProperties(filenaam, koersen);
         }
-        ;
     }
 
     private ReturnData handleOneFile(String fondsNaam, String nowString, String intradayFile) {
@@ -194,6 +199,7 @@ public class IntradayDownloadExecutor {
                         String outputLine = time + "," + koers;
                         lastKoers = koers;
                         outputLines.add(outputLine);
+                        returnData.koers = koers;
                     } else {
                         returnData.result = "unfinished";
                     }
@@ -202,7 +208,6 @@ public class IntradayDownloadExecutor {
         }
         System.out.println(StringUtils.rightPad(fondsNaam, 20)  + " : " + lastKoers);
         FileUtils.writeToFile(intradayFile, outputLines);
-        returnData.koers = koers;
         return returnData;
     }
 
