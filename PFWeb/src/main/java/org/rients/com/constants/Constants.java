@@ -31,7 +31,9 @@ public class Constants {
 	public static String TRANSACTIONDIR = props().getProperty("TRANSACTIONDIR");
     public static String FAVORITESDIR = props().getProperty("FAVORITESDIR");
 	
-    public static String REAL_TRANSACTIONDIR = props().getProperty("REAL_TRANSACTIONDIR");;
+    public static String REAL_TRANSACTIONDIR = props().getProperty("REAL_TRANSACTIONDIR");
+    public static String OHLC_TRANSACTIONDIR = props().getProperty("OHLC_TRANSACTIONDIR");
+    
     public static String INTRADAY_KOERSENDIR = props().getProperty("INTRADAY_KOERSENDIR");
     public static String TEMPDIR = props().getProperty("TEMPDIR");
     

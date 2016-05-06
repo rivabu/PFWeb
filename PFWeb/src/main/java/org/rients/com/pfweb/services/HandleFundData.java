@@ -14,13 +14,14 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.commons.io.IOUtils;
 import org.rients.com.constants.Constants;
 import org.rients.com.model.Dagkoers;
 import org.rients.com.model.DagkoersStatus;
+import org.rients.com.model.IntradayKoers;
 import org.rients.com.utils.FileUtils;
 import org.rients.com.utils.PropertiesUtils;
 import org.springframework.stereotype.Service;
-
 
 /**
  * @author Rients van Buren
@@ -31,130 +32,142 @@ import org.springframework.stereotype.Service;
 @Service
 public class HandleFundData {
 
-    private int numberOfDays;
-    
+	private int numberOfDays;
+
 	public int getNumberOfDays() {
-        return numberOfDays;
-    }
+		return numberOfDays;
+	}
 
-    public void setNumberOfDays(int numberOfDays) {
-        this.numberOfDays = numberOfDays;
-    }
+	public void setNumberOfDays(int numberOfDays) {
+		this.numberOfDays = numberOfDays;
+	}
 
-    
+	public List<Dagkoers> getFundRates(String fundName, String directory) {
+		List<Dagkoers> sublistRecords = new ArrayList<Dagkoers>();
+		List<Dagkoers> records = getAllFundRates(fundName, directory);
+		if (records != null) {
+			int aantalRecords = records.size();
+			int fromIndex = 0;
+			if (numberOfDays == -2) {
+				fromIndex = 0;
+			}
+			else if (numberOfDays > 0 && aantalRecords > numberOfDays) {
+				fromIndex = aantalRecords - numberOfDays;
+			}
+			for (int i = fromIndex; i < aantalRecords; i++) {
+				sublistRecords.add(records.get(i));
+			}
+		} else {
+			System.out.println("NOTING FOUND: getAllFundRates( " + fundName + ", " + directory + " )");
+		}
+		return sublistRecords;
+	}
 
+	public List<Dagkoers> getFundRates(String fundName, String directory, int beginDate, int endDate, int extraEndDays) {
+		List<Dagkoers> sublistRecords = new ArrayList<Dagkoers>();
 
-    
-    
-    public List<Dagkoers> getFundRates(String fundName, String directory) {
-        List<Dagkoers> sublistRecords = new ArrayList<Dagkoers>();
-        List<Dagkoers> records = getAllFundRates(fundName, directory);
-        if (records != null) {
-            int aantalRecords = records.size();
-            int fromIndex = 0;
-            if (numberOfDays > 0 && aantalRecords > numberOfDays) {
-                fromIndex = aantalRecords - numberOfDays;
-            }
-            for (int i = fromIndex; i < aantalRecords; i++) {
-                sublistRecords.add(records.get(i));
-            }
-        }
-        else {
-            System.out.println("NOTING FOUND: getAllFundRates( " + fundName + ", " + directory + " )");
-        }
-        return sublistRecords;
-    }
+		List<Dagkoers> records = getAllFundRates(fundName, directory);
+		if (records != null) {
+			int aantalRecords = records.size();
 
+			int beginDateIndex = findIndex(beginDate, records);
+			if (beginDateIndex == -1) {
+				// System.out.println("date: " + beginDate + " not found in " +
+				// fundName);
+				int i = 0;
+				while (i < 10) {
+					beginDate = beginDate + 1;
+					beginDateIndex = findIndex(beginDate, records);
+					if (beginDateIndex > 0) {
+						break;
+					}
+					i++;
+				}
+			}
+			if (beginDateIndex - numberOfDays > 0) {
+				beginDateIndex = beginDateIndex - numberOfDays;
+			} else {
+				beginDateIndex = 0;
+			}
+			int endDateIndex = 0;
+			if (endDate == -1) {
+				endDateIndex = records.size();
+			} else {
+				endDateIndex = findIndex(endDate, records);
+				if (endDateIndex == -1) {
+					System.out.println("date: " + endDate + " not found in " + fundName);
+					int i = 0;
+					while (i < 10) {
+						endDate = endDate + 1;
+						endDateIndex = findIndex(endDate, records);
+						if (endDateIndex > 0) {
+							break;
+						}
+						i++;
+					}
+				}
+			}
+			if (extraEndDays > 0) {
+				if (endDateIndex + extraEndDays < aantalRecords) {
+					endDateIndex = endDateIndex + extraEndDays;
+				} else {
+					endDateIndex = aantalRecords;
+				}
+			}
+			for (int i = beginDateIndex; i < endDateIndex; i++) {
+				sublistRecords.add(records.get(i));
+			}
+		} else {
+			System.out.println("NOTING FOUND: getAllFundRates( " + fundName + ", " + directory + " )");
+		}
+		return sublistRecords;
+	}
 
-    public List<Dagkoers> getFundRates(String fundName, String directory, int beginDate, int endDate, int extraEndDays) {
-        List<Dagkoers> sublistRecords = new ArrayList<Dagkoers>();
-        
-        List<Dagkoers> records = getAllFundRates(fundName, directory);
-        if (records != null) {
-            int aantalRecords = records.size();
+	public int findIndex(int date, List<Dagkoers> records) {
+		int counter = -1;
+		int returnValue = -1;
+		Iterator<Dagkoers> iter = records.iterator();
+		while (iter.hasNext()) {
+			counter++;
+			Dagkoers dagkoers = iter.next();
+			if (dagkoers.getDatumInt() == date) {
+				returnValue = counter;
+				break;
+			}
+		}
 
-            int beginDateIndex = findIndex(beginDate, records);
-            if (beginDateIndex == -1) {
-                //System.out.println("date: " + beginDate + " not found in " + fundName);
-                int i = 0;
-                while ( i < 10) {
-                	beginDate =  beginDate + 1;
-                	beginDateIndex = findIndex(beginDate, records);
-                	 if (beginDateIndex > 0) {
-                		 break;
-                	 }
-                	i++;
-                }
-            }
-            if (beginDateIndex - numberOfDays > 0) {
-                beginDateIndex = beginDateIndex - numberOfDays;
-            }
-            else {
-                beginDateIndex = 0;
-            }
-            int endDateIndex = 0;
-            if (endDate == -1) {
-            	endDateIndex = records.size();
-            } else {
-            	endDateIndex = findIndex(endDate, records);
-	            if (endDateIndex == -1) {
-	                System.out.println("date: " + endDate + " not found in " + fundName);
-	                int i =0;
-	                while ( i < 10) {
-	                	endDate =  endDate + 1;
-	                	endDateIndex = findIndex(endDate, records);
-	                	 if (endDateIndex > 0) {
-	                		 break;
-	                	 }
-	                	i++;
-	                }
-	            }
-            }
-            if (extraEndDays > 0) {
-	            if (endDateIndex + extraEndDays < aantalRecords) {
-	                endDateIndex = endDateIndex + extraEndDays;
-	            }
-	            else {
-	                endDateIndex = aantalRecords;
-	            }
-            }
-            for (int i = beginDateIndex; i < endDateIndex; i++) {
-                sublistRecords.add(records.get(i));
-            }
-        }
-        else {
-            System.out.println("NOTING FOUND: getAllFundRates( " + fundName + ", " + directory + " )");
-        }
-        return sublistRecords;
-    }
-    
-    public int findIndex(int date, List<Dagkoers> records) {
-        int counter = -1;
-        int returnValue = -1;
-        Iterator<Dagkoers> iter = records.iterator();
-        while (iter.hasNext()) {
-            counter ++;
-            Dagkoers dagkoers = iter.next();
-            if (dagkoers.getDatumInt() == date) {
-            	returnValue = counter;
-                break;
-            }
-        }
-        
-        
-        return returnValue;
-        
-    }
-    
-    public List<Dagkoers> getAllFundRates(String fundName, String directory) {
-        Properties prop = null;
-        if (!directory.endsWith(Constants.SEP)) {
-        	directory = directory +  Constants.SEP;
-        }
-        if (!directory.contains("intraday")) {
-            //String fileName = Constants.FUND_PROPERTIESDIR + fundName + Constants.PROPERTIES;
-            prop = PropertiesUtils.getPropertiesFromDir(Constants.FUND_PROPERTIESDIR, fundName + Constants.PROPERTIES);
-        }
+		return returnValue;
+
+	}
+
+	public List<IntradayKoers> getIntradayRates(String filename) throws IOException {
+		List<IntradayKoers> koersen = new ArrayList<IntradayKoers>();
+		List<String> lines = IOUtils.readLines(FileUtils.openInputFile(filename));
+		if (lines.size() > 0) {
+			for (String line : lines) {
+				StringTokenizer stringtokenizer = new StringTokenizer(line.trim(), ",");
+				int tokens = stringtokenizer.countTokens();
+				if (tokens == 2) {
+					IntradayKoers intradayKoers = new IntradayKoers();
+					intradayKoers.setTime(stringtokenizer.nextToken());
+					intradayKoers.setKoers(Float.valueOf(stringtokenizer.nextToken()).floatValue());
+					koersen.add(intradayKoers);
+				}
+			}
+		} 
+		return koersen;
+	}
+
+	public List<Dagkoers> getAllFundRates(String fundName, String directory) {
+		Properties prop = null;
+		if (!directory.endsWith(Constants.SEP)) {
+			directory = directory + Constants.SEP;
+		}
+		if (!directory.contains("intraday")) {
+			// String fileName = Constants.FUND_PROPERTIESDIR + fundName +
+			// Constants.PROPERTIES;
+			prop = PropertiesUtils.getPropertiesFromDir(Constants.FUND_PROPERTIESDIR, fundName + Constants.PROPERTIES);
+		}
 		// boolean old = false;
 		List<Dagkoers> records = new ArrayList<Dagkoers>();
 		String separator = ",";
@@ -190,7 +203,7 @@ public class HandleFundData {
 							dagkoers.datum = "20" + dagkoers.datum;
 						float closekoers = Float.valueOf(stringtokenizer.nextToken()).floatValue();
 						if (prop != null && prop.containsKey(Constants.ISCURRENCY)) {
-						    closekoers = closekoers * 10;
+							closekoers = closekoers * 10;
 						}
 						dagkoers.openkoers = closekoers;
 						dagkoers.highkoers = closekoers;
@@ -209,7 +222,7 @@ public class HandleFundData {
 					}
 					prevRate = dagkoers.closekoers;
 				}
-				records.get(records.size() -1).setStatus(DagkoersStatus.LATESTDAY);
+				records.get(records.size() - 1).setStatus(DagkoersStatus.LATESTDAY);
 				bufferedreader.close();
 
 			} catch (IOException ioexception) {
